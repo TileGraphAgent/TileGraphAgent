@@ -1,0 +1,17 @@
+[package]
+name = "tilegraph-ingest"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Source adapters — synthetic JSON and IFC placeholder"
+
+[dependencies]
+tilegraph-core = { path = "../tilegraph-core" }
+tilegraph-synth = { path = "../tilegraph-synth" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+walkdir = { workspace = true }

@@ -1,0 +1,16 @@
+[package]
+name = "tilegraph-gltf"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "GLB/glTF 2.0 export with feature ID attributes and industrial object metadata"
+
+[dependencies]
+tilegraph-core = { path = "../tilegraph-core" }
+tilegraph-geometry = { path = "../tilegraph-geometry" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }

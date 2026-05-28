@@ -1,0 +1,17 @@
+[package]
+name = "tilegraph-graph-export"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Neo4j Cypher and CSV export for the TileGraphAgent Knowledge Graph"
+
+[dependencies]
+tilegraph-core = { path = "../tilegraph-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+reqwest = { workspace = true }

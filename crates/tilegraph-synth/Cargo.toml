@@ -1,0 +1,20 @@
+[package]
+name = "tilegraph-synth"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Synthetic industrial plant generator for TileGraphAgent V1"
+
+[dependencies]
+tilegraph-core = { path = "../tilegraph-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+glam = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = { workspace = true }

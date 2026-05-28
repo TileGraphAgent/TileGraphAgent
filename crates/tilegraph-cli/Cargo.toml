@@ -1,0 +1,29 @@
+[package]
+name = "tilegraph-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "TileGraphAgent CLI — generate-synth, build-tiles, build-graph, validate, benchmark"
+
+[[bin]]
+name = "tilegraph"
+path = "src/main.rs"
+
+[dependencies]
+tilegraph-core = { path = "../tilegraph-core" }
+tilegraph-synth = { path = "../tilegraph-synth" }
+tilegraph-ingest = { path = "../tilegraph-ingest" }
+tilegraph-geometry = { path = "../tilegraph-geometry" }
+tilegraph-gltf = { path = "../tilegraph-gltf" }
+tilegraph-tiles = { path = "../tilegraph-tiles" }
+tilegraph-spatial = { path = "../tilegraph-spatial" }
+tilegraph-graph-export = { path = "../tilegraph-graph-export" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+clap = { workspace = true }
+tokio = { workspace = true }

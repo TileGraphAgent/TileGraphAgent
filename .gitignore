@@ -1,0 +1,13 @@
+.fingerprint
+build/
+target/
+*.rs.bk
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+.idea/
+.vscode/
+*.iml

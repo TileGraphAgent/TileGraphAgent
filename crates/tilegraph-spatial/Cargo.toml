@@ -1,0 +1,16 @@
+[package]
+name = "tilegraph-spatial"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "R-tree spatial index for industrial objects — AABB query, nearest neighbor, tile lookup"
+
+[dependencies]
+tilegraph-core = { path = "../tilegraph-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+rstar = { workspace = true }

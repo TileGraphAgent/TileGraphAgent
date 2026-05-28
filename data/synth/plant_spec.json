@@ -1,0 +1,107 @@
+{
+  "plant": {
+    "name": "Synthetic EPC Plant — TileGraphAgent V1",
+    "tag": "PLT-001",
+    "description": "Procedurally generated petrochemical process plant for portfolio demonstration.",
+    "origin": [0.0, 0.0, 0.0],
+    "unit": "meters"
+  },
+  "areas": [
+    {
+      "id": "area-a",
+      "name": "Area A — Process Train 1",
+      "tag": "10",
+      "offset": [0.0, 0.0, 0.0],
+      "dimensions": [60.0, 40.0, 15.0]
+    },
+    {
+      "id": "area-b",
+      "name": "Area B — Utilities",
+      "tag": "20",
+      "offset": [70.0, 0.0, 0.0],
+      "dimensions": [40.0, 40.0, 10.0]
+    }
+  ],
+  "systems": [
+    {
+      "id": "sys-cooling",
+      "name": "Cooling Water System",
+      "tag": "SYS-PLT-COOLING",
+      "area_id": "area-a",
+      "fluid": "COOLING_WATER",
+      "design_pressure_bar": 6.0,
+      "design_temperature_c": 45.0,
+      "lines": [
+        {
+          "tag": "LINE-1001",
+          "nominal_bore_mm": 100,
+          "pipe_class": "CS-A1A",
+          "insulation": false,
+          "segment_count": 16
+        },
+        {
+          "tag": "LINE-1002",
+          "nominal_bore_mm": 80,
+          "pipe_class": "CS-A1A",
+          "insulation": false,
+          "segment_count": 12
+        }
+      ]
+    },
+    {
+      "id": "sys-process",
+      "name": "Main Process System",
+      "tag": "SYS-PLT-PROCESS",
+      "area_id": "area-a",
+      "fluid": "HYDROCARBON",
+      "design_pressure_bar": 25.0,
+      "design_temperature_c": 120.0,
+      "lines": [
+        {
+          "tag": "LINE-2001",
+          "nominal_bore_mm": 150,
+          "pipe_class": "SS-B2A",
+          "insulation": true,
+          "segment_count": 18
+        },
+        {
+          "tag": "LINE-2002",
+          "nominal_bore_mm": 50,
+          "pipe_class": "SS-B2A",
+          "insulation": true,
+          "segment_count": 8
+        }
+      ]
+    },
+    {
+      "id": "sys-utility",
+      "name": "Utility Steam System",
+      "tag": "SYS-PLT-STEAM",
+      "area_id": "area-b",
+      "fluid": "STEAM",
+      "design_pressure_bar": 10.0,
+      "design_temperature_c": 180.0,
+      "lines": [
+        {
+          "tag": "LINE-3001",
+          "nominal_bore_mm": 50,
+          "pipe_class": "CS-C1A",
+          "insulation": true,
+          "segment_count": 10
+        }
+      ]
+    }
+  ],
+  "generation": {
+    "tank_count": 3,
+    "pump_count": 4,
+    "valve_count_per_line": 4,
+    "instrument_count": 12,
+    "support_count": 40,
+    "cable_tray_count": 2,
+    "pid_document_count": 5,
+    "datasheet_count": 10,
+    "work_package_count": 5,
+    "seed": 42
+  }
+}
