@@ -46,7 +46,7 @@ pub struct TilesetTile {
     pub refine: String,  // "ADD" or "REPLACE"
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<TilesetContent>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
     pub children: Vec<TilesetTile>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transform: Option<[f64; 16]>,

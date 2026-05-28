@@ -30,23 +30,51 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
     std::fs::create_dir_all(&content_dir)?;
     std::fs::create_dir_all(&metadata_dir)?;
 
-    // Group objects by area
+    // Build parent-id → object map for ancestry traversal
+    let obj_by_id: HashMap<String, &IndustrialObject> = scene.objects.iter()
+        .map(|o| (o.object_id.to_string(), o))
+        .collect();
+
+    // Find the area tag for each object by walking up the parent chain.
+    // Area nodes have ObjectClass::Area. Their tag is "10" or "20".
+    let resolve_area = |start: &IndustrialObject| -> String {
+        let mut current = start;
+        for _ in 0..10 {
+            if current.class == tilegraph_core::ObjectClass::Area {
+                return current.tag.clone().unwrap_or_else(|| "area-a".to_string());
+            }
+            if let Some(pid) = &current.parent_id {
+                if let Some(parent) = obj_by_id.get(&pid.to_string()) {
+                    current = parent;
+                } else { break; }
+            } else { break; }
+        }
+        // fallback: use area from tag pattern or default
+        "area-a".to_string()
+    };
+
+    // Map from area tag ("10", "20") to an area_id slug ("area-a", "area-b")
+    let area_tag_to_id: HashMap<String, String> = scene.objects.iter()
+        .filter(|o| o.class == tilegraph_core::ObjectClass::Area)
+        .enumerate()
+        .map(|(i, o)| {
+            let slug = format!("area-{}", (b'a' + i as u8) as char);
+            (o.tag.clone().unwrap_or_else(|| slug.clone()), slug)
+        })
+        .collect();
+
     let mut area_objects: HashMap<String, Vec<IndustrialObject>> = HashMap::new();
     for obj in &scene.objects {
-        // Determine area from object ancestry (simplified: match tag prefix)
-        let area_id = if obj.tag.as_deref().unwrap_or("").starts_with("10")
-            || obj.name.contains("Area A")
-            || obj.object_id.to_string().contains("area-a")
-        {
-            "area-a"
-        } else {
-            "area-b"
-        };
-        area_objects.entry(area_id.to_string()).or_default().push(obj.clone());
+        if !obj.class.has_geometry() { continue; }
+        let area_tag = resolve_area(obj);
+        let area_id = area_tag_to_id.get(&area_tag)
+            .cloned()
+            .unwrap_or_else(|| format!("area-{}", &area_tag));
+        area_objects.entry(area_id).or_default().push(obj.clone());
     }
 
-    // Fall-back: put all in area-a if grouping produced no area-b
-    if area_objects.get("area-a").map(|v| v.is_empty()).unwrap_or(true) {
+    // Ensure at least one area is populated
+    if area_objects.is_empty() {
         area_objects.insert("area-a".to_string(), scene.objects.clone());
     }
 

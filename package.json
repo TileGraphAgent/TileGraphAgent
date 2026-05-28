@@ -1,0 +1,13 @@
+{
+  "name": "tilegraph-agent-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "mcp": "cd apps/tilegraph-mcp-server && npm run dev",
+    "viewer": "cd apps/tilegraph-viewer && npm run dev",
+    "install:all": "npm install && cd apps/tilegraph-mcp-server && npm install && cd ../tilegraph-viewer && npm install"
+  }
+}

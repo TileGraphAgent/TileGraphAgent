@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TileGraphAgent — Industrial 3D Viewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { display: flex; height: 100vh; background: #1a1a2e; color: #e0e0e0; font-family: monospace; }
+
+    #cesium-container {
+      flex: 1;
+      height: 100vh;
+    }
+
+    #sidebar {
+      width: 320px;
+      height: 100vh;
+      overflow-y: auto;
+      background: #16213e;
+      border-left: 1px solid #0f3460;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel {
+      padding: 12px;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .panel h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4fc3f7;
+      margin-bottom: 8px;
+    }
+
+    .panel p {
+      font-size: 12px;
+      margin: 3px 0;
+      color: #b0bec5;
+    }
+
+    #agent-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+    }
+
+    #agent-messages {
+      flex: 1;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .msg-user { color: #80cbc4; margin: 4px 0; }
+    .msg-assistant { color: #e0e0e0; margin: 4px 0; }
+
+    #agent-input-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    #agent-input {
+      flex: 1;
+      padding: 6px 8px;
+      background: #0f3460;
+      border: 1px solid #1565c0;
+      color: #e0e0e0;
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    #agent-submit {
+      padding: 6px 12px;
+      background: #1565c0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    #agent-submit:hover { background: #1976d2; }
+
+    .audit-entry { font-size: 11px; color: #78909c; margin: 2px 0; }
+    .audit-entry .tool { color: #4fc3f7; }
+
+    #status-bar {
+      padding: 4px 12px;
+      background: #0d1b2a;
+      font-size: 10px;
+      color: #546e7a;
+      border-top: 1px solid #0f3460;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesium-container"></div>
+
+  <div id="sidebar">
+    <div class="panel" id="selection-panel">
+      <h3>Selection</h3>
+      <p>Click an object to select it.</p>
+    </div>
+
+    <div class="panel" id="audit-panel">
+      <h3>Audit Log</h3>
+      <p style="color:#546e7a; font-size:11px">No tool calls yet.</p>
+    </div>
+
+    <div id="agent-panel">
+      <div class="panel" style="padding:0 0 8px 0; border:none">
+        <h3>Agent Chat</h3>
+      </div>
+      <div id="agent-messages">
+        <div class="msg-assistant">
+          TileGraphAgent ready. Ask a question about the plant, e.g.:<br/>
+          <em>"Find all pumps connected to LINE-1001 and explain the maintenance impact."</em>
+        </div>
+      </div>
+      <div id="agent-input-row">
+        <input id="agent-input" type="text" placeholder="Ask about the plant..." />
+        <button id="agent-submit">Ask</button>
+      </div>
+    </div>
+
+    <div id="status-bar">TileGraphAgent v0.1.0 | Synthetic EPC Plant V1</div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

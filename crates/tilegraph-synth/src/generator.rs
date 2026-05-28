@@ -127,7 +127,8 @@ impl PlantGenerator {
                 .cloned()
                 .collect();
 
-            for sys_cfg in &area_systems {
+            for (sys_i, sys_cfg) in area_systems.iter().enumerate() {
+                let sys_seq_base = (sys_i as u32) * 100 + 1; // 1, 101, 201 ... per system
                 let sys_id = ObjectId::from_source("synth", &sys_cfg.tag);
                 let sys_obj = IndustrialObject::new(sys_id.clone(), &sys_cfg.name, ObjectClass::System)
                     .with_tag(&sys_cfg.tag)
@@ -183,7 +184,7 @@ impl PlantGenerator {
                     let valve_count = self.spec.generation.valve_count_per_line;
                     for v_i in 0..valve_count {
                         let suffix = (b'A' + v_i as u8) as char;
-                        let valve_tag = tf.valve(line_idx as u32 * 100 + 1, suffix);
+                        let valve_tag = tf.valve(sys_seq_base + line_idx as u32, suffix);
                         let valve_id = ObjectId::from_source("synth", &valve_tag);
                         let v_x = seg_origin[0] + (v_i as f64 + 0.5) * (line_cfg.segment_count as f64 * 2.0 / valve_count as f64);
                         let valve_half = EquipmentSizer::valve_box(line_cfg.nominal_bore_mm);
@@ -211,7 +212,7 @@ impl PlantGenerator {
                 // --- Pumps ---
                 let pump_count = self.spec.generation.pump_count / self.spec.systems.len() as u32;
                 for p_i in 0..pump_count.max(1) {
-                    let pump_tag = tf.pump(p_i + 1);
+                    let pump_tag = tf.pump(sys_seq_base + p_i);
                     let pump_id = ObjectId::from_source("synth", &pump_tag);
                     let pump_x = area_cfg.offset[0] + 2.0 + p_i as f64 * 3.0;
                     let pump_y = area_cfg.offset[1] + area_cfg.dimensions[1] * 0.5;
@@ -260,7 +261,7 @@ impl PlantGenerator {
                 // --- Tanks ---
                 let tank_count = self.spec.generation.tank_count / self.spec.areas.len() as u32;
                 for t_i in 0..tank_count.max(1) {
-                    let tank_tag = tf.tank(t_i + 1);
+                    let tank_tag = tf.tank(sys_seq_base + t_i);
                     let tank_id = ObjectId::from_source("synth", &tank_tag);
                     let tank_x = area_cfg.offset[0] + 15.0 + t_i as f64 * 8.0;
                     let tank_y = area_cfg.offset[1] + area_cfg.dimensions[1] * 0.6;
@@ -289,7 +290,7 @@ impl PlantGenerator {
                 let instr_count = self.spec.generation.instrument_count / self.spec.systems.len() as u32;
                 for i_i in 0..instr_count.max(1) {
                     let instr_type = crate::tag::INSTRUMENT_TYPES[i_i as usize % crate::tag::INSTRUMENT_TYPES.len()];
-                    let instr_tag = tf.instrument(instr_type, i_i + 1);
+                    let instr_tag = tf.instrument(instr_type, sys_seq_base + i_i);
                     let instr_id = ObjectId::from_source("synth", &instr_tag);
                     let instr_x = area_cfg.offset[0] + i_i as f64 * 2.0;
                     let instr_y = area_cfg.offset[1];

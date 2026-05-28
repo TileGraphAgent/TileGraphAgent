@@ -9,5 +9,18 @@ target/
 *.swo
 *.DS_Store
 .idea/
-.vscode/
 *.iml
+
+# Node
+node_modules/
+dist/
+
+# Environment
+.env
+*.local
+
+# Output artifacts (generated — don't commit large binaries)
+output/tiles/content/*.glb
+output/graph/nodes.csv
+output/graph/relationships.csv
+
