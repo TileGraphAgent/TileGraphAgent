@@ -58,11 +58,20 @@ export function registerTools(server: Server, ctx: ToolContext): void {
     const t0 = Date.now();
     try {
       const result = await tool.handler(args ?? {}, ctx);
+      const hasErrorCode =
+        result != null &&
+        typeof result === "object" &&
+        "error_code" in result;
       await ctx.auditLogger.log({
         tool_name: name,
         input: args,
-        output_summary: typeof result === "object" ? JSON.stringify(result).slice(0, 200) : String(result),
+        output_summary: hasErrorCode
+          ? `${(result as any).error_code}: ${(result as any).message ?? ""}`
+          : typeof result === "object"
+            ? JSON.stringify(result).slice(0, 200)
+            : String(result),
         duration_ms: Date.now() - t0,
+        error: hasErrorCode ? ((result as any).error_code as string) : undefined,
       });
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],

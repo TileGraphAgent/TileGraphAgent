@@ -236,7 +236,8 @@ impl GlbBuilder {
     }
 
     /// Serialize to binary GLB (header + JSON chunk + BIN chunk).
-    pub fn build_glb(&mut self) -> Vec<u8> {
+    /// Consumes the builder and returns both the GLB bytes and the accumulated feature mappings.
+    pub fn build_glb(mut self) -> (Vec<u8>, Vec<FeatureMapping>) {
         // Update buffer byte length
         let bin_len = self.binary_data.len() as u32;
         if self.gltf.buffers.is_empty() {
@@ -275,10 +276,6 @@ impl GlbBuilder {
         out.extend_from_slice(&self.binary_data);
         for _ in 0..bin_padding { out.push(0); }
 
-        out
-    }
-
-    pub fn take_feature_mappings(self) -> Vec<FeatureMapping> {
-        self.feature_mappings
+        (out, self.feature_mappings)
     }
 }

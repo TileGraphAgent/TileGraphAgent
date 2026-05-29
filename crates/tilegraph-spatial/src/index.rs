@@ -103,21 +103,24 @@ impl SpatialIndex {
         results
     }
 
-    /// Find nearest N objects to a point using expanding bbox search.
+    /// Find nearest N objects to a point using rstar's nearest_neighbor_iter.
     pub fn nearest_n(&self, center: [f64; 3], n: usize) -> Vec<QueryResult> {
-        // Start with small radius and expand until we have enough results
-        let mut radius = 10.0_f64;
-        loop {
-            let results = self.query_nearby(&NearbyQuery {
-                center,
-                radius_m: radius,
-                class_filter: None,
-            });
-            if results.len() >= n || radius > 1_000_000.0 {
-                return results.into_iter().take(n).collect();
-            }
-            radius *= 2.0;
-        }
+        self.tree
+            .nearest_neighbor_iter(&center)
+            .take(n)
+            .map(|r| {
+                let dist = r.distance_to_point(center);
+                QueryResult {
+                    object_id: r.object_id.clone(),
+                    tag: r.tag.clone(),
+                    class: r.class.clone(),
+                    aabb: r.aabb(),
+                    tile_id: r.tile_id.clone(),
+                    feature_id: r.feature_id,
+                    distance_m: Some(dist),
+                }
+            })
+            .collect()
     }
 
     pub fn record_count(&self) -> usize {
@@ -180,5 +183,19 @@ mod tests {
         let nearest = idx.nearest_n([0.0, 0.0, 0.0], 2);
         assert_eq!(nearest.len(), 2);
         assert_eq!(nearest[0].tag, Some("P-1001".to_string()));
+    }
+
+    #[test]
+    fn nearest_n_returns_closest_not_arbitrary() {
+        let objects = vec![
+            make_obj("P-FAR",   [100.0, 0.0, 0.0], 0.5),
+            make_obj("P-CLOSE", [1.0,   0.0, 0.0], 0.5),
+            make_obj("P-MID",   [10.0,  0.0, 0.0], 0.5),
+        ];
+        let idx = SpatialIndex::build_from_objects(&objects);
+        let nearest = idx.nearest_n([0.0, 0.0, 0.0], 1);
+        assert_eq!(nearest.len(), 1);
+        assert_eq!(nearest[0].tag.as_deref(), Some("P-CLOSE"),
+            "nearest should be the closest object, not first-inserted");
     }
 }

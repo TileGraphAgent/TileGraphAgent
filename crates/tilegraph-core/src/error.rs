@@ -37,6 +37,18 @@ pub enum TileGraphError {
     #[error("Validation error: {field} — {reason}")]
     ValidationError { field: String, reason: String },
 
+    #[error("Object not found: tag={tag:?} object_id={object_id:?}")]
+    NotFound {
+        tag: Option<String>,
+        object_id: Option<String>,
+    },
+
+    #[error("Graph database unavailable: {reason}")]
+    GraphUnavailable { reason: String },
+
+    #[error("Spatial index not loaded: {path}")]
+    SpatialIndexNotLoaded { path: String },
+
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 

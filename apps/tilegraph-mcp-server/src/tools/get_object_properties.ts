@@ -23,7 +23,7 @@ export const getObjectProperties = {
     const results = await ctx.neo4j.getObjectProperties(object_id);
 
     if (results.length === 0) {
-      return { found: false, object_id, message: "Object not found." };
+      return { found: false, error_code: "NOT_FOUND", object_id, message: "Object not found." };
     }
 
     const node = results[0] as Record<string, unknown>;

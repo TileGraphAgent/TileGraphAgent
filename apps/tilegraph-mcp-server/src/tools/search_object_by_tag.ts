@@ -26,6 +26,7 @@ export const searchObjectByTag = {
     if (results.length === 0) {
       return {
         found: false,
+        error_code: "NOT_FOUND",
         tag,
         message: `No object with tag '${tag}' found in Knowledge Graph.`,
         evidence: "Neo4j query returned zero results.",

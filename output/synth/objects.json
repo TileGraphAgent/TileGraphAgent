@@ -193,9 +193,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "CS-A1A",
+      "nominal_bore_mm": 100,
       "insulated": false,
-      "nominal_bore_mm": 100
+      "pipe_class": "CS-A1A"
     },
     "connected_to": [],
     "part_of": null
@@ -244,8 +244,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 100,
-      "insulated": false,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -294,8 +294,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 100,
-      "insulated": false,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -343,9 +343,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "nominal_bore_mm": 100,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -444,8 +444,8 @@
     "gltf_node_index": null,
     "properties": {
       "pipe_class": "CS-A1A",
-      "nominal_bore_mm": 100,
-      "insulated": false
+      "insulated": false,
+      "nominal_bore_mm": 100
     },
     "connected_to": [],
     "part_of": null
@@ -493,9 +493,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 100,
       "pipe_class": "CS-A1A",
-      "insulated": false
+      "insulated": false,
+      "nominal_bore_mm": 100
     },
     "connected_to": [],
     "part_of": null
@@ -544,8 +544,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 100,
-      "insulated": false,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -593,9 +593,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 100,
+      "insulated": false,
       "pipe_class": "CS-A1A",
-      "insulated": false
+      "nominal_bore_mm": 100
     },
     "connected_to": [],
     "part_of": null
@@ -643,9 +643,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "pipe_class": "CS-A1A",
       "nominal_bore_mm": 100,
-      "insulated": false,
-      "pipe_class": "CS-A1A"
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -694,8 +694,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 100,
-      "insulated": false,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -743,9 +743,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 100,
       "pipe_class": "CS-A1A",
-      "insulated": false
+      "insulated": false,
+      "nominal_bore_mm": 100
     },
     "connected_to": [],
     "part_of": null
@@ -793,9 +793,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "nominal_bore_mm": 100,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -843,9 +843,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "nominal_bore_mm": 100,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -893,9 +893,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "nominal_bore_mm": 100,
       "insulated": false,
-      "pipe_class": "CS-A1A",
-      "nominal_bore_mm": 100
+      "pipe_class": "CS-A1A"
     },
     "connected_to": [],
     "part_of": null
@@ -943,9 +943,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
+      "pipe_class": "CS-A1A",
       "nominal_bore_mm": 100,
-      "pipe_class": "CS-A1A"
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -994,8 +994,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 100,
-      "valve_type": "GATE",
-      "actuator": "MANUAL"
+      "actuator": "MANUAL",
+      "valve_type": "GATE"
     },
     "connected_to": [],
     "part_of": null
@@ -1043,9 +1043,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 100,
+      "actuator": "MANUAL",
       "valve_type": "GATE",
-      "actuator": "MANUAL"
+      "nominal_bore_mm": 100
     },
     "connected_to": [],
     "part_of": null
@@ -1093,9 +1093,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "actuator": "MANUAL",
       "nominal_bore_mm": 100,
-      "valve_type": "GATE"
+      "valve_type": "GATE",
+      "actuator": "MANUAL"
     },
     "connected_to": [],
     "part_of": null
@@ -1143,9 +1143,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "actuator": "MANUAL",
       "nominal_bore_mm": 100,
-      "valve_type": "GATE",
-      "actuator": "MANUAL"
+      "valve_type": "GATE"
     },
     "connected_to": [],
     "part_of": null
@@ -1228,9 +1228,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "CS-A1A",
       "insulated": false,
-      "nominal_bore_mm": 80
+      "nominal_bore_mm": 80,
+      "pipe_class": "CS-A1A"
     },
     "connected_to": [],
     "part_of": null
@@ -1278,9 +1278,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 80,
       "insulated": false,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "nominal_bore_mm": 80
     },
     "connected_to": [],
     "part_of": null
@@ -1379,8 +1379,8 @@
     "gltf_node_index": null,
     "properties": {
       "pipe_class": "CS-A1A",
-      "insulated": false,
-      "nominal_bore_mm": 80
+      "nominal_bore_mm": 80,
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -1428,9 +1428,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "insulated": false,
       "nominal_bore_mm": 80,
-      "pipe_class": "CS-A1A",
-      "insulated": false
+      "pipe_class": "CS-A1A"
     },
     "connected_to": [],
     "part_of": null
@@ -1478,9 +1478,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "pipe_class": "CS-A1A",
-      "nominal_bore_mm": 80
+      "nominal_bore_mm": 80,
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -1528,9 +1528,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "nominal_bore_mm": 80,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -1578,8 +1578,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 80,
       "insulated": false,
+      "nominal_bore_mm": 80,
       "pipe_class": "CS-A1A"
     },
     "connected_to": [],
@@ -1628,9 +1628,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "nominal_bore_mm": 80,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -1728,9 +1728,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": false,
       "nominal_bore_mm": 80,
-      "pipe_class": "CS-A1A"
+      "pipe_class": "CS-A1A",
+      "insulated": false
     },
     "connected_to": [],
     "part_of": null
@@ -1778,9 +1778,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "CS-A1A",
+      "nominal_bore_mm": 80,
       "insulated": false,
-      "nominal_bore_mm": 80
+      "pipe_class": "CS-A1A"
     },
     "connected_to": [],
     "part_of": null
@@ -1828,8 +1828,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "actuator": "MANUAL",
       "valve_type": "GATE",
+      "actuator": "MANUAL",
       "nominal_bore_mm": 80
     },
     "connected_to": [],
@@ -1878,9 +1878,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "actuator": "MANUAL",
       "valve_type": "GATE",
-      "nominal_bore_mm": 80,
-      "actuator": "MANUAL"
+      "nominal_bore_mm": 80
     },
     "connected_to": [],
     "part_of": null
@@ -1928,9 +1928,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "valve_type": "GATE",
       "actuator": "MANUAL",
-      "nominal_bore_mm": 80
+      "nominal_bore_mm": 80,
+      "valve_type": "GATE"
     },
     "connected_to": [],
     "part_of": null
@@ -1978,9 +1978,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 80,
       "valve_type": "GATE",
-      "actuator": "MANUAL"
+      "actuator": "MANUAL",
+      "nominal_bore_mm": 80
     },
     "connected_to": [],
     "part_of": null
@@ -2028,10 +2028,10 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "power_kw": 22.0,
-      "design_temperature_c": 45.0,
       "design_pressure_bar": 6.0,
-      "fluid": "COOLING_WATER"
+      "fluid": "COOLING_WATER",
+      "design_temperature_c": 45.0,
+      "power_kw": 22.0
     },
     "connected_to": [],
     "part_of": null
@@ -2079,8 +2079,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "fluid": "COOLING_WATER",
-      "volume_m3": 100.0
+      "volume_m3": 100.0,
+      "fluid": "COOLING_WATER"
     },
     "connected_to": [],
     "part_of": null
@@ -2391,8 +2391,8 @@
     "gltf_node_index": null,
     "properties": {
       "insulated": true,
-      "pipe_class": "SS-B2A",
-      "nominal_bore_mm": 150
+      "nominal_bore_mm": 150,
+      "pipe_class": "SS-B2A"
     },
     "connected_to": [],
     "part_of": null
@@ -2441,8 +2441,8 @@
     "gltf_node_index": null,
     "properties": {
       "insulated": true,
-      "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "pipe_class": "SS-B2A",
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -2490,9 +2490,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "pipe_class": "SS-B2A",
       "insulated": true,
-      "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -2540,9 +2540,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
+      "pipe_class": "SS-B2A",
       "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -2590,9 +2590,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
       "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "pipe_class": "SS-B2A",
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -2640,9 +2640,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
       "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "pipe_class": "SS-B2A",
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -2691,8 +2691,8 @@
     "gltf_node_index": null,
     "properties": {
       "pipe_class": "SS-B2A",
-      "nominal_bore_mm": 150,
-      "insulated": true
+      "insulated": true,
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -2740,9 +2740,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 150,
+      "insulated": true,
       "pipe_class": "SS-B2A",
-      "insulated": true
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -2790,9 +2790,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
       "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "pipe_class": "SS-B2A",
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -2840,8 +2840,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "SS-B2A",
       "nominal_bore_mm": 150,
+      "pipe_class": "SS-B2A",
       "insulated": true
     },
     "connected_to": [],
@@ -2890,9 +2890,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "SS-B2A",
+      "insulated": true,
       "nominal_bore_mm": 150,
-      "insulated": true
+      "pipe_class": "SS-B2A"
     },
     "connected_to": [],
     "part_of": null
@@ -2940,9 +2940,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 150,
+      "insulated": true,
       "pipe_class": "SS-B2A",
-      "insulated": true
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -2990,9 +2990,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 150,
+      "pipe_class": "SS-B2A",
       "insulated": true,
-      "pipe_class": "SS-B2A"
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -3040,9 +3040,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "SS-B2A",
+      "nominal_bore_mm": 150,
       "insulated": true,
-      "nominal_bore_mm": 150
+      "pipe_class": "SS-B2A"
     },
     "connected_to": [],
     "part_of": null
@@ -3140,9 +3140,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 150,
+      "pipe_class": "SS-B2A",
       "insulated": true,
-      "pipe_class": "SS-B2A"
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -3240,9 +3240,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "pipe_class": "SS-B2A",
       "insulated": true,
-      "nominal_bore_mm": 150,
-      "pipe_class": "SS-B2A"
+      "nominal_bore_mm": 150
     },
     "connected_to": [],
     "part_of": null
@@ -3290,8 +3290,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "valve_type": "GATE",
       "nominal_bore_mm": 150,
+      "valve_type": "GATE",
       "actuator": "MANUAL"
     },
     "connected_to": [],
@@ -3340,9 +3340,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "actuator": "MANUAL",
+      "valve_type": "GATE",
       "nominal_bore_mm": 150,
-      "valve_type": "GATE"
+      "actuator": "MANUAL"
     },
     "connected_to": [],
     "part_of": null
@@ -3441,8 +3441,8 @@
     "gltf_node_index": null,
     "properties": {
       "valve_type": "GATE",
-      "actuator": "MANUAL",
-      "nominal_bore_mm": 150
+      "nominal_bore_mm": 150,
+      "actuator": "MANUAL"
     },
     "connected_to": [],
     "part_of": null
@@ -3525,9 +3525,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "nominal_bore_mm": 50,
       "pipe_class": "SS-B2A",
-      "insulated": true
+      "insulated": true,
+      "nominal_bore_mm": 50
     },
     "connected_to": [],
     "part_of": null
@@ -3575,9 +3575,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "nominal_bore_mm": 50,
       "pipe_class": "SS-B2A",
-      "insulated": true,
-      "nominal_bore_mm": 50
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -3625,8 +3625,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
       "nominal_bore_mm": 50,
+      "insulated": true,
       "pipe_class": "SS-B2A"
     },
     "connected_to": [],
@@ -3675,9 +3675,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "insulated": true,
       "nominal_bore_mm": 50,
-      "pipe_class": "SS-B2A",
-      "insulated": true
+      "pipe_class": "SS-B2A"
     },
     "connected_to": [],
     "part_of": null
@@ -3726,8 +3726,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 50,
-      "insulated": true,
-      "pipe_class": "SS-B2A"
+      "pipe_class": "SS-B2A",
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -3776,8 +3776,8 @@
     "gltf_node_index": null,
     "properties": {
       "pipe_class": "SS-B2A",
-      "insulated": true,
-      "nominal_bore_mm": 50
+      "nominal_bore_mm": 50,
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -3826,8 +3826,8 @@
     "gltf_node_index": null,
     "properties": {
       "insulated": true,
-      "pipe_class": "SS-B2A",
-      "nominal_bore_mm": 50
+      "nominal_bore_mm": 50,
+      "pipe_class": "SS-B2A"
     },
     "connected_to": [],
     "part_of": null
@@ -3875,9 +3875,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "nominal_bore_mm": 50,
       "pipe_class": "SS-B2A",
-      "insulated": true,
-      "nominal_bore_mm": 50
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -4025,8 +4025,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "valve_type": "GATE",
       "nominal_bore_mm": 50,
+      "valve_type": "GATE",
       "actuator": "MANUAL"
     },
     "connected_to": [],
@@ -4125,10 +4125,10 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "design_pressure_bar": 25.0,
+      "design_temperature_c": 120.0,
       "fluid": "HYDROCARBON",
-      "power_kw": 22.0,
-      "design_temperature_c": 120.0
+      "design_pressure_bar": 25.0,
+      "power_kw": 22.0
     },
     "connected_to": [],
     "part_of": null
@@ -5545,9 +5545,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
+      "nominal_bore_mm": 50,
       "pipe_class": "CS-C1A",
-      "nominal_bore_mm": 50
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -5595,9 +5595,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
       "pipe_class": "CS-C1A",
-      "nominal_bore_mm": 50
+      "nominal_bore_mm": 50,
+      "insulated": true
     },
     "connected_to": [],
     "part_of": null
@@ -5646,8 +5646,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 50,
-      "pipe_class": "CS-C1A",
-      "insulated": true
+      "insulated": true,
+      "pipe_class": "CS-C1A"
     },
     "connected_to": [],
     "part_of": null
@@ -5696,8 +5696,8 @@
     "gltf_node_index": null,
     "properties": {
       "insulated": true,
-      "pipe_class": "CS-C1A",
-      "nominal_bore_mm": 50
+      "nominal_bore_mm": 50,
+      "pipe_class": "CS-C1A"
     },
     "connected_to": [],
     "part_of": null
@@ -5745,8 +5745,8 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "insulated": true,
       "pipe_class": "CS-C1A",
+      "insulated": true,
       "nominal_bore_mm": 50
     },
     "connected_to": [],
@@ -5845,9 +5845,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "pipe_class": "CS-C1A",
       "nominal_bore_mm": 50,
-      "insulated": true
+      "insulated": true,
+      "pipe_class": "CS-C1A"
     },
     "connected_to": [],
     "part_of": null
@@ -6046,8 +6046,8 @@
     "gltf_node_index": null,
     "properties": {
       "actuator": "MANUAL",
-      "nominal_bore_mm": 50,
-      "valve_type": "GATE"
+      "valve_type": "GATE",
+      "nominal_bore_mm": 50
     },
     "connected_to": [],
     "part_of": null
@@ -6095,9 +6095,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "valve_type": "GATE",
       "actuator": "MANUAL",
-      "nominal_bore_mm": 50
+      "nominal_bore_mm": 50,
+      "valve_type": "GATE"
     },
     "connected_to": [],
     "part_of": null
@@ -6146,8 +6146,8 @@
     "gltf_node_index": null,
     "properties": {
       "nominal_bore_mm": 50,
-      "valve_type": "GATE",
-      "actuator": "MANUAL"
+      "actuator": "MANUAL",
+      "valve_type": "GATE"
     },
     "connected_to": [],
     "part_of": null
@@ -6195,9 +6195,9 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
+      "valve_type": "GATE",
       "actuator": "MANUAL",
-      "nominal_bore_mm": 50,
-      "valve_type": "GATE"
+      "nominal_bore_mm": 50
     },
     "connected_to": [],
     "part_of": null
@@ -6245,10 +6245,10 @@
     "feature_id": null,
     "gltf_node_index": null,
     "properties": {
-      "design_pressure_bar": 10.0,
       "power_kw": 22.0,
-      "fluid": "STEAM",
-      "design_temperature_c": 180.0
+      "design_pressure_bar": 10.0,
+      "design_temperature_c": 180.0,
+      "fluid": "STEAM"
     },
     "connected_to": [],
     "part_of": null

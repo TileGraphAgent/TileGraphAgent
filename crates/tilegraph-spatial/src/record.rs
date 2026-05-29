@@ -40,3 +40,13 @@ impl RTreeObject for SpatialIndexRecord {
         AABB::from_corners(self.aabb_min, self.aabb_max)
     }
 }
+
+impl rstar::PointDistance for SpatialIndexRecord {
+    fn distance_2(&self, point: &[f64; 3]) -> f64 {
+        let c = self.center();
+        let dx = c[0] - point[0];
+        let dy = c[1] - point[1];
+        let dz = c[2] - point[2];
+        dx * dx + dy * dy + dz * dz
+    }
+}

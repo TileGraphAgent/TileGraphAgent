@@ -29,6 +29,7 @@ export const queryNearbyObjects = {
     if (!rec) {
       return {
         found: false,
+        error_code: "SPATIAL_INDEX_NOT_LOADED",
         object_id,
         message: "Object not found in spatial index. Run build-tiles to generate the index.",
       };
