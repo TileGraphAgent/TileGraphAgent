@@ -4,23 +4,68 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 export interface TileGraphViewer {
   viewer: Cesium.Viewer;
   tilesetRef: { tileset: Cesium.Cesium3DTileset | null };
-  highlightObjects: (objectIds: string[], color?: Cesium.Color) => void;
+  featureIdToObjectId: Map<number, string>;
+  objectIdToFeatureId: Map<string, number>;
+  highlightObjects: (objectIds: string[], color?: string) => void;
   clearHighlights: () => void;
   isolateObjects: (objectIds: string[]) => void;
   focusCameraOn: (objectIds: string[]) => void;
-  showBoundingBoxes: (objectIds: string[]) => void;
+  showBoundingBoxes: (show: boolean) => void;
 }
 
-// Feature ID → object_id lookup (populated after tile load)
-const featureIdToObjectId: Map<number, string> = new Map();
-const objectIdToFeatureId: Map<string, number> = new Map();
+export const featureIdToObjectId: Map<number, string> = new Map();
+export const objectIdToFeatureId: Map<string, number> = new Map();
+
+const HIGHLIGHT_COLOR_HEX = "#00CCFF";
+const NORMAL_COLOR_HEX = "#CCCCCC";
+const DIM_COLOR_HEX = "#555555";
+
+function buildHighlightStyle(
+  highlightIds: string[],
+  isolatedIds: string[] | null
+): Cesium.Cesium3DTileStyle {
+  if (isolatedIds !== null && isolatedIds.length > 0) {
+    const idList = isolatedIds.map((id) => `'${id}'`).join(",");
+    return new Cesium.Cesium3DTileStyle({
+      show: `Boolean([${idList}].indexOf(String(\${object_id})) >= 0)`,
+      color: {
+        conditions: [
+          [
+            `[${idList}].indexOf(String(\${object_id})) >= 0`,
+            `color('${HIGHLIGHT_COLOR_HEX}', 1.0)`,
+          ],
+          ["true", `color('${NORMAL_COLOR_HEX}', 0.0)`],
+        ],
+      },
+    });
+  }
+
+  if (highlightIds.length > 0) {
+    const idList = highlightIds.map((id) => `'${id}'`).join(",");
+    return new Cesium.Cesium3DTileStyle({
+      show: "true",
+      color: {
+        conditions: [
+          [
+            `[${idList}].indexOf(String(\${object_id})) >= 0`,
+            `color('${HIGHLIGHT_COLOR_HEX}', 1.0)`,
+          ],
+          ["true", `color('${DIM_COLOR_HEX}', 0.5)`],
+        ],
+      },
+    });
+  }
+
+  return new Cesium.Cesium3DTileStyle({
+    color: `color('${NORMAL_COLOR_HEX}', 0.9)`,
+  });
+}
 
 export async function initCesiumViewer(
   containerId: string,
   tilesetPath: string,
   onObjectSelected: (objectId: string, tag: string | null) => void
 ): Promise<TileGraphViewer> {
-  // Cesium Ion is not needed for local tiles
   Cesium.Ion.defaultAccessToken = "";
 
   const viewer = new Cesium.Viewer(containerId, {
@@ -41,93 +86,96 @@ export async function initCesiumViewer(
 
   viewer.scene.backgroundColor = new Cesium.Color(0.12, 0.12, 0.16, 1.0);
 
-  // Load 3D Tiles
-  let tilesetObj: Cesium.Cesium3DTileset | null = null;
   const tilesetRef = { tileset: null as Cesium.Cesium3DTileset | null };
 
   try {
     const tileset = await Cesium.Cesium3DTileset.fromUrl(tilesetPath);
     viewer.scene.primitives.add(tileset);
     await viewer.zoomTo(tileset);
-    tilesetObj = tileset;
     tilesetRef.tileset = tileset;
 
-    // Default style
-    tileset.style = new Cesium.Cesium3DTileStyle({
-      color: "color('white', 0.9)",
+    tileset.style = buildHighlightStyle([], null);
+
+    // Populate feature ↔ object_id lookup maps as tiles stream in
+    tileset.tileVisible.addEventListener((tile: Cesium.Cesium3DTile) => {
+      const content = tile.content;
+      if (!content) return;
+      const featuresLength = content.featuresLength;
+      for (let i = 0; i < featuresLength; i++) {
+        try {
+          const feature = content.getFeature(i);
+          const oid = feature.getProperty("object_id") as string | undefined;
+          const fid = feature.getProperty("feature_id") as number | undefined;
+          if (oid && fid != null) {
+            featureIdToObjectId.set(fid, oid);
+            objectIdToFeatureId.set(oid, fid);
+          }
+        } catch {
+          // Some tiles may not support getFeature — skip silently
+        }
+      }
     });
   } catch (err) {
     console.error("Failed to load tileset:", err);
   }
 
-  // Object selection via feature picking
+  // Feature picking with EXT_structural_metadata primary path and node.extras fallback
   viewer.screenSpaceEventHandler.setInputAction(
     (movement: Cesium.ScreenSpaceEventHandler.PositionedEvent) => {
       const picked = viewer.scene.pick(movement.position);
-      if (!picked || !Cesium.defined(picked)) return;
+      if (!Cesium.defined(picked)) return;
 
-      const feature = picked as Cesium.Cesium3DTileFeature;
-      if (feature instanceof Cesium.Cesium3DTileFeature) {
-        const objectId = feature.getProperty("object_id") as string | undefined;
-        const tag = feature.getProperty("tag") as string | undefined;
+      if (picked instanceof Cesium.Cesium3DTileFeature) {
+        const objectId = picked.getProperty("object_id") as string | undefined;
+        const tag = picked.getProperty("tag") as string | undefined;
         if (objectId) {
           onObjectSelected(objectId, tag ?? null);
+          return;
+        }
+
+        // Fallback: read from node extras (pre-EXT_structural_metadata)
+        const extras = (picked as any)._content?._model?._loader?.gltfJson?.nodes?.find(
+          (n: any) => n.extras?.feature_id === picked.featureId
+        )?.extras;
+        if (extras?.object_id) {
+          onObjectSelected(extras.object_id, extras.tag ?? null);
         }
       }
     },
     Cesium.ScreenSpaceEventType.LEFT_CLICK
   );
 
-  // --- Highlight / isolation helpers ---
-  const defaultColor = new Cesium.Color(0.8, 0.8, 0.8, 0.9);
-  const highlightColor = new Cesium.Color(0.0, 0.8, 1.0, 1.0);
-  const isolationHideColor = new Cesium.Color(0.2, 0.2, 0.2, 0.1);
-
-  const highlightObjects = (objectIds: string[], color?: Cesium.Color): void => {
+  const highlightObjects = (objectIds: string[], _color?: string): void => {
     if (!tilesetRef.tileset) return;
-    const idSet = new Set(objectIds);
-    tilesetRef.tileset.style = new Cesium.Cesium3DTileStyle({
-      color: {
-        conditions: [
-          // Highlighted objects get the agent color
-          ["Boolean(${object_id}) === true && true", `color('cyan', 1.0)`],
-          ["true", `color('white', 0.7)`],
-        ],
-      },
-    });
-    // Better: use per-feature color via Cesium3DTileStyle with conditions on object_id
-    // Full implementation would iterate features when tile loads and set colors individually
+    tilesetRef.tileset.style = buildHighlightStyle(objectIds, null);
   };
 
   const clearHighlights = (): void => {
     if (!tilesetRef.tileset) return;
-    tilesetRef.tileset.style = new Cesium.Cesium3DTileStyle({
-      color: "color('white', 0.9)",
-    });
+    tilesetRef.tileset.style = buildHighlightStyle([], null);
   };
 
   const isolateObjects = (objectIds: string[]): void => {
     if (!tilesetRef.tileset) return;
-    const idList = objectIds.map((id) => `'${id}'`).join(",");
-    tilesetRef.tileset.style = new Cesium.Cesium3DTileStyle({
-      show: `[${idList}].indexOf(String(\${object_id})) >= 0`,
-      color: "color('cyan', 1.0)",
-    });
+    tilesetRef.tileset.style = buildHighlightStyle([], objectIds);
   };
 
-  const focusCameraOn = (objectIds: string[]): void => {
+  const focusCameraOn = (_objectIds: string[]): void => {
     if (!tilesetRef.tileset) return;
     viewer.zoomTo(tilesetRef.tileset);
   };
 
-  const showBoundingBoxes = (_objectIds: string[]): void => {
-    if (!tilesetRef.tileset) return;
-    tilesetRef.tileset.debugShowBoundingVolume = true;
+  const showBoundingBoxes = (show: boolean): void => {
+    if (tilesetRef.tileset) {
+      tilesetRef.tileset.debugShowBoundingVolume = show;
+    }
   };
 
   return {
     viewer,
     tilesetRef,
+    featureIdToObjectId,
+    objectIdToFeatureId,
     highlightObjects,
     clearHighlights,
     isolateObjects,

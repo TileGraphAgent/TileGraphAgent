@@ -134,4 +134,14 @@ export class Neo4jClient {
       { areaTag }
     );
   }
+
+  async healthCheck(): Promise<{ connected: boolean; latency_ms: number }> {
+    const t0 = Date.now();
+    try {
+      await this.query("RETURN 1 AS ok");
+      return { connected: true, latency_ms: Date.now() - t0 };
+    } catch {
+      return { connected: false, latency_ms: -1 };
+    }
+  }
 }

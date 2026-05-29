@@ -1,41 +1,45 @@
 import { initCesiumViewer } from "./viewer/cesium_init.js";
 import { ViewerCommandClient } from "./agent/ws_client.js";
 import { store } from "./state/store.js";
+import { fetchAndRenderProperties } from "./ui/properties_panel.js";
+import { initModelTree } from "./ui/model_tree.js";
 
 const TILESET_PATH = import.meta.env.VITE_TILESET_PATH ?? "../../output/tiles/tileset.json";
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:9001";
 
 async function main(): Promise<void> {
-  // DOM structure is in index.html
   const container = document.getElementById("cesium-container");
   if (!container) throw new Error("Missing #cesium-container");
 
   const tileGraph = await initCesiumViewer(
     "cesium-container",
     TILESET_PATH,
-    (objectId, tag) => {
+    async (objectId, tag) => {
       store.update({ selectedObjectId: objectId, selectedTag: tag });
-      renderSelectionPanel(objectId, tag);
+      const panel = document.getElementById("selection-panel")!;
+      await fetchAndRenderProperties(objectId, panel);
     }
   );
 
   const wsClient = new ViewerCommandClient(WS_URL, tileGraph);
   wsClient.connect();
 
-  // Subscribe to state changes
   store.subscribe(renderAuditPanel);
 
-  console.log("[TileGraphAgent Viewer] ready");
-}
+  // Initialize model tree (non-blocking — shows error if MCP server not running)
+  initModelTree(
+    document.getElementById("model-tree-panel")!,
+    (objectIds) => {
+      tileGraph.isolateObjects(objectIds);
+      store.update({ isolatedObjectIds: new Set(objectIds) });
+    },
+    (objectIds) => {
+      tileGraph.highlightObjects(objectIds);
+      store.update({ highlightedObjectIds: new Set(objectIds) });
+    }
+  );
 
-function renderSelectionPanel(objectId: string, tag: string | null): void {
-  const panel = document.getElementById("selection-panel");
-  if (!panel) return;
-  panel.innerHTML = `
-    <h3>Selected Object</h3>
-    <p><b>ID:</b> ${objectId}</p>
-    <p><b>Tag:</b> ${tag ?? "(no tag)"}</p>
-  `;
+  console.log("[TileGraphAgent Viewer] ready");
 }
 
 function renderAuditPanel(state: ReturnType<typeof store.get>): void {

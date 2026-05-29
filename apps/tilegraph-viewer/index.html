@@ -98,15 +98,95 @@
       color: #546e7a;
       border-top: 1px solid #0f3460;
     }
+
+    /* Properties panel */
+    .prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .prop-table td {
+      padding: 3px 6px;
+      border-bottom: 1px solid #1a3050;
+    }
+    .prop-key {
+      color: #78909c;
+      width: 45%;
+    }
+    .prop-val {
+      color: #e0e0e0;
+      word-break: break-all;
+    }
+    .loading {
+      color: #546e7a;
+      font-size: 11px;
+      font-style: italic;
+    }
+    .error {
+      color: #ef5350;
+      font-size: 11px;
+    }
+
+    /* Model tree */
+    .tree-node {
+      font-size: 11px;
+    }
+    .tree-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 0;
+      cursor: pointer;
+    }
+    .tree-row:hover {
+      background: #0f3460;
+    }
+    .tree-toggle {
+      color: #546e7a;
+      width: 12px;
+      flex-shrink: 0;
+    }
+    .tree-toggle.has-children {
+      cursor: pointer;
+      color: #4fc3f7;
+    }
+    .tree-label {
+      flex: 1;
+      color: #b0bec5;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tree-children {
+      padding-left: 14px;
+    }
+    .tree-isolate {
+      background: none;
+      border: 1px solid #1565c0;
+      color: #4fc3f7;
+      font-size: 10px;
+      padding: 1px 4px;
+      cursor: pointer;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .tree-isolate:hover {
+      background: #1565c0;
+    }
   </style>
 </head>
 <body>
   <div id="cesium-container"></div>
 
   <div id="sidebar">
+    <div class="panel" id="model-tree-panel">
+      <h3>Model Tree</h3>
+      <p class="loading">Loading...</p>
+    </div>
+
     <div class="panel" id="selection-panel">
-      <h3>Selection</h3>
-      <p>Click an object to select it.</p>
+      <h3>Properties</h3>
+      <p style="color:#546e7a; font-size:11px">Click an object.</p>
     </div>
 
     <div class="panel" id="audit-panel">

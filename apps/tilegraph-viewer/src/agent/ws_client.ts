@@ -81,7 +81,7 @@ export class ViewerCommandClient {
         break;
 
       case "show_bounding_boxes":
-        this.viewer.showBoundingBoxes(cmd.object_ids);
+        this.viewer.showBoundingBoxes(true);
         break;
 
       case "clear_highlights":
