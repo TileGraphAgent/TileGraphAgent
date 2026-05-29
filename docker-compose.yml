@@ -16,9 +16,9 @@ services:
       - neo4j_logs:/logs
       - ./output/graph:/var/lib/neo4j/import
 
-  tilegraph-mcp-server:
+  tilegraphmcp:
     build:
-      context: apps/tilegraph-mcp-server
+      context: apps/tilegraphmcp
       dockerfile: Dockerfile
     environment:
       NEO4J_URL: bolt://neo4j:7687

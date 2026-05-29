@@ -8,7 +8,7 @@ You are implementing production improvements to **TileGraphAgent**. This session
 
 ## Repository overview
 
-- **MCP server:** `apps/tilegraph-mcp-server/`
+- **MCP server:** `apps/tilegraphmcp/`
 - **Key source files:**
   - `src/db/neo4j.ts` — `Neo4jClient`
   - `src/viewer/bridge.ts` — `ViewerBridge`
@@ -21,7 +21,7 @@ You are implementing production improvements to **TileGraphAgent**. This session
 **Commands:**
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm install
 npm run dev      # tsx watch — starts MCP server
 npm run build    # tsc → dist/
@@ -607,7 +607,7 @@ if (uri.startsWith("tilegraph://audit/last/")) {
 ## Verification sequence
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 
 # 1. TypeScript compile check
 npm run build

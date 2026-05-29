@@ -1,4 +1,4 @@
-# tilegraph-mcp-server
+# tilegraphmcp
 
 MCP (Model Context Protocol) server for the TileGraphAgent system, deployed as a **Cloudflare Worker** using [Hono.js](https://hono.dev). It connects to **Neo4j Aura** (cloud) for graph queries and reads spatial index data from **Cloudflare R2**.
 
@@ -37,7 +37,7 @@ Cloudflare Worker (Hono.js)
 ## Local development
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm install
 npm run dev      # wrangler dev (hot reload on localhost:9000)
 ```
@@ -66,7 +66,7 @@ npx wrangler secret put NEO4J_PASSWORD
 ## wrangler.toml
 
 ```toml
-name = "tilegraph-mcp-server"
+name = "tilegraphmcp"
 main = "src/worker.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]

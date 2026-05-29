@@ -16,14 +16,14 @@ You are implementing production improvements to **TileGraphAgent**. This session
 
 ## Repository overview
 
-- **MCP server:** `apps/tilegraph-mcp-server/`
+- **MCP server:** `apps/tilegraphmcp/`
 - **Viewer:** `apps/tilegraph-viewer/`
 - **Agent system prompt:** `docs/mcp/agent_system_prompt.md`
 
 **Install the Anthropic SDK:**
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm install @anthropic-ai/sdk
 ```
 
@@ -377,9 +377,9 @@ Add CSS in `index.html` for the meta line:
 
 ## Stage 4.5 — End-to-end integration test
 
-**Create `apps/tilegraph-mcp-server/tests/integration/`** directory.
+**Create `apps/tilegraphmcp/tests/integration/`** directory.
 
-**Create `apps/tilegraph-mcp-server/tests/integration/mock_neo4j.ts`:**
+**Create `apps/tilegraphmcp/tests/integration/mock_neo4j.ts`:**
 
 ```typescript
 // In-memory Neo4j mock that returns fixed data for test tags
@@ -466,7 +466,7 @@ export class MockNeo4jClient {
 }
 ```
 
-**Create `apps/tilegraph-mcp-server/tests/integration/tool_chain.test.ts`:**
+**Create `apps/tilegraphmcp/tests/integration/tool_chain.test.ts`:**
 
 ```typescript
 import { describe, it, expect, vi, beforeAll } from "vitest"
@@ -565,7 +565,7 @@ describe.skipIf(SKIP)("Agent tool chain integration", () => {
 })
 ```
 
-**Update `apps/tilegraph-mcp-server/package.json`** vitest config:
+**Update `apps/tilegraphmcp/package.json`** vitest config:
 
 ```json
 "vitest": {
@@ -580,7 +580,7 @@ describe.skipIf(SKIP)("Agent tool chain integration", () => {
 ## Verification sequence
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 
 # 1. Install new dependency
 npm install @anthropic-ai/sdk

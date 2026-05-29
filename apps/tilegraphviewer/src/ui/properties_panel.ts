@@ -27,7 +27,7 @@ export async function fetchAndRenderProperties(
     panelEl.innerHTML = renderPropertiesTable(data.properties ?? {});
   } catch {
     panelEl.innerHTML = `<h3>Properties</h3>
-      <p class="error">MCP server unreachable.<br/>Start: <code>npm run dev</code> in apps/tilegraph-mcp-server</p>`;
+      <p class="error">MCP server unreachable.<br/>Start: <code>npm run dev</code> in apps/tilegraphmcp</p>`;
   }
 }
 

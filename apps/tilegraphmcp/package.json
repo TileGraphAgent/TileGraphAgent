@@ -1,5 +1,5 @@
 {
-  "name": "tilegraph-mcp-server",
+  "name": "tilegraphmcp",
   "version": "0.1.0",
   "description": "MCP Server — exposes 3D Tiles + Knowledge Graph to LLM agents",
   "type": "module",

@@ -20,7 +20,7 @@ Browser (Cloudflare Pages)
 | 3D rendering    | CesiumJS                                 |
 | Build tool      | Vite + vite-plugin-cesium                |
 | Tile storage    | Cloudflare R2 (public bucket)            |
-| Agent backend   | Cloudflare Worker (tilegraph-mcp-server) |
+| Agent backend   | Cloudflare Worker (tilegraphmcp) |
 | Viewer commands | WebSocket → Durable Object ViewerHub     |
 
 ## Local development
@@ -72,9 +72,9 @@ npx wrangler pages deploy dist --project-name tilegraphviewer
 
 | Variable            | Production value                                             | Description                         |
 | ------------------- | ------------------------------------------------------------ | ----------------------------------- |
-| `VITE_TILESET_PATH` | `https://pub-<id>.r2.dev/tiles/tileset.json`                 | R2 public URL for the root tileset  |
-| `VITE_MCP_REST_URL` | `https://tilegraph-mcp-server.<account>.workers.dev`         | Cloudflare Worker base URL          |
-| `VITE_WS_URL`       | `wss://tilegraph-mcp-server.<account>.workers.dev/ws/viewer` | WebSocket endpoint (Durable Object) |
+| `VITE_TILESET_PATH` | `https://pub-65db26f12b0942ce8e8a9d5cb5f36314.r2.dev/tiles/tileset.json`                 | R2 public URL for the root tileset  |
+| `VITE_MCP_REST_URL` | `https://tilegraphmcp.<account>.workers.dev`         | Cloudflare Worker base URL          |
+| `VITE_WS_URL`       | `wss://tilegraphmcp.<account>.workers.dev/ws/viewer` | WebSocket endpoint (Durable Object) |
 
 ## Tile data on Cloudflare R2
 

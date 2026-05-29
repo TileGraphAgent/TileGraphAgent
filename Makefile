@@ -50,13 +50,13 @@ clean:
 	rm -f output/.build_manifest.json
 
 mcp-dev:
-	cd apps/tilegraph-mcp-server && npm run dev
+	cd apps/tilegraphmcp && npm run dev
 
 viewer-dev:
 	cd apps/tilegraph-viewer && npm run dev
 
 mcp-build:
-	cd apps/tilegraph-mcp-server && npm run build
+	cd apps/tilegraphmcp && npm run build
 
 viewer-build:
 	cd apps/tilegraph-viewer && npm run build

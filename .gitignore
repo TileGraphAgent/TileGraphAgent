@@ -24,3 +24,4 @@ output/tiles/content/*.glb
 output/graph/nodes.csv
 output/graph/relationships.csv
 output2
+.wrangler/

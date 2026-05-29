@@ -42,10 +42,10 @@ cargo run --bin tilegraph -- build-graph --push-to-neo4j
 cargo build --release --bin tilegraph
 ```
 
-### TypeScript MCP server (`apps/tilegraph-mcp-server`)
+### TypeScript MCP server (`apps/tilegraphmcp`)
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm install
 npm run dev      # tsx watch (hot reload)
 npm run build    # tsc → dist/
@@ -85,7 +85,7 @@ data/synth/plant_spec.json
   → tilegraph-spatial: output/tiles/index/spatial_index.json (R-tree)
   → tilegraph-graph-export: output/graph/nodes.csv + relationships.csv + import.cypher
   → Neo4j (via docker-compose or --push-to-neo4j flag)
-  → tilegraph-mcp-server (reads Neo4j + spatial_index.json, exposes MCP tools)
+  → tilegraphmcp (reads Neo4j + spatial_index.json, exposes MCP tools)
   → tilegraph-viewer (CesiumJS loads tileset.json, receives viewer commands via WebSocket)
 ```
 
@@ -111,7 +111,7 @@ data/synth/plant_spec.json
 
 ### MCP server architecture
 
-Each tool is a module in `apps/tilegraph-mcp-server/src/tools/` exporting `{ definition, handler }`. All tools receive a `ToolContext` with four dependencies: `Neo4jClient`, `SpatialIndexClient`, `ViewerBridge`, `AuditLogger`. Every tool call is automatically audit-logged in `index.ts`.
+Each tool is a module in `apps/tilegraphmcp/src/tools/` exporting `{ definition, handler }`. All tools receive a `ToolContext` with four dependencies: `Neo4jClient`, `SpatialIndexClient`, `ViewerBridge`, `AuditLogger`. Every tool call is automatically audit-logged in `index.ts`.
 
 Tool call order enforced by agent system prompt (`docs/mcp/agent_system_prompt.md`):
 1. `search_object_by_tag` → resolve tag to `object_id`

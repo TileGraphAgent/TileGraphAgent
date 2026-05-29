@@ -323,7 +323,7 @@ Add a `tilegraph validate --strict` flag that fails on spec violations (vs. warn
 
 **Problem:** `Neo4jClient` opens and closes a session per query (`driver.session()` in every `query()` call). Under concurrent agent requests this will exhaust connections.
 
-**Fix in `apps/tilegraph-mcp-server/src/db/neo4j.ts`:**
+**Fix in `apps/tilegraphmcp/src/db/neo4j.ts`:**
 
 1. Replace `driver.session()` per query with a session pool:
    - Keep a pool of at most `MAX_SESSIONS=10` open sessions
@@ -370,7 +370,7 @@ async healthCheck(): Promise<{ connected: boolean; latency_ms: number }> {
 - Viewer connecting before the MCP server is ready
 - Stale command delivery to disconnected clients
 
-**Fix in `apps/tilegraph-mcp-server/src/viewer/bridge.ts`:**
+**Fix in `apps/tilegraphmcp/src/viewer/bridge.ts`:**
 
 1. Add client ID to each connected WebSocket:
 
@@ -406,7 +406,7 @@ interface ViewerClient {
 
 **Problem:** The MCP server has never been tested with a real LLM. The tool schemas may have issues that only surface when an LLM tries to call them.
 
-**What to implement in `apps/tilegraph-mcp-server/tests/`:**
+**What to implement in `apps/tilegraphmcp/tests/`:**
 
 1. `integration/tool_chain.test.ts` — a test that:
    - Starts the MCP server in test mode (mock Neo4j + mock spatial index)
@@ -568,7 +568,7 @@ Add a backend endpoint in the MCP server (`POST /chat`) that:
 4. Streams the response back as SSE
 5. On each tool call by Claude, executes it through the existing MCP tool handlers
 
-**Dependency:** Requires `@anthropic-ai/sdk` in `tilegraph-mcp-server`.
+**Dependency:** Requires `@anthropic-ai/sdk` in `tilegraphmcp`.
 
 ---
 
@@ -733,7 +733,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - run: cd apps/tilegraph-mcp-server && npm ci && npm run build
+      - run: cd apps/tilegraphmcp && npm ci && npm run build
       - run: cd apps/tilegraph-viewer && npm ci && npm run build
 ```
 

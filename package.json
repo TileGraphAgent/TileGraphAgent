@@ -6,8 +6,8 @@
     "apps/*"
   ],
   "scripts": {
-    "mcp": "cd apps/tilegraph-mcp-server && npm run dev",
+    "mcp": "cd apps/tilegraphmcp && npm run dev",
     "viewer": "cd apps/tilegraph-viewer && npm run dev",
-    "install:all": "npm install && cd apps/tilegraph-mcp-server && npm install && cd ../tilegraph-viewer && npm install"
+    "install:all": "npm install && cd apps/tilegraphmcp && npm install && cd ../tilegraph-viewer && npm install"
   }
 }

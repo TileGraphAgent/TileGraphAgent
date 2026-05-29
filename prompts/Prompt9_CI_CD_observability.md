@@ -116,18 +116,18 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: apps/tilegraph-mcp-server/package-lock.json
+          cache-dependency-path: apps/tilegraphmcp/package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
         run: npm ci
 
       - name: TypeScript compile
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
         run: npm run build
 
       - name: Run tests
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
         run: npm run test
         # Skip integration test that requires ANTHROPIC_API_KEY unless secret is present
         env:
@@ -597,13 +597,13 @@ clean:
 	rm -f output/.build_manifest.json
 
 mcp-dev:
-	cd apps/tilegraph-mcp-server && npm run dev
+	cd apps/tilegraphmcp && npm run dev
 
 viewer-dev:
 	cd apps/tilegraph-viewer && npm run dev
 
 mcp-build:
-	cd apps/tilegraph-mcp-server && npm run build
+	cd apps/tilegraphmcp && npm run build
 
 viewer-build:
 	cd apps/tilegraph-viewer && npm run build
@@ -637,7 +637,7 @@ cargo run --bin tilegraph -- validate
 # validate must exit 0
 
 # 4. TypeScript
-cd apps/tilegraph-mcp-server && npm ci && npm run build && npm run test
+cd apps/tilegraphmcp && npm ci && npm run build && npm run test
 cd ../tilegraph-viewer && npm ci && npm run build
 cd ../..
 

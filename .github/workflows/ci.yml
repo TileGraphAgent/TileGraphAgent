@@ -91,18 +91,18 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: apps/tilegraph-mcp-server/package-lock.json
+          cache-dependency-path: apps/tilegraphmcp/package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
         run: npm ci
 
       - name: TypeScript compile
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
         run: npm run build
 
       - name: Run tests
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
         run: npm run test
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

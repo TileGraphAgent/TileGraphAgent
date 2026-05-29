@@ -13,7 +13,7 @@ import express from "express";
 async function main() {
   const server = new Server(
     {
-      name: "tilegraph-mcp-server",
+      name: "tilegraphmcp",
       version: "0.1.0",
     },
     {

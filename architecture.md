@@ -27,7 +27,7 @@ TileGraphAgent is an AI-driven industrial plant viewer that combines a **Rust da
                         │   ├── tiles/index/spatial_index.json                 │
                         │   └── reports/audit.jsonl                            │
                         │                           │                          │
-                        │  Worker: tilegraph-mcp-server (Hono.js)              │
+                        │  Worker: tilegraphmcp (Hono.js)              │
                         │   ├── MCP over HTTP-SSE  ◀────── Claude / AI agent   │
                         │   ├── REST /chat, /hierarchy, /objects/:id           │
                         │   ├── R2 binding → spatial_index.json                │
@@ -143,7 +143,7 @@ tilegraph-data/
 ```json
 [
   {
-    "AllowedOrigins": ["https://tilegraph-viewer.pages.dev", "http://localhost:5173"],
+    "AllowedOrigins": ["https://tilegraphviewer.pages.dev", "http://localhost:5173"],
     "AllowedMethods": ["GET", "HEAD"],
     "AllowedHeaders": ["*"],
     "MaxAgeSeconds": 3600
@@ -153,7 +153,7 @@ tilegraph-data/
 
 ---
 
-### 3. Cloudflare Workers — MCP Server (`tilegraph-mcp-server`)
+### 3. Cloudflare Workers — MCP Server (`tilegraphmcp`)
 
 **Framework:** [Hono.js](https://hono.dev) — lightweight, TypeScript-native, Workers-first HTTP framework.
 
@@ -231,7 +231,7 @@ Worker routes WebSocket upgrade requests (`GET /ws/viewer`) to a single `ViewerH
 **`wrangler.toml`:**
 
 ```toml
-name = "tilegraph-mcp-server"
+name = "tilegraphmcp"
 main = "src/worker.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
@@ -286,11 +286,11 @@ npm run build   # → dist/
 
 **Environment variables (Pages → Settings → Environment Variables):**
 
-| Variable            | Value                                                        |
-| ------------------- | ------------------------------------------------------------ |
-| `VITE_TILESET_PATH` | `https://pub-<id>.r2.dev/tiles/tileset.json`                 |
-| `VITE_MCP_REST_URL` | `https://tilegraph-mcp-server.<account>.workers.dev`         |
-| `VITE_WS_URL`       | `wss://tilegraph-mcp-server.<account>.workers.dev/ws/viewer` |
+| Variable            | Value                                                                    |
+| ------------------- | ------------------------------------------------------------------------ |
+| `VITE_TILESET_PATH` | `https://pub-65db26f12b0942ce8e8a9d5cb5f36314.r2.dev/tiles/tileset.json` |
+| `VITE_MCP_REST_URL` | `https://tilegraphmcp.<account>.workers.dev`                             |
+| `VITE_WS_URL`       | `wss://tilegraphmcp.<account>.workers.dev/ws/viewer`                     |
 
 The viewer's three runtime dependencies are all cloud-hosted:
 
@@ -386,7 +386,7 @@ cargo run --bin tilegraph -- build-tiles
 cargo run --bin tilegraph -- build-graph --push-to-neo4j
 
 # Terminal 3: Run MCP server locally (Wrangler dev mode)
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm run dev   # wrangler dev on :9000, with miniflare R2 simulation
 
 # Terminal 4: Run viewer
@@ -432,13 +432,13 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm ci
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
       - run: npm run build
-        working-directory: apps/tilegraph-mcp-server
+        working-directory: apps/tilegraphmcp
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          workingDirectory: apps/tilegraph-mcp-server
+          workingDirectory: apps/tilegraphmcp
 
   deploy-pages:
     runs-on: ubuntu-latest

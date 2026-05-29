@@ -166,7 +166,7 @@ Design the Rust workspace with these crates:
 
 Use TypeScript for:
 
-- `apps/tilegraph-mcp-server`
+- `apps/tilegraphmcp`
   - MCP Server exposing tools and resources
   - schema validation with Zod
   - Neo4j queries
@@ -379,7 +379,7 @@ tilegraph-agent/
     tilegraph-graph-export/
     tilegraph-cli/
   apps/
-    tilegraph-mcp-server/
+    tilegraphmcp/
     tilegraph-viewer/
   data/
     synth/
@@ -723,7 +723,7 @@ Include example Cypher results.
 
 Design the MCP Server:
 
-# `tilegraph-mcp-server`
+# `tilegraphmcp`
 
 Use TypeScript.
 

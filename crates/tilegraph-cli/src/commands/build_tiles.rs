@@ -9,7 +9,7 @@ use tilegraph_core::{
 };
 use tilegraph_geometry::{GeometryBatch, GeometryGroup};
 use tilegraph_gltf::GlbWriter;
-use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
+use tilegraph_ingest::{adapter::SourceAdapter, IfcAdapter, SynthAdapter};
 use tilegraph_spatial::SpatialIndex;
 use tilegraph_tiles::{
     builder::{AreaBatch, TilesetBuilder},
@@ -98,8 +98,23 @@ pub async fn run(
     let pipeline_start = std::time::Instant::now();
 
     // First pass: load full scene to build parent-chain lookup maps.
-    let adapter = SynthAdapter::new();
-    let scene = adapter.ingest(&args.spec)?;
+    // Select adapter by input extension: allow using an IFC file directly.
+    let adapter_is_ifc = args
+        .spec
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(|s| matches!(s.to_lowercase().as_str(), "ifc" | "ifcxml" | "ifczip"))
+        .unwrap_or(false);
+
+    let scene = if adapter_is_ifc {
+        tracing::info!("Using IFC adapter for spec: {}", args.spec.display());
+        let adapter = IfcAdapter::new();
+        adapter.ingest(&args.spec)?
+    } else {
+        // Default: synth adapter (plant_spec.json)
+        let adapter = SynthAdapter::new();
+        adapter.ingest(&args.spec)?
+    };
 
     let tiles_dir = output_dir.join("tiles");
     let content_dir = tiles_dir.join("content");
@@ -163,9 +178,21 @@ pub async fn run(
     let (tx, rx) = mpsc::channel::<IndustrialObject>();
     let spec_path = args.spec.clone();
     let producer = std::thread::spawn(move || {
-        let a2 = SynthAdapter::new();
-        a2.stream_ingest(&spec_path, tx)
-            .expect("stream_ingest failed");
+        // Select the appropriate adapter inside the producer thread as well.
+        let adapter_is_ifc = spec_path
+            .extension()
+            .and_then(|e| e.to_str())
+            .map(|s| matches!(s.to_lowercase().as_str(), "ifc" | "ifcxml" | "ifczip"))
+            .unwrap_or(false);
+        if adapter_is_ifc {
+            let a2 = IfcAdapter::new();
+            a2.stream_ingest(&spec_path, tx)
+                .expect("stream_ingest failed");
+        } else {
+            let a2 = SynthAdapter::new();
+            a2.stream_ingest(&spec_path, tx)
+                .expect("stream_ingest failed");
+        }
     });
 
     // Consumer: accumulate geometry per area, flushing at the triangle budget.

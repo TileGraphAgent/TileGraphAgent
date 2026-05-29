@@ -523,7 +523,7 @@ GraphUnavailable { reason: String },
 SpatialIndexNotLoaded { path: String },
 ```
 
-**File: `apps/tilegraph-mcp-server/src/tools/search_object_by_tag.ts`**
+**File: `apps/tilegraphmcp/src/tools/search_object_by_tag.ts`**
 
 Ensure `found: false` responses include a consistent `error_code` field:
 
@@ -564,7 +564,7 @@ if (result && typeof result === "object" && "error_code" in result) {
 cargo check -p tilegraph-core
 # New variants must compile without errors
 
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm run build
 # TypeScript must compile
 ```
@@ -588,7 +588,7 @@ cargo run --bin tilegraph -- validate
 cat output/reports/validation_report.json
 # Should show: "passed": true
 
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm run build
 # Should compile with 0 errors
 ```
@@ -599,4 +599,4 @@ npm run build
 - `cargo test --test pipeline_integration` — integration test passes
 - `cargo run --bin tilegraph -- build-tiles` — each GLB written exactly once (no duplicate log lines)
 - `cargo run --bin tilegraph -- validate` — `"passed": true`
-- `cd apps/tilegraph-mcp-server && npm run build` — 0 TypeScript errors
+- `cd apps/tilegraphmcp && npm run build` — 0 TypeScript errors

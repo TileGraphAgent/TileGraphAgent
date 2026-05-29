@@ -24,7 +24,7 @@ GLB Content Files (area-a-piping.glb, area-a-equipment.glb, ...)
 Spatial Index (R-tree / spatial_index.json)
     ↓ [tilegraph-graph-export]
 Neo4j Knowledge Graph (EngObject nodes + relationships)
-    ↓ [tilegraph-mcp-server]
+    ↓ [tilegraphmcp]
 MCP Server (12 tools + resources + audit log)
     ↓
 LLM Agent → CesiumJS Viewer (WebSocket bridge)
@@ -52,7 +52,7 @@ cat output/graph/schema.cypher output/graph/import.cypher | \
   docker exec -i tilegraph-agent-neo4j-1 cypher-shell -u neo4j -p password
 
 # 6. Start MCP server
-cd apps/tilegraph-mcp-server && npm install && npm run dev
+cd apps/tilegraphmcp && npm install && npm run dev
 
 # 7. Start viewer
 cd apps/tilegraph-viewer && npm install && npm run dev

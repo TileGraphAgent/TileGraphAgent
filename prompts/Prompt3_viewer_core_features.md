@@ -13,7 +13,7 @@ You are implementing production improvements to **TileGraphAgent**, an industria
 
 - **Root:** `/Users/thanh/Workspace/TileGraphAgent`
 - **Viewer app:** `apps/tilegraph-viewer/`
-- **MCP server app:** `apps/tilegraph-mcp-server/`
+- **MCP server app:** `apps/tilegraphmcp/`
 - **Viewer entry:** `apps/tilegraph-viewer/src/main.ts`
 - **Viewer HTML:** `apps/tilegraph-viewer/index.html`
 - **Cesium init:** `apps/tilegraph-viewer/src/viewer/cesium_init.ts`
@@ -27,7 +27,7 @@ You are implementing production improvements to **TileGraphAgent**, an industria
 cd apps/tilegraph-viewer && npm install && npm run dev
 # Viewer runs at http://localhost:5173
 
-cd apps/tilegraph-mcp-server && npm install && npm run dev
+cd apps/tilegraphmcp && npm install && npm run dev
 # MCP server starts on stdio; REST endpoints added in this session on :9000
 ```
 
@@ -39,8 +39,8 @@ Read the following files in full before making any changes:
 - `apps/tilegraph-viewer/src/main.ts` — app entry point
 - `apps/tilegraph-viewer/src/state/store.ts` — `ViewerState` type
 - `apps/tilegraph-viewer/index.html` — HTML structure with panels
-- `apps/tilegraph-mcp-server/src/db/neo4j.ts` — `getObjectProperties` method
-- `apps/tilegraph-mcp-server/src/index.ts` — MCP server startup
+- `apps/tilegraphmcp/src/db/neo4j.ts` — `getObjectProperties` method
+- `apps/tilegraphmcp/src/index.ts` — MCP server startup
 
 ## Stage 5.1 — Correct feature picking
 
@@ -226,12 +226,12 @@ const showBoundingBoxes = (show: boolean): void => {
 
 The viewer needs a REST API since it runs in a browser and cannot call MCP protocol directly.
 
-**File: `apps/tilegraph-mcp-server/src/index.ts`**
+**File: `apps/tilegraphmcp/src/index.ts`**
 
 Add an HTTP server alongside the MCP stdio server. Install `express` and `@types/express`:
 
 ```bash
-cd apps/tilegraph-mcp-server
+cd apps/tilegraphmcp
 npm install express
 npm install --save-dev @types/express
 ```
@@ -329,7 +329,7 @@ export async function fetchAndRenderProperties(objectId: string, panelEl: HTMLEl
     panelEl.innerHTML = renderPropertiesTable(data.properties ?? {})
   } catch (err) {
     panelEl.innerHTML = `<h3>Properties</h3>
-            <p class="error">MCP server unreachable.<br/>Start: <code>npm run dev</code> in apps/tilegraph-mcp-server</p>`
+            <p class="error">MCP server unreachable.<br/>Start: <code>npm run dev</code> in apps/tilegraphmcp</p>`
   }
 }
 
@@ -512,7 +512,7 @@ function attachTreeHandlers(
 }
 ```
 
-**Add `/hierarchy` REST endpoint** to `apps/tilegraph-mcp-server/src/index.ts`:
+**Add `/hierarchy` REST endpoint** to `apps/tilegraphmcp/src/index.ts`:
 
 ```typescript
 app.get("/hierarchy", async (_req, res) => {
@@ -703,7 +703,7 @@ cat output/graph/schema.cypher output/graph/import.cypher | \
     docker exec -i tilegraph-agent-neo4j-1 cypher-shell -u neo4j -p password
 
 # 3. Start MCP server REST API
-cd apps/tilegraph-mcp-server && npm install && npm run dev &
+cd apps/tilegraphmcp && npm install && npm run dev &
 
 # 4. Start viewer
 cd apps/tilegraph-viewer && npm install && npm run dev &
