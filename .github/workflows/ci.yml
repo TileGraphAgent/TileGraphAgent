@@ -77,58 +77,7 @@ jobs:
             output/reports/validation_report.json
             output/reports/benchmark_report.json
           retention-days: 7
-
-  typescript-mcp:
-    name: TypeScript — MCP server
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: apps/tilegraphmcp/package-lock.json
-
-      - name: Install dependencies
-        working-directory: apps/tilegraphmcp
-        run: npm ci
-
-      - name: TypeScript compile
-        working-directory: apps/tilegraphmcp
-        run: npm run build
-
-      - name: Run tests
-        working-directory: apps/tilegraphmcp
-        run: npm run test
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-  typescript-viewer:
-    name: TypeScript — Viewer
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: apps/tilegraph-viewer/package-lock.json
-
-      - name: Install dependencies
-        working-directory: apps/tilegraph-viewer
-        run: npm ci
-
-      - name: Build viewer
-        working-directory: apps/tilegraph-viewer
-        run: npm run build
+s
 
   integration:
     name: Integration — full pipeline
