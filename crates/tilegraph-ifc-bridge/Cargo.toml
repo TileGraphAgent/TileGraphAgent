@@ -1,0 +1,18 @@
+[package]
+name = "tilegraph-ifc-bridge"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Optional ifcOpenShell C++ bridge for IFC geometry tessellation (requires --features ifc-geometry)"
+build = "build.rs"
+
+[features]
+# Enable C++ FFI bridge to libIfcGeom (from ifcOpenShell).
+# Requires libifcopenshell-dev installed; see Dockerfile.ifc for the build environment.
+ifc-geometry = []
+
+[dependencies]
+tilegraph-geometry = { path = "../tilegraph-geometry" }
+tilegraph-core = { path = "../tilegraph-core" }
+thiserror = { workspace = true }

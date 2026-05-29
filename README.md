@@ -65,17 +65,17 @@ cargo run --bin tilegraph -- validate
 
 ## Rust Workspace Crates
 
-| Crate | Purpose |
-|-------|---------|
-| `tilegraph-core` | Domain model, ObjectId, AABB, transforms, error types |
-| `tilegraph-synth` | Synthetic industrial plant generator |
-| `tilegraph-ingest` | Source adapters (synth + IFC stub) |
-| `tilegraph-geometry` | Mesh tessellation, material library, geometry batching |
-| `tilegraph-gltf` | GLB export with EXT_mesh_features feature IDs |
-| `tilegraph-tiles` | 3D Tiles 1.1 tileset.json generation |
-| `tilegraph-spatial` | R-tree spatial index (rstar crate) |
-| `tilegraph-graph-export` | Neo4j Cypher + CSV export |
-| `tilegraph-cli` | CLI entry point |
+| Crate                    | Purpose                                                |
+| ------------------------ | ------------------------------------------------------ |
+| `tilegraph-core`         | Domain model, ObjectId, AABB, transforms, error types  |
+| `tilegraph-synth`        | Synthetic industrial plant generator                   |
+| `tilegraph-ingest`       | Source adapters (synth + IFC stub)                     |
+| `tilegraph-geometry`     | Mesh tessellation, material library, geometry batching |
+| `tilegraph-gltf`         | GLB export with EXT_mesh_features feature IDs          |
+| `tilegraph-tiles`        | 3D Tiles 1.1 tileset.json generation                   |
+| `tilegraph-spatial`      | R-tree spatial index (rstar crate)                     |
+| `tilegraph-graph-export` | Neo4j Cypher + CSV export                              |
+| `tilegraph-cli`          | CLI entry point                                        |
 
 ---
 
@@ -100,4 +100,4 @@ See `docs/architecture/demo_scenario.md` for the full tool chain, sample queries
 - Single-level tile hierarchy (no LOD)
 - Draco compression not yet implemented
 
-*Portfolio project by Thanh Hoang-Minh — 2026*
+_Portfolio project by Thanh Hoang-Minh — 2026_

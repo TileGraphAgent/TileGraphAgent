@@ -130,10 +130,15 @@ impl TilesetBuilder {
                     continue;
                 }
 
-                let sector_error = root_geometric_error(&sector_aabb);
+                // sector_base is the full geometric error for the sector AABB.
+                // sector_tile uses 0.5× to ensure it is strictly less than the parent
+                // area tile (which uses the full area AABB geometric error), even in the
+                // single-sector case where sector_aabb == area_aabb.
+                let sector_base = root_geometric_error(&sector_aabb);
+                let sector_tile_error = sector_base * 0.5;
                 let cell_tile = TilesetTile {
                     bounding_volume: TilesetBoundingVolume::from_aabb(&sector_aabb),
-                    geometric_error: sector_error * 0.1,
+                    geometric_error: sector_base * 0.05, // strictly < sector_tile_error
                     refine: "ADD".to_string(),
                     content: None,
                     children: cell_tiles,
@@ -143,7 +148,7 @@ impl TilesetBuilder {
 
                 sector_tiles.push(TilesetTile {
                     bounding_volume: TilesetBoundingVolume::from_aabb(&sector_aabb),
-                    geometric_error: sector_error,
+                    geometric_error: sector_tile_error,
                     refine: "ADD".to_string(),
                     content: None,
                     children: vec![cell_tile],

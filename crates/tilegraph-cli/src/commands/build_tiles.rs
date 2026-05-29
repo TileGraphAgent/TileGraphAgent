@@ -94,6 +94,8 @@ pub async fn run(
     config: &PipelineConfig,
 ) -> anyhow::Result<()> {
     tracing::info!("build-tiles: ingesting from {}", args.spec.display());
+    #[cfg(feature = "tilegraph-metrics")]
+    let pipeline_start = std::time::Instant::now();
 
     // First pass: load full scene to build parent-chain lookup maps.
     let adapter = SynthAdapter::new();
@@ -276,7 +278,19 @@ pub async fn run(
                 });
             }
 
+            #[cfg(feature = "tilegraph-metrics")]
+            let batch_start = std::time::Instant::now();
+
             let (_, mappings) = glb_writer.write_batch(&pb.batch, &all_objects, &pb.tile_id)?;
+
+            #[cfg(feature = "tilegraph-metrics")]
+            {
+                let ms = batch_start.elapsed().as_secs_f64() * 1000.0;
+                metrics::histogram!("tilegraph.glb_export.batch_duration_ms").record(ms);
+                metrics::counter!("tilegraph.glb_export.batches_written").increment(1);
+                metrics::counter!("tilegraph.glb_export.triangles_written")
+                    .increment(tri_count as u64);
+            }
             Ok(BatchResult {
                 area_id: pb.area_id.clone(),
                 batch_id: pb.batch.batch_id.clone(),
@@ -399,6 +413,9 @@ pub async fn run(
     )?;
 
     // Build and save spatial index.
+    #[cfg(feature = "tilegraph-metrics")]
+    let spatial_start = std::time::Instant::now();
+
     let spatial_idx = SpatialIndex::build_from_objects(&updated_objects);
     let idx_path = tiles_dir.join("index").join("spatial_index.json");
     std::fs::create_dir_all(idx_path.parent().unwrap())?;
@@ -408,6 +425,14 @@ pub async fn run(
         spatial_idx.record_count(),
         idx_path.display()
     );
+
+    #[cfg(feature = "tilegraph-metrics")]
+    {
+        let ms = spatial_start.elapsed().as_secs_f64() * 1000.0;
+        metrics::histogram!("tilegraph.spatial_index.build_duration_ms").record(ms);
+        metrics::gauge!("tilegraph.spatial_index.record_count")
+            .set(spatial_idx.record_count() as f64);
+    }
 
     // Save build manifest.
     let new_manifest = BuildManifest {
@@ -419,6 +444,17 @@ pub async fn run(
     };
     new_manifest.save(&manifest_path)?;
     tracing::info!("Build manifest saved: {}", manifest_path.display());
+
+    #[cfg(feature = "tilegraph-metrics")]
+    {
+        let total_ms = pipeline_start.elapsed().as_secs_f64() * 1000.0;
+        metrics::histogram!("tilegraph.build_tiles.total_duration_ms").record(total_ms);
+        metrics::gauge!("tilegraph.build_tiles.feature_map_count")
+            .set(all_feature_mappings.mappings.len() as f64);
+        let total_triangles: usize = collected.iter().map(|r| r.tri_count).sum();
+        metrics::counter!("tilegraph.build_tiles.total_triangles")
+            .increment(total_triangles as u64);
+    }
 
     println!("\nbuild-tiles complete");
     println!("  Tiles dir:     {}", tiles_dir.display());

@@ -1,0 +1,49 @@
+# Dockerfile.ifc — build environment for the tilegraph-ifc-bridge crate
+# with full ifcOpenShell geometry tessellation support.
+#
+# Usage:
+#   docker build -f Dockerfile.ifc -t tilegraph-ifc .
+#   docker run --rm -v $(pwd)/output:/app/output tilegraph-ifc \
+#       cargo run --features ifc-geometry --bin tilegraph -- \
+#           generate-synth --adapter ifc --input data/ifc/sample.ifc
+#
+# The resulting binary links against libIfcGeom (from ifcOpenShell 0.7.x).
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Base build tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    pkg-config \
+    cmake \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# ifcOpenShell runtime + development libraries
+# Available in Ubuntu 22.04 repos as ifcopenshell / libifcopenshell-dev
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libifcopenshell-dev \
+    || (echo "libifcopenshell-dev not found in apt; building from source..." && \
+        apt-get install -y python3 python3-pip && \
+        pip3 install ifcopenshell && \
+        echo "Installed Python ifcopenshell for metadata; C++ libIfcGeom requires manual build")
+
+# Rust toolchain (stable)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+    sh -s -- -y --default-toolchain stable
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+WORKDIR /app
+COPY . .
+
+# Verify the workspace compiles with the ifc-geometry feature
+RUN cargo check --features ifc-geometry -p tilegraph-ifc-bridge
+
+# Build the CLI with full IFC geometry support
+RUN cargo build --release --features ifc-geometry --bin tilegraph
+
+CMD ["cargo", "run", "--release", "--features", "ifc-geometry", "--bin", "tilegraph", "--", "--help"]

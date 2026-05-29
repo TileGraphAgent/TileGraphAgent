@@ -30,6 +30,8 @@ pub async fn run(
     config: &PipelineConfig,
 ) -> anyhow::Result<()> {
     tracing::info!("build-graph: ingesting from {}", args.spec.display());
+    #[cfg(feature = "tilegraph-metrics")]
+    let graph_start = std::time::Instant::now();
 
     let adapter = SynthAdapter::new();
     let scene = adapter.ingest(&args.spec)?;
@@ -121,6 +123,14 @@ pub async fn run(
             )
             .await?;
         tracing::info!("Neo4j import complete.");
+    }
+
+    #[cfg(feature = "tilegraph-metrics")]
+    {
+        let ms = graph_start.elapsed().as_secs_f64() * 1000.0;
+        metrics::histogram!("tilegraph.build_graph.total_duration_ms").record(ms);
+        metrics::gauge!("tilegraph.build_graph.node_count").set(report.node_count as f64);
+        metrics::gauge!("tilegraph.build_graph.rel_count").set(report.rel_count as f64);
     }
 
     println!("\nbuild-graph complete");

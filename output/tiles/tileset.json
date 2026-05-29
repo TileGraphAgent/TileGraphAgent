@@ -62,7 +62,7 @@
                 5.030796051025391
               ]
             },
-            "geometricError": 66.9224916033318,
+            "geometricError": 33.4612458016659,
             "refine": "ADD",
             "children": [
               {
@@ -82,7 +82,7 @@
                     5.030796051025391
                   ]
                 },
-                "geometricError": 6.692249160333181,
+                "geometricError": 3.3461245801665904,
                 "refine": "ADD",
                 "children": [
                   {
@@ -250,7 +250,7 @@
                 5.030796051025391
               ]
             },
-            "geometricError": 49.74555015117852,
+            "geometricError": 24.87277507558926,
             "refine": "ADD",
             "children": [
               {
@@ -270,7 +270,7 @@
                     5.030796051025391
                   ]
                 },
-                "geometricError": 4.974555015117852,
+                "geometricError": 2.487277507558926,
                 "refine": "ADD",
                 "children": [
                   {

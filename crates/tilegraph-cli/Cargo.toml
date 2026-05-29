@@ -28,3 +28,8 @@ tracing-subscriber = { workspace = true }
 clap = { workspace = true }
 tokio = { workspace = true }
 rayon = { workspace = true }
+metrics = { version = "0.23", optional = true }
+metrics-exporter-prometheus = { version = "0.15", optional = true }
+
+[features]
+tilegraph-metrics = ["dep:metrics", "dep:metrics-exporter-prometheus"]

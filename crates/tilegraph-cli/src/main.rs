@@ -3,6 +3,9 @@ mod commands;
 use clap::{Parser, Subcommand};
 use tracing_subscriber::EnvFilter;
 
+#[cfg(feature = "tilegraph-metrics")]
+use metrics_exporter_prometheus::PrometheusBuilder;
+
 #[derive(Parser)]
 #[command(
     name = "tilegraph",
@@ -57,7 +60,16 @@ async fn main() -> anyhow::Result<()> {
         tilegraph_core::PipelineConfig::default()
     });
 
-    match cli.command {
+    #[cfg(feature = "tilegraph-metrics")]
+    let metrics_handle = {
+        let recorder = PrometheusBuilder::new().build_recorder();
+        let handle = recorder.handle();
+        metrics::set_global_recorder(recorder).expect("failed to install metrics recorder");
+        tracing::info!("Prometheus metrics recorder installed");
+        handle
+    };
+
+    let result = match cli.command {
         Commands::GenerateSynth(args) => commands::generate_synth::run(args, &cli.output_dir).await,
         Commands::BuildTiles(args) => {
             commands::build_tiles::run(args, &cli.output_dir, &config).await
@@ -68,5 +80,19 @@ async fn main() -> anyhow::Result<()> {
         Commands::Validate(args) => commands::validate::run(args, &cli.output_dir).await,
         Commands::InspectObject(args) => commands::inspect_object::run(args, &cli.output_dir).await,
         Commands::Benchmark(args) => commands::benchmark::run(args, &cli.output_dir).await,
+    };
+
+    #[cfg(feature = "tilegraph-metrics")]
+    {
+        let metrics_text = metrics_handle.render();
+        let metrics_path = cli.output_dir.join("reports").join("metrics.txt");
+        std::fs::create_dir_all(metrics_path.parent().unwrap()).ok();
+        if let Err(e) = std::fs::write(&metrics_path, &metrics_text) {
+            tracing::warn!("Failed to write metrics file: {}", e);
+        } else {
+            println!("Metrics saved to {}", metrics_path.display());
+        }
     }
+
+    result
 }

@@ -4,12 +4,17 @@ use tilegraph_core::GraphNodeExport;
 use tilegraph_graph_export::validate::validate_graph;
 use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
 use tilegraph_synth::validate::validate_objects;
-use tilegraph_tiles::validate::validate_tileset;
+use tilegraph_tiles::validate::{validate_tileset, validate_tileset_strict};
 
 #[derive(Args)]
 pub struct ValidateArgs {
     #[arg(short, long, default_value = "data/synth/plant_spec.json")]
     pub spec: std::path::PathBuf,
+
+    /// Enable strict spec-compliance checks: refine values, geometric error monotonicity,
+    /// and bounding volume containment. Violations are reported as errors (not warnings).
+    #[arg(long)]
+    pub strict: bool,
 }
 
 #[derive(serde::Serialize)]
@@ -65,7 +70,11 @@ pub async fn run(args: ValidateArgs, output_dir: &Path) -> anyhow::Result<()> {
     let tileset_section = if tileset_path.exists() {
         let raw = std::fs::read_to_string(&tileset_path)?;
         let tileset: tilegraph_tiles::Tileset = serde_json::from_str(&raw)?;
-        let ts_report = validate_tileset(&tileset);
+        let ts_report = if args.strict {
+            validate_tileset_strict(&tileset)
+        } else {
+            validate_tileset(&tileset)
+        };
         TilesetSection {
             tile_count: ts_report.tile_count,
             leaf_tile_count: ts_report.leaf_tile_count,
@@ -127,6 +136,10 @@ pub async fn run(args: ValidateArgs, output_dir: &Path) -> anyhow::Result<()> {
     if !passed {
         anyhow::bail!("Validation FAILED — check report for details");
     }
-    println!("Validation PASSED");
+    if args.strict {
+        println!("Validation PASSED (strict mode)");
+    } else {
+        println!("Validation PASSED");
+    }
     Ok(())
 }
