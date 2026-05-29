@@ -6,6 +6,7 @@ import { Neo4jClient } from "./db/neo4j.js";
 import { SpatialIndexClient } from "./spatial/index.js";
 import { ViewerBridge } from "./viewer/bridge.js";
 import { AuditLogger } from "./audit/logger.js";
+import { REST_PORT, VIEWER_WS_PORT, SPATIAL_INDEX_PATH, AUDIT_LOG_PATH } from "./config.js";
 import express from "express";
 
 async function main() {
@@ -29,20 +30,21 @@ async function main() {
     database: process.env.NEO4J_DATABASE ?? "neo4j",
   });
 
-  const spatialIndex = new SpatialIndexClient(
-    process.env.SPATIAL_INDEX_PATH ?? "output/tiles/index/spatial_index.json"
-  );
+  const spatialIndex = new SpatialIndexClient(SPATIAL_INDEX_PATH);
 
-  const viewerBridge = new ViewerBridge(
-    parseInt(process.env.VIEWER_WS_PORT ?? "9001")
-  );
+  const viewerBridge = new ViewerBridge(VIEWER_WS_PORT);
 
-  const auditLogger = new AuditLogger(
-    process.env.AUDIT_LOG_PATH ?? "output/reports/audit.jsonl"
-  );
+  const auditLogger = new AuditLogger(AUDIT_LOG_PATH);
 
   await spatialIndex.load();
   await viewerBridge.start();
+
+  const health = await neo4j.healthCheck();
+  if (!health.connected) {
+    console.error(`[STARTUP] Neo4j unavailable at ${process.env.NEO4J_URL}. Continuing without graph queries.`);
+  } else {
+    console.error(`[STARTUP] Neo4j connected (${health.latency_ms}ms)`);
+  }
 
   const ctx = { neo4j, spatialIndex, viewerBridge, auditLogger };
 
@@ -161,7 +163,6 @@ async function main() {
     }
   });
 
-  const REST_PORT = parseInt(process.env.REST_PORT ?? "9000");
   app.listen(REST_PORT, () => {
     console.error(`[REST API] listening on http://localhost:${REST_PORT}`);
   });

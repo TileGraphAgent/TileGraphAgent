@@ -17,6 +17,16 @@ export function registerResources(server: Server, ctx: ToolContext): void {
         description: "The current selection state in the CesiumJS viewer.",
         mimeType: "application/json",
       },
+      {
+        uri: `tilegraph://audit/session/${ctx.auditLogger.getSessionId()}`,
+        name: "Current session audit log",
+        mimeType: "application/json",
+      },
+      {
+        uri: "tilegraph://audit/last/20",
+        name: "Last 20 audit entries",
+        mimeType: "application/json",
+      },
     ],
   }));
 
@@ -57,6 +67,43 @@ export function registerResources(server: Server, ctx: ToolContext): void {
               null,
               2
             ),
+          },
+        ],
+      };
+    }
+
+    if (uri.startsWith("tilegraph://audit/session/")) {
+      const sessionId = uri.replace("tilegraph://audit/session/", "");
+      const entries = ctx.auditLogger.getSessionEntries(sessionId);
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "application/json",
+            text: JSON.stringify(
+              {
+                session_id: sessionId,
+                entry_count: entries.length,
+                summary: ctx.auditLogger.getSessionSummary(),
+                entries,
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+
+    if (uri.startsWith("tilegraph://audit/last/")) {
+      const n = parseInt(uri.replace("tilegraph://audit/last/", "")) || 20;
+      const entries = ctx.auditLogger.getLastEntries(n);
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "application/json",
+            text: JSON.stringify({ entries }, null, 2),
           },
         ],
       };

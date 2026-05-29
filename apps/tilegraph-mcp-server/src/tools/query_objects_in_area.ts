@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { TagSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  area_tag: z.string().describe("Area tag, e.g. '10' or '20'"),
+  area_tag: TagSchema.describe("Area tag, e.g. '10' or '20'"),
   class_filter: z.string().optional(),
 });
 

@@ -1,9 +1,10 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { ObjectIdSchema, DirectionSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  object_id: z.string(),
-  direction: z.enum(["upstream", "downstream", "both"]).default("both"),
+  object_id: ObjectIdSchema,
+  direction: DirectionSchema,
   max_hops: z.number().int().min(1).max(10).default(3),
 });
 

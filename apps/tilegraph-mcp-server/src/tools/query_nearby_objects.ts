@@ -1,9 +1,10 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { ObjectIdSchema, RadiusSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  object_id: z.string().describe("Center object whose AABB center will be used"),
-  radius_m: z.number().positive().default(5.0).describe("Search radius in meters"),
+  object_id: ObjectIdSchema.describe("Center object whose AABB center will be used"),
+  radius_m: RadiusSchema.describe("Search radius in meters"),
   class_filter: z.string().optional(),
 });
 

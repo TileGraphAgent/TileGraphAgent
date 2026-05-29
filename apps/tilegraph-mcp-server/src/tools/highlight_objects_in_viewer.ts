@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { ObjectIdArraySchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  object_ids: z.array(z.string()).min(1),
+  object_ids: ObjectIdArraySchema,
   color: z.string().optional().default("agent_highlight"),
 });
 

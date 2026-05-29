@@ -7,7 +7,9 @@ type ViewerCommand =
   | { type: "focus_camera"; object_ids: string[] }
   | { type: "show_bounding_boxes"; object_ids: string[] }
   | { type: "clear_highlights" }
-  | { type: "create_issue_marker"; object_id: string; title: string; severity: string };
+  | { type: "create_issue_marker"; object_id: string; title: string; severity: string }
+  | { type: "ping" }
+  | { type: "pong" };
 
 export class ViewerCommandClient {
   private ws: WebSocket | null = null;
@@ -55,6 +57,11 @@ export class ViewerCommandClient {
       cmd = JSON.parse(raw) as ViewerCommand;
     } catch {
       console.error("[WS] Invalid message:", raw);
+      return;
+    }
+
+    if (cmd.type === "ping") {
+      this.ws!.send(JSON.stringify({ type: "pong" }));
       return;
     }
 

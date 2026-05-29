@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { TagSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  line_tag: z.string(),
+  line_tag: TagSchema,
 });
 
 export const generateMaintenanceContext = {

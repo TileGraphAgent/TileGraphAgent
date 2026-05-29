@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { TagSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  tag: z.string().describe("Engineering tag, e.g. P-1001 or LINE-1001"),
+  tag: TagSchema.describe("Engineering tag, e.g. P-1001 or LINE-1001"),
 });
 
 export const searchObjectByTag = {

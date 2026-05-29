@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { ObjectIdSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  object_id: z.string(),
+  object_id: ObjectIdSchema,
   title: z.string().min(1).max(200),
   severity: z.enum(["low", "medium", "high", "critical"]),
   description: z.string().optional(),

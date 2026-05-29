@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { ToolContext } from "./index.js";
+import { ObjectIdSchema } from "../schemas/validation.js";
 
 const InputSchema = z.object({
-  object_id: z.string(),
+  object_id: ObjectIdSchema,
 });
 
 export const queryConnectedComponents = {

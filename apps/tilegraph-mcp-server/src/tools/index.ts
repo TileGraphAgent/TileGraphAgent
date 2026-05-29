@@ -58,35 +58,42 @@ export function registerTools(server: Server, ctx: ToolContext): void {
     const t0 = Date.now();
     try {
       const result = await tool.handler(args ?? {}, ctx);
-      const hasErrorCode =
-        result != null &&
-        typeof result === "object" &&
-        "error_code" in result;
       await ctx.auditLogger.log({
         tool_name: name,
         input: args,
-        output_summary: hasErrorCode
-          ? `${(result as any).error_code}: ${(result as any).message ?? ""}`
-          : typeof result === "object"
-            ? JSON.stringify(result).slice(0, 200)
-            : String(result),
+        output_summary: typeof result === "object"
+          ? JSON.stringify(result).slice(0, 200)
+          : String(result),
         duration_ms: Date.now() - t0,
-        error: hasErrorCode ? ((result as any).error_code as string) : undefined,
       });
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
-    } catch (err) {
-      const error = err instanceof Error ? err.message : String(err);
+    } catch (err: any) {
+      const isValidationError = err?.name === "ZodError";
+      const error_code = isValidationError
+        ? "VALIDATION_ERROR"
+        : (err?.error_code ?? "INTERNAL_ERROR");
+      const message = isValidationError
+        ? `Invalid input: ${err.errors.map((e: any) => `${e.path.join(".")}: ${e.message}`).join("; ")}`
+        : err instanceof Error
+          ? err.message
+          : String(err);
+
       await ctx.auditLogger.log({
         tool_name: name,
         input: args,
-        output_summary: "ERROR",
+        output_summary: `${error_code}: ${message.slice(0, 100)}`,
         duration_ms: Date.now() - t0,
-        error,
+        error: error_code,
       });
       return {
-        content: [{ type: "text", text: `Tool error: ${error}` }],
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({ error_code, message, tool: name }),
+          },
+        ],
         isError: true,
       };
     }

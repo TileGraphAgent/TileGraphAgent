@@ -1,4 +1,5 @@
-import neo4j, { Driver, Session } from "neo4j-driver";
+import neo4j, { Driver, Session, Config } from "neo4j-driver";
+import { NEO4J_CONNECTION_TIMEOUT_MS } from "../config.js";
 
 export interface Neo4jConfig {
   url: string;
@@ -12,32 +13,56 @@ export class Neo4jClient {
   private database: string;
 
   constructor(config: Neo4jConfig) {
+    const driverConfig: Config = {
+      maxConnectionPoolSize: 10,
+      connectionAcquisitionTimeout: NEO4J_CONNECTION_TIMEOUT_MS,
+      connectionTimeout: NEO4J_CONNECTION_TIMEOUT_MS,
+    };
     this.driver = neo4j.driver(
       config.url,
-      neo4j.auth.basic(config.username, config.password)
+      neo4j.auth.basic(config.username, config.password),
+      driverConfig
     );
     this.database = config.database;
   }
 
   async query<T = Record<string, unknown>>(
     cypher: string,
-    params: Record<string, unknown> = {}
+    params: Record<string, unknown> = {},
+    timeoutMs = 3000,
   ): Promise<T[]> {
-    const session: Session = this.driver.session({ database: this.database });
+    const session: Session = this.driver.session({
+      database: this.database,
+      defaultAccessMode: neo4j.session.READ,
+    });
     try {
-      const result = await session.run(cypher, params);
+      const result = await Promise.race([
+        session.run(cypher, params),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Query timeout")), timeoutMs)
+        ),
+      ]);
       return result.records.map((r) => {
         const obj: Record<string, unknown> = {};
         for (const key of r.keys) {
           const val = r.get(key as string);
-          // Convert Neo4j Integer to JS number
           obj[key as string] =
-            neo4j.isInt(val) ? val.toNumber() :
-            val instanceof neo4j.types.Node ? { ...val.properties, _labels: val.labels } :
-            val;
+            neo4j.isInt(val)
+              ? val.toNumber()
+              : val instanceof neo4j.types.Node
+                ? { ...val.properties, _labels: val.labels }
+                : val;
         }
         return obj as T;
       });
+    } catch (err: any) {
+      if (err.code === "ServiceUnavailable" || err.message?.includes("timeout")) {
+        throw Object.assign(new Error("Graph database unavailable"), {
+          error_code: "GRAPH_UNAVAILABLE",
+          original: err.message,
+        });
+      }
+      throw err;
     } finally {
       await session.close();
     }
@@ -138,7 +163,7 @@ export class Neo4jClient {
   async healthCheck(): Promise<{ connected: boolean; latency_ms: number }> {
     const t0 = Date.now();
     try {
-      await this.query("RETURN 1 AS ok");
+      await this.query("RETURN 1 AS ok", {}, 2000);
       return { connected: true, latency_ms: Date.now() - t0 };
     } catch {
       return { connected: false, latency_ms: -1 };
