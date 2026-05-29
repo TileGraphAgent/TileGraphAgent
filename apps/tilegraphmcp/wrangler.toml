@@ -1,7 +1,5 @@
 name = "tilegraphmcp"
 main = "src/worker.ts"
-compatibility_date = "2026-06-29"
-compatibility_flags = ["nodejs_compat"]
 
 [[r2_buckets]]
 binding = "TILEGRAPH_BUCKET"
