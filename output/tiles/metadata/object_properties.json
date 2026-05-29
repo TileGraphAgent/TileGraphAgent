@@ -210,7 +210,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 16,
+    "feature_id": 0,
     "name": "V-1001A",
     "nominal_bore_mm": 100,
     "object_id": "obj_5436fb4960f6a505257f9024b222227f",
@@ -221,7 +221,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 17,
+    "feature_id": 1,
     "name": "V-1001B",
     "nominal_bore_mm": 100,
     "object_id": "obj_a15292af362152358f397142b94587a3",
@@ -232,7 +232,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 18,
+    "feature_id": 2,
     "name": "V-1001C",
     "nominal_bore_mm": 100,
     "object_id": "obj_b8c8aa6466bf0d4bcea7028175226bb4",
@@ -243,7 +243,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 19,
+    "feature_id": 3,
     "name": "V-1001D",
     "nominal_bore_mm": 100,
     "object_id": "obj_0bf89e75b9fd3b30b77c5228ccdc484a",
@@ -261,7 +261,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 20,
+    "feature_id": 16,
     "insulated": false,
     "name": "LINE-1002-SEG-001",
     "nominal_bore_mm": 80,
@@ -272,7 +272,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 21,
+    "feature_id": 17,
     "insulated": false,
     "name": "LINE-1002-SEG-002",
     "nominal_bore_mm": 80,
@@ -283,7 +283,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 22,
+    "feature_id": 18,
     "insulated": false,
     "name": "LINE-1002-SEG-003",
     "nominal_bore_mm": 80,
@@ -294,7 +294,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 23,
+    "feature_id": 19,
     "insulated": false,
     "name": "LINE-1002-SEG-004",
     "nominal_bore_mm": 80,
@@ -305,7 +305,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 24,
+    "feature_id": 20,
     "insulated": false,
     "name": "LINE-1002-SEG-005",
     "nominal_bore_mm": 80,
@@ -316,7 +316,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 25,
+    "feature_id": 21,
     "insulated": false,
     "name": "LINE-1002-SEG-006",
     "nominal_bore_mm": 80,
@@ -327,7 +327,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 26,
+    "feature_id": 22,
     "insulated": false,
     "name": "LINE-1002-SEG-007",
     "nominal_bore_mm": 80,
@@ -338,7 +338,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 27,
+    "feature_id": 23,
     "insulated": false,
     "name": "LINE-1002-SEG-008",
     "nominal_bore_mm": 80,
@@ -349,7 +349,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 28,
+    "feature_id": 24,
     "insulated": false,
     "name": "LINE-1002-SEG-009",
     "nominal_bore_mm": 80,
@@ -360,7 +360,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 29,
+    "feature_id": 25,
     "insulated": false,
     "name": "LINE-1002-SEG-010",
     "nominal_bore_mm": 80,
@@ -371,7 +371,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 30,
+    "feature_id": 26,
     "insulated": false,
     "name": "LINE-1002-SEG-011",
     "nominal_bore_mm": 80,
@@ -382,7 +382,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 31,
+    "feature_id": 27,
     "insulated": false,
     "name": "LINE-1002-SEG-012",
     "nominal_bore_mm": 80,
@@ -394,7 +394,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 32,
+    "feature_id": 4,
     "name": "V-1002A",
     "nominal_bore_mm": 80,
     "object_id": "obj_ece9c858080e26fbdadc557953285c8b",
@@ -405,7 +405,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 33,
+    "feature_id": 5,
     "name": "V-1002B",
     "nominal_bore_mm": 80,
     "object_id": "obj_c50d4170b264d21fb10aeb4fcb8aa3f5",
@@ -416,7 +416,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 34,
+    "feature_id": 6,
     "name": "V-1002C",
     "nominal_bore_mm": 80,
     "object_id": "obj_9c5a3a56814296558a90dea0041be894",
@@ -427,7 +427,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 35,
+    "feature_id": 7,
     "name": "V-1002D",
     "nominal_bore_mm": 80,
     "object_id": "obj_05605f08a60d8939eff3ef743f0d7a1a",
@@ -439,7 +439,7 @@
     "class": "Pump",
     "design_pressure_bar": 6.0,
     "design_temperature_c": 45.0,
-    "feature_id": 36,
+    "feature_id": 8,
     "fluid": "COOLING_WATER",
     "name": "P-1001",
     "object_id": "obj_8745dea8547ed3a097ba30ec96342f98",
@@ -449,7 +449,7 @@
   },
   {
     "class": "Tank",
-    "feature_id": 37,
+    "feature_id": 0,
     "fluid": "COOLING_WATER",
     "name": "TK-1001",
     "object_id": "obj_dad2df050a4f6d8bc8e49f0d3c1c1346",
@@ -459,7 +459,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 38,
+    "feature_id": 9,
     "instrument_type": "FT",
     "name": "FT-1001",
     "object_id": "obj_ec4044d3bb8a51e382d03e51c1c342b3",
@@ -468,7 +468,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 39,
+    "feature_id": 10,
     "instrument_type": "PT",
     "name": "PT-1002",
     "object_id": "obj_084220f613f6a35c1120af420db35ec5",
@@ -477,7 +477,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 40,
+    "feature_id": 11,
     "instrument_type": "TT",
     "name": "TT-1003",
     "object_id": "obj_70f654f21a9d633ae7e2e300823d9d02",
@@ -486,7 +486,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 41,
+    "feature_id": 12,
     "instrument_type": "LT",
     "name": "LT-1004",
     "object_id": "obj_997cc9fb1f5b4cf778da43f055d84bc0",
@@ -511,7 +511,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 42,
+    "feature_id": 28,
     "insulated": true,
     "name": "LINE-2001-SEG-001",
     "nominal_bore_mm": 150,
@@ -522,7 +522,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 43,
+    "feature_id": 29,
     "insulated": true,
     "name": "LINE-2001-SEG-002",
     "nominal_bore_mm": 150,
@@ -533,7 +533,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 44,
+    "feature_id": 30,
     "insulated": true,
     "name": "LINE-2001-SEG-003",
     "nominal_bore_mm": 150,
@@ -544,7 +544,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 45,
+    "feature_id": 31,
     "insulated": true,
     "name": "LINE-2001-SEG-004",
     "nominal_bore_mm": 150,
@@ -555,7 +555,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 46,
+    "feature_id": 32,
     "insulated": true,
     "name": "LINE-2001-SEG-005",
     "nominal_bore_mm": 150,
@@ -566,7 +566,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 47,
+    "feature_id": 33,
     "insulated": true,
     "name": "LINE-2001-SEG-006",
     "nominal_bore_mm": 150,
@@ -577,7 +577,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 48,
+    "feature_id": 34,
     "insulated": true,
     "name": "LINE-2001-SEG-007",
     "nominal_bore_mm": 150,
@@ -588,7 +588,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 49,
+    "feature_id": 35,
     "insulated": true,
     "name": "LINE-2001-SEG-008",
     "nominal_bore_mm": 150,
@@ -599,7 +599,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 50,
+    "feature_id": 36,
     "insulated": true,
     "name": "LINE-2001-SEG-009",
     "nominal_bore_mm": 150,
@@ -610,7 +610,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 51,
+    "feature_id": 37,
     "insulated": true,
     "name": "LINE-2001-SEG-010",
     "nominal_bore_mm": 150,
@@ -621,7 +621,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 52,
+    "feature_id": 38,
     "insulated": true,
     "name": "LINE-2001-SEG-011",
     "nominal_bore_mm": 150,
@@ -632,7 +632,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 53,
+    "feature_id": 39,
     "insulated": true,
     "name": "LINE-2001-SEG-012",
     "nominal_bore_mm": 150,
@@ -643,7 +643,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 54,
+    "feature_id": 40,
     "insulated": true,
     "name": "LINE-2001-SEG-013",
     "nominal_bore_mm": 150,
@@ -654,7 +654,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 55,
+    "feature_id": 41,
     "insulated": true,
     "name": "LINE-2001-SEG-014",
     "nominal_bore_mm": 150,
@@ -665,7 +665,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 56,
+    "feature_id": 42,
     "insulated": true,
     "name": "LINE-2001-SEG-015",
     "nominal_bore_mm": 150,
@@ -676,7 +676,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 57,
+    "feature_id": 43,
     "insulated": true,
     "name": "LINE-2001-SEG-016",
     "nominal_bore_mm": 150,
@@ -687,7 +687,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 58,
+    "feature_id": 44,
     "insulated": true,
     "name": "LINE-2001-SEG-017",
     "nominal_bore_mm": 150,
@@ -698,7 +698,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 59,
+    "feature_id": 45,
     "insulated": true,
     "name": "LINE-2001-SEG-018",
     "nominal_bore_mm": 150,
@@ -710,7 +710,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 60,
+    "feature_id": 13,
     "name": "V-10101A",
     "nominal_bore_mm": 150,
     "object_id": "obj_e8bfb51f27de8ce50c50f44b58ec9f9e",
@@ -721,7 +721,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 61,
+    "feature_id": 14,
     "name": "V-10101B",
     "nominal_bore_mm": 150,
     "object_id": "obj_9873a143029052739bfc6aa51b6981d8",
@@ -732,7 +732,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 62,
+    "feature_id": 15,
     "name": "V-10101C",
     "nominal_bore_mm": 150,
     "object_id": "obj_378ecf02f6cd7626f3db4e9881fb3639",
@@ -743,7 +743,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 63,
+    "feature_id": 16,
     "name": "V-10101D",
     "nominal_bore_mm": 150,
     "object_id": "obj_c131576b9bee4efda6ebca6ebefdc81b",
@@ -761,7 +761,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 64,
+    "feature_id": 46,
     "insulated": true,
     "name": "LINE-2002-SEG-001",
     "nominal_bore_mm": 50,
@@ -772,7 +772,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 65,
+    "feature_id": 47,
     "insulated": true,
     "name": "LINE-2002-SEG-002",
     "nominal_bore_mm": 50,
@@ -783,7 +783,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 66,
+    "feature_id": 48,
     "insulated": true,
     "name": "LINE-2002-SEG-003",
     "nominal_bore_mm": 50,
@@ -794,7 +794,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 67,
+    "feature_id": 49,
     "insulated": true,
     "name": "LINE-2002-SEG-004",
     "nominal_bore_mm": 50,
@@ -805,7 +805,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 68,
+    "feature_id": 50,
     "insulated": true,
     "name": "LINE-2002-SEG-005",
     "nominal_bore_mm": 50,
@@ -816,7 +816,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 69,
+    "feature_id": 51,
     "insulated": true,
     "name": "LINE-2002-SEG-006",
     "nominal_bore_mm": 50,
@@ -827,7 +827,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 70,
+    "feature_id": 52,
     "insulated": true,
     "name": "LINE-2002-SEG-007",
     "nominal_bore_mm": 50,
@@ -838,7 +838,7 @@
   },
   {
     "class": "PipeSegment",
-    "feature_id": 71,
+    "feature_id": 53,
     "insulated": true,
     "name": "LINE-2002-SEG-008",
     "nominal_bore_mm": 50,
@@ -850,7 +850,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 72,
+    "feature_id": 17,
     "name": "V-10102A",
     "nominal_bore_mm": 50,
     "object_id": "obj_fefda1d853bd60d277f0594f5f9a0509",
@@ -861,7 +861,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 73,
+    "feature_id": 18,
     "name": "V-10102B",
     "nominal_bore_mm": 50,
     "object_id": "obj_8f0582c02ab7b06af711446b72267b75",
@@ -872,7 +872,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 74,
+    "feature_id": 19,
     "name": "V-10102C",
     "nominal_bore_mm": 50,
     "object_id": "obj_22cdcc1224b5fb3b2b13ae293b7cba32",
@@ -883,7 +883,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 75,
+    "feature_id": 20,
     "name": "V-10102D",
     "nominal_bore_mm": 50,
     "object_id": "obj_2f793a8169979ddaf6ffbd0eb600796c",
@@ -895,7 +895,7 @@
     "class": "Pump",
     "design_pressure_bar": 25.0,
     "design_temperature_c": 120.0,
-    "feature_id": 76,
+    "feature_id": 21,
     "fluid": "HYDROCARBON",
     "name": "P-10101",
     "object_id": "obj_81dff8556c233e8c05eab6c404b5ec53",
@@ -905,7 +905,7 @@
   },
   {
     "class": "Tank",
-    "feature_id": 77,
+    "feature_id": 1,
     "fluid": "HYDROCARBON",
     "name": "TK-10101",
     "object_id": "obj_6b4674df97204cfe0f211b5fa710dd82",
@@ -915,7 +915,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 78,
+    "feature_id": 22,
     "instrument_type": "FT",
     "name": "FT-10101",
     "object_id": "obj_c10ca15ad0bd7db5941b8deaed87cbd0",
@@ -924,7 +924,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 79,
+    "feature_id": 23,
     "instrument_type": "PT",
     "name": "PT-10102",
     "object_id": "obj_0952e45b8c7212a2017adec9b1ed28b0",
@@ -933,7 +933,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 80,
+    "feature_id": 24,
     "instrument_type": "TT",
     "name": "TT-10103",
     "object_id": "obj_b7f957c244cd5691d052a7cf992f8a8e",
@@ -942,7 +942,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 81,
+    "feature_id": 25,
     "instrument_type": "LT",
     "name": "LT-10104",
     "object_id": "obj_51ce5c2e1831ed1397c397939bb1cf40",
@@ -951,7 +951,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 82,
+    "feature_id": 54,
     "name": "10-SUPP-001",
     "object_id": "obj_64f71bc6b83fde4a017f1594c2bd259f",
     "tag": "10-SUPP-001",
@@ -959,7 +959,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 83,
+    "feature_id": 55,
     "name": "10-SUPP-002",
     "object_id": "obj_02b6cc579e4c74779f4472cdc5761406",
     "tag": "10-SUPP-002",
@@ -967,7 +967,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 84,
+    "feature_id": 56,
     "name": "10-SUPP-003",
     "object_id": "obj_ea9cd2057168282731933587122e1603",
     "tag": "10-SUPP-003",
@@ -975,7 +975,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 85,
+    "feature_id": 57,
     "name": "10-SUPP-004",
     "object_id": "obj_04c7b5190135789768e298e5b500f393",
     "tag": "10-SUPP-004",
@@ -983,7 +983,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 86,
+    "feature_id": 58,
     "name": "10-SUPP-005",
     "object_id": "obj_3c1a5d23a4e7ab2fea4711ea7fb22f4b",
     "tag": "10-SUPP-005",
@@ -991,7 +991,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 87,
+    "feature_id": 59,
     "name": "10-SUPP-006",
     "object_id": "obj_aa3505955368f6e572f74fdb9f8b7c09",
     "tag": "10-SUPP-006",
@@ -999,7 +999,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 88,
+    "feature_id": 60,
     "name": "10-SUPP-007",
     "object_id": "obj_2f5849776819890528c5154d0ee747f4",
     "tag": "10-SUPP-007",
@@ -1007,7 +1007,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 89,
+    "feature_id": 61,
     "name": "10-SUPP-008",
     "object_id": "obj_5402c3ee5033f49e91550a3b52a5be3a",
     "tag": "10-SUPP-008",
@@ -1015,7 +1015,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 90,
+    "feature_id": 62,
     "name": "10-SUPP-009",
     "object_id": "obj_1e130b90c7492cd16bf3964065fbb8d6",
     "tag": "10-SUPP-009",
@@ -1023,7 +1023,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 91,
+    "feature_id": 63,
     "name": "10-SUPP-010",
     "object_id": "obj_9f8d7f354ca29cfb4e4de13193c0a681",
     "tag": "10-SUPP-010",
@@ -1031,7 +1031,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 92,
+    "feature_id": 64,
     "name": "10-SUPP-011",
     "object_id": "obj_df7d008c5f2e9cf87ba33b504250b754",
     "tag": "10-SUPP-011",
@@ -1039,7 +1039,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 93,
+    "feature_id": 65,
     "name": "10-SUPP-012",
     "object_id": "obj_a8b7dcf9df33e8d59d178f32dd4bb624",
     "tag": "10-SUPP-012",
@@ -1047,7 +1047,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 94,
+    "feature_id": 66,
     "name": "10-SUPP-013",
     "object_id": "obj_baf95cd4eea1c346722cefd317761215",
     "tag": "10-SUPP-013",
@@ -1055,7 +1055,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 95,
+    "feature_id": 67,
     "name": "10-SUPP-014",
     "object_id": "obj_c97cbb5725e680676e0e8ab96f465cbb",
     "tag": "10-SUPP-014",
@@ -1063,7 +1063,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 96,
+    "feature_id": 68,
     "name": "10-SUPP-015",
     "object_id": "obj_a833a06475111b04bafaffeba0f844d8",
     "tag": "10-SUPP-015",
@@ -1071,7 +1071,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 97,
+    "feature_id": 69,
     "name": "10-SUPP-016",
     "object_id": "obj_c578da168378643e58cf96c95ac46727",
     "tag": "10-SUPP-016",
@@ -1079,7 +1079,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 98,
+    "feature_id": 70,
     "name": "10-SUPP-017",
     "object_id": "obj_60a84b143fd6b8cb6706ba2839412666",
     "tag": "10-SUPP-017",
@@ -1087,7 +1087,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 99,
+    "feature_id": 71,
     "name": "10-SUPP-018",
     "object_id": "obj_291ad9bb143d4a7b781449640ee3f554",
     "tag": "10-SUPP-018",
@@ -1095,7 +1095,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 100,
+    "feature_id": 72,
     "name": "10-SUPP-019",
     "object_id": "obj_3fcb5e67cd27e052dee5a175fb32708c",
     "tag": "10-SUPP-019",
@@ -1103,7 +1103,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 101,
+    "feature_id": 73,
     "name": "10-SUPP-020",
     "object_id": "obj_f5dc6733312d592256a32551fd3abb3a",
     "tag": "10-SUPP-020",
@@ -1111,7 +1111,7 @@
   },
   {
     "class": "CableTray",
-    "feature_id": 102,
+    "feature_id": 74,
     "name": "10-CT-001",
     "object_id": "obj_7110d4217db8ed521921047279bc12d5",
     "tag": "10-CT-001",
@@ -1119,7 +1119,7 @@
   },
   {
     "class": "CableTray",
-    "feature_id": 103,
+    "feature_id": 75,
     "name": "10-CT-002",
     "object_id": "obj_31c3122caf0cb405773881747e8e8954",
     "tag": "10-CT-002",
@@ -1262,7 +1262,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 10,
+    "feature_id": 0,
     "name": "V-2001A",
     "nominal_bore_mm": 50,
     "object_id": "obj_53f9f2cdc4c5d8aee03eb9414eb12615",
@@ -1273,7 +1273,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 11,
+    "feature_id": 1,
     "name": "V-2001B",
     "nominal_bore_mm": 50,
     "object_id": "obj_f17326a7daced0f3393d1a2ed823d07d",
@@ -1284,7 +1284,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 12,
+    "feature_id": 2,
     "name": "V-2001C",
     "nominal_bore_mm": 50,
     "object_id": "obj_ff36580ffa3898252569cc5dcf7ab41c",
@@ -1295,7 +1295,7 @@
   {
     "actuator": "MANUAL",
     "class": "Valve",
-    "feature_id": 13,
+    "feature_id": 3,
     "name": "V-2001D",
     "nominal_bore_mm": 50,
     "object_id": "obj_dd2422f782a6d9ef54977d4658ef3143",
@@ -1307,7 +1307,7 @@
     "class": "Pump",
     "design_pressure_bar": 10.0,
     "design_temperature_c": 180.0,
-    "feature_id": 14,
+    "feature_id": 4,
     "fluid": "STEAM",
     "name": "P-2001",
     "object_id": "obj_248473b1701214ffc33c8c3c73749875",
@@ -1317,7 +1317,7 @@
   },
   {
     "class": "Tank",
-    "feature_id": 15,
+    "feature_id": 0,
     "fluid": "STEAM",
     "name": "TK-2001",
     "object_id": "obj_76d6989818ef6cc3de0136598bd1d29d",
@@ -1327,7 +1327,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 16,
+    "feature_id": 5,
     "instrument_type": "FT",
     "name": "FT-2001",
     "object_id": "obj_88713524490c8ce82e2cd501a9f030f9",
@@ -1336,7 +1336,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 17,
+    "feature_id": 6,
     "instrument_type": "PT",
     "name": "PT-2002",
     "object_id": "obj_4a7c77187e0a450f0d49eaf5875a9d38",
@@ -1345,7 +1345,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 18,
+    "feature_id": 7,
     "instrument_type": "TT",
     "name": "TT-2003",
     "object_id": "obj_82c289e3c60737d674cf03f48acb2179",
@@ -1354,7 +1354,7 @@
   },
   {
     "class": "Instrument",
-    "feature_id": 19,
+    "feature_id": 8,
     "instrument_type": "LT",
     "name": "LT-2004",
     "object_id": "obj_4f5d16986e7e41bb347656be95e3874f",
@@ -1363,7 +1363,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 20,
+    "feature_id": 10,
     "name": "20-SUPP-001",
     "object_id": "obj_9c2a193af2fd80fde4cc57135e18b15d",
     "tag": "20-SUPP-001",
@@ -1371,7 +1371,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 21,
+    "feature_id": 11,
     "name": "20-SUPP-002",
     "object_id": "obj_9160606ebac7da3020c5b848cf3eae78",
     "tag": "20-SUPP-002",
@@ -1379,7 +1379,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 22,
+    "feature_id": 12,
     "name": "20-SUPP-003",
     "object_id": "obj_46f105637d02a143ba18ed1805502640",
     "tag": "20-SUPP-003",
@@ -1387,7 +1387,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 23,
+    "feature_id": 13,
     "name": "20-SUPP-004",
     "object_id": "obj_c101894a4c26d29137b61fd334c4eca9",
     "tag": "20-SUPP-004",
@@ -1395,7 +1395,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 24,
+    "feature_id": 14,
     "name": "20-SUPP-005",
     "object_id": "obj_53fe1446e5e2b0d7ac6f73104c0e2c64",
     "tag": "20-SUPP-005",
@@ -1403,7 +1403,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 25,
+    "feature_id": 15,
     "name": "20-SUPP-006",
     "object_id": "obj_70b0844d72cf037c1a8dddfc2d9313aa",
     "tag": "20-SUPP-006",
@@ -1411,7 +1411,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 26,
+    "feature_id": 16,
     "name": "20-SUPP-007",
     "object_id": "obj_dc72617427c9eb645b9ed98d9e525658",
     "tag": "20-SUPP-007",
@@ -1419,7 +1419,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 27,
+    "feature_id": 17,
     "name": "20-SUPP-008",
     "object_id": "obj_2a89cea83d7e002ba658e9f13a12d00b",
     "tag": "20-SUPP-008",
@@ -1427,7 +1427,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 28,
+    "feature_id": 18,
     "name": "20-SUPP-009",
     "object_id": "obj_ec4b9d20be3cb772f76e41703cf057a8",
     "tag": "20-SUPP-009",
@@ -1435,7 +1435,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 29,
+    "feature_id": 19,
     "name": "20-SUPP-010",
     "object_id": "obj_d7e639006fe2b8e4e997b209030db212",
     "tag": "20-SUPP-010",
@@ -1443,7 +1443,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 30,
+    "feature_id": 20,
     "name": "20-SUPP-011",
     "object_id": "obj_4352843cd86096dc6c34d3e1ac3f6d24",
     "tag": "20-SUPP-011",
@@ -1451,7 +1451,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 31,
+    "feature_id": 21,
     "name": "20-SUPP-012",
     "object_id": "obj_d3075f3e16019ca95cebe0934fc10f00",
     "tag": "20-SUPP-012",
@@ -1459,7 +1459,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 32,
+    "feature_id": 22,
     "name": "20-SUPP-013",
     "object_id": "obj_ab16a4640d9b10cda2761ef768241bf4",
     "tag": "20-SUPP-013",
@@ -1467,7 +1467,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 33,
+    "feature_id": 23,
     "name": "20-SUPP-014",
     "object_id": "obj_35b1051d2878baf381e5164f5d3d6039",
     "tag": "20-SUPP-014",
@@ -1475,7 +1475,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 34,
+    "feature_id": 24,
     "name": "20-SUPP-015",
     "object_id": "obj_13fe6314f214fb847d86e854d8abf9be",
     "tag": "20-SUPP-015",
@@ -1483,7 +1483,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 35,
+    "feature_id": 25,
     "name": "20-SUPP-016",
     "object_id": "obj_46e2323d0abdf46a3b958d893afc4d1c",
     "tag": "20-SUPP-016",
@@ -1491,7 +1491,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 36,
+    "feature_id": 26,
     "name": "20-SUPP-017",
     "object_id": "obj_f8fe0e584302ab0d2869c5fd38c5932c",
     "tag": "20-SUPP-017",
@@ -1499,7 +1499,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 37,
+    "feature_id": 27,
     "name": "20-SUPP-018",
     "object_id": "obj_68b65aa8e8d2df61fe46c32c9ac92813",
     "tag": "20-SUPP-018",
@@ -1507,7 +1507,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 38,
+    "feature_id": 28,
     "name": "20-SUPP-019",
     "object_id": "obj_1febca3ebdec3624124e97f6136ded92",
     "tag": "20-SUPP-019",
@@ -1515,7 +1515,7 @@
   },
   {
     "class": "Support",
-    "feature_id": 39,
+    "feature_id": 29,
     "name": "20-SUPP-020",
     "object_id": "obj_b64e46063de49e7655059eb2ae143103",
     "tag": "20-SUPP-020",
@@ -1523,7 +1523,7 @@
   },
   {
     "class": "CableTray",
-    "feature_id": 40,
+    "feature_id": 30,
     "name": "20-CT-001",
     "object_id": "obj_fd916d14c2cfdfffe0b0bd8f237200d1",
     "tag": "20-CT-001",
@@ -1531,7 +1531,7 @@
   },
   {
     "class": "CableTray",
-    "feature_id": 41,
+    "feature_id": 31,
     "name": "20-CT-002",
     "object_id": "obj_20a032ec6b469a1afeb68da660a7445a",
     "tag": "20-CT-002",

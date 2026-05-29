@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use tilegraph_core::{FeatureMapping, FeatureId, TileId};
-use tilegraph_geometry::{GeometryBatch, Material, MaterialLibrary, MeshPrimitive, Vertex};
+use tilegraph_core::{FeatureId, FeatureMapping, ObjectId, TileId};
+use tilegraph_geometry::{GeometryBatch, InstanceGroup, MaterialLibrary, MeshPrimitive};
 use crate::schema::*;
 use crate::feature_id::make_feature_id_buffer;
 
@@ -70,7 +70,6 @@ impl GlbBuilder {
             root_children.push(node_idx);
         }
 
-        // Root node for batch
         let root_node_idx = self.gltf.nodes.len() as u32;
         self.gltf.nodes.push(Node {
             name: batch.batch_id.clone(),
@@ -78,6 +77,7 @@ impl GlbBuilder {
             matrix: None,
             children: Some(root_children),
             extras: None,
+            extensions: None,
         });
 
         if self.gltf.scenes.is_empty() {
@@ -87,14 +87,9 @@ impl GlbBuilder {
         self.gltf.scenes[0].nodes.push(root_node_idx);
     }
 
-    fn add_mesh_primitive(
-        &mut self,
-        prim: &MeshPrimitive,
-        object_map: &HashMap<String, &tilegraph_core::IndustrialObject>,
-    ) -> u32 {
-        let oid_str = prim.object_id.to_string();
-
-        // --- Pack vertex data ---
+    /// Add prototype geometry to the GLTF buffers/accessors/meshes without creating a node.
+    /// Returns the mesh index.
+    fn add_mesh_geometry(&mut self, prim: &MeshPrimitive) -> u32 {
         let pos_buf_offset = self.binary_data.len() as u32;
         for v in &prim.vertices {
             self.binary_data.extend_from_slice(&v.position[0].to_le_bytes());
@@ -111,13 +106,11 @@ impl GlbBuilder {
         }
         let norm_len = self.binary_data.len() as u32 - norm_buf_offset;
 
-        // --- Feature ID vertex attribute ---
         let fid_buf_offset = self.binary_data.len() as u32;
         let fid_buf = make_feature_id_buffer(prim.vertices.len(), prim.feature_id);
         self.binary_data.extend_from_slice(&fid_buf);
         let fid_len = self.binary_data.len() as u32 - fid_buf_offset;
 
-        // --- Index buffer ---
         let idx_buf_offset = self.binary_data.len() as u32;
         for tri in &prim.indices {
             for &i in tri {
@@ -126,28 +119,49 @@ impl GlbBuilder {
         }
         let idx_len = self.binary_data.len() as u32 - idx_buf_offset;
 
-        // Align to 4 bytes
         while self.binary_data.len() % 4 != 0 {
             self.binary_data.push(0);
         }
 
-        // --- BufferViews ---
         let vc = prim.vertices.len() as u32;
         let ic = (prim.indices.len() * 3) as u32;
 
         let pos_bv = self.gltf.buffer_views.len() as u32;
-        self.gltf.buffer_views.push(BufferView { buffer: 0, byte_offset: pos_buf_offset, byte_length: pos_len, byte_stride: None, target: 34962 });
+        self.gltf.buffer_views.push(BufferView {
+            buffer: 0,
+            byte_offset: pos_buf_offset,
+            byte_length: pos_len,
+            byte_stride: None,
+            target: 34962,
+        });
 
         let norm_bv = self.gltf.buffer_views.len() as u32;
-        self.gltf.buffer_views.push(BufferView { buffer: 0, byte_offset: norm_buf_offset, byte_length: norm_len, byte_stride: None, target: 34962 });
+        self.gltf.buffer_views.push(BufferView {
+            buffer: 0,
+            byte_offset: norm_buf_offset,
+            byte_length: norm_len,
+            byte_stride: None,
+            target: 34962,
+        });
 
         let fid_bv = self.gltf.buffer_views.len() as u32;
-        self.gltf.buffer_views.push(BufferView { buffer: 0, byte_offset: fid_buf_offset, byte_length: fid_len, byte_stride: None, target: 34962 });
+        self.gltf.buffer_views.push(BufferView {
+            buffer: 0,
+            byte_offset: fid_buf_offset,
+            byte_length: fid_len,
+            byte_stride: None,
+            target: 34962,
+        });
 
         let idx_bv = self.gltf.buffer_views.len() as u32;
-        self.gltf.buffer_views.push(BufferView { buffer: 0, byte_offset: idx_buf_offset, byte_length: idx_len, byte_stride: None, target: 34963 });
+        self.gltf.buffer_views.push(BufferView {
+            buffer: 0,
+            byte_offset: idx_buf_offset,
+            byte_length: idx_len,
+            byte_stride: None,
+            target: 34963,
+        });
 
-        // --- Accessors ---
         let aabb = &prim.world_aabb;
         let pos_acc = self.gltf.accessors.len() as u32;
         self.gltf.accessors.push(Accessor {
@@ -193,10 +207,8 @@ impl GlbBuilder {
             max: None,
         });
 
-        // --- Material ---
         let mat_idx = self.material_index.get(&prim.material_name).copied();
 
-        // --- Mesh ---
         let mut attrs = HashMap::new();
         attrs.insert("POSITION".to_string(), pos_acc);
         attrs.insert("NORMAL".to_string(), norm_acc);
@@ -204,17 +216,27 @@ impl GlbBuilder {
 
         let mesh_idx = self.gltf.meshes.len() as u32;
         self.gltf.meshes.push(Mesh {
-            name: oid_str.clone(),
+            name: prim.object_id.to_string(),
             primitives: vec![Primitive {
                 attributes: attrs,
                 indices: Some(idx_acc),
                 material: mat_idx,
-                mode: 4, // TRIANGLES
+                mode: 4,
                 extensions: Some(crate::feature_id::mesh_features_extension(fid_acc)),
             }],
         });
 
-        // --- Node ---
+        mesh_idx
+    }
+
+    fn add_mesh_primitive(
+        &mut self,
+        prim: &MeshPrimitive,
+        object_map: &HashMap<String, &tilegraph_core::IndustrialObject>,
+    ) -> u32 {
+        let oid_str = prim.object_id.to_string();
+        let mesh_idx = self.add_mesh_geometry(prim);
+
         let obj = object_map.get(&oid_str);
         let node_idx = self.gltf.nodes.len() as u32;
 
@@ -222,7 +244,7 @@ impl GlbBuilder {
             object_id: oid_str.clone(),
             tag: o.tag.clone(),
             class: o.class.to_string(),
-            system: None, // populated by post-process
+            system: None,
             feature_id: prim.feature_id,
         });
 
@@ -232,9 +254,9 @@ impl GlbBuilder {
             matrix: None,
             children: None,
             extras,
+            extensions: None,
         });
 
-        // Record feature mapping
         self.feature_mappings.push(FeatureMapping {
             feature_id: FeatureId(prim.feature_id),
             object_id: prim.object_id.clone(),
@@ -245,7 +267,6 @@ impl GlbBuilder {
             world_aabb: prim.world_aabb.clone(),
         });
 
-        // Record per-feature properties for EXT_structural_metadata property table
         self.feature_properties.push(FeatureProperties {
             object_id: oid_str.clone(),
             tag: obj.and_then(|o| o.tag.clone()).unwrap_or_default(),
@@ -261,13 +282,145 @@ impl GlbBuilder {
         node_idx
     }
 
-    /// Build EXT_structural_metadata property table and attach it to the glTF root.
+    /// Add an instance group as a single EXT_mesh_gpu_instancing node.
+    pub fn add_instance_group(&mut self, group: &InstanceGroup) {
+        let mesh_idx = self.add_mesh_geometry(&group.prototype_mesh);
+
+        let count = group.instances.len();
+
+        let trans_bytes: Vec<u8> = group
+            .instances
+            .iter()
+            .flat_map(|r| r.translation.iter().flat_map(|v| v.to_le_bytes()))
+            .collect();
+        let rot_bytes: Vec<u8> = group
+            .instances
+            .iter()
+            .flat_map(|r| r.rotation.iter().flat_map(|v| v.to_le_bytes()))
+            .collect();
+        let scale_bytes: Vec<u8> = group
+            .instances
+            .iter()
+            .flat_map(|r| r.scale.iter().flat_map(|v| v.to_le_bytes()))
+            .collect();
+        let fid_bytes: Vec<u8> = group
+            .instances
+            .iter()
+            .flat_map(|r| r.feature_id.to_le_bytes())
+            .collect();
+
+        let base_bv = self.gltf.buffer_views.len() as u32;
+        for bytes in [&trans_bytes, &rot_bytes, &scale_bytes, &fid_bytes] {
+            let offset = self.binary_data.len() as u32;
+            self.binary_data.extend_from_slice(bytes);
+            while self.binary_data.len() % 4 != 0 {
+                self.binary_data.push(0);
+            }
+            let len = bytes.len() as u32;
+            self.gltf.buffer_views.push(BufferView {
+                buffer: 0,
+                byte_offset: offset,
+                byte_length: len,
+                byte_stride: None,
+                target: 0,
+            });
+        }
+
+        let trans_acc = self.gltf.accessors.len() as u32;
+        self.gltf.accessors.push(Accessor {
+            buffer_view: base_bv,
+            byte_offset: Some(0),
+            component_type: COMPONENT_FLOAT,
+            count: count as u32,
+            type_: "VEC3".to_string(),
+            min: None,
+            max: None,
+        });
+        let rot_acc = trans_acc + 1;
+        self.gltf.accessors.push(Accessor {
+            buffer_view: base_bv + 1,
+            byte_offset: Some(0),
+            component_type: COMPONENT_FLOAT,
+            count: count as u32,
+            type_: "VEC4".to_string(),
+            min: None,
+            max: None,
+        });
+        let scale_acc = trans_acc + 2;
+        self.gltf.accessors.push(Accessor {
+            buffer_view: base_bv + 2,
+            byte_offset: Some(0),
+            component_type: COMPONENT_FLOAT,
+            count: count as u32,
+            type_: "VEC3".to_string(),
+            min: None,
+            max: None,
+        });
+        let fid_acc = trans_acc + 3;
+        self.gltf.accessors.push(Accessor {
+            buffer_view: base_bv + 3,
+            byte_offset: Some(0),
+            component_type: COMPONENT_UNSIGNED_INT,
+            count: count as u32,
+            type_: "SCALAR".to_string(),
+            min: None,
+            max: None,
+        });
+
+        let node_idx = self.gltf.nodes.len() as u32;
+        self.gltf.nodes.push(Node {
+            name: format!("instances_{:?}_{}", group.key.class, group.key.nominal_bore_mm),
+            mesh: Some(mesh_idx),
+            matrix: None,
+            children: None,
+            extras: None,
+            extensions: Some(serde_json::json!({
+                "EXT_mesh_gpu_instancing": {
+                    "attributes": {
+                        "TRANSLATION": trans_acc,
+                        "ROTATION": rot_acc,
+                        "SCALE": scale_acc,
+                        "_FEATURE_ID_0": fid_acc
+                    }
+                }
+            })),
+        });
+
+        for inst in &group.instances {
+            self.feature_mappings.push(FeatureMapping {
+                feature_id: FeatureId(inst.feature_id),
+                object_id: inst.object_id.clone(),
+                tile_id: self.tile_id.clone(),
+                glb_content_uri: self.content_uri.clone(),
+                gltf_mesh_index: mesh_idx,
+                gltf_node_index: node_idx,
+                world_aabb: inst.world_aabb.clone(),
+            });
+            self.feature_properties.push(FeatureProperties {
+                object_id: inst.object_id.to_string(),
+                tag: inst.tag.clone().unwrap_or_default(),
+                class: format!("{:?}", group.key.class),
+                system: String::new(),
+                feature_id: inst.feature_id,
+            });
+        }
+
+        if !self.gltf.extensions_used.contains(&"EXT_mesh_gpu_instancing".to_string()) {
+            self.gltf.extensions_used.push("EXT_mesh_gpu_instancing".to_string());
+        }
+
+        if self.gltf.scenes.is_empty() {
+            self.gltf.scenes.push(Scene { nodes: Vec::new(), name: Some("root".to_string()) });
+            self.gltf.scene = Some(0);
+        }
+        self.gltf.scenes[0].nodes.push(node_idx);
+    }
+
     fn attach_structural_metadata(&mut self) {
         if self.feature_properties.is_empty() {
             return;
         }
 
-        // Sort by feature_id so row index matches feature ID
         self.feature_properties.sort_by_key(|fp| fp.feature_id);
         let count = self.feature_properties.len();
 
@@ -288,7 +441,6 @@ impl GlbBuilder {
         let next_bv_idx = self.gltf.buffer_views.len() as u32;
         let (columns, extra_bytes) = table_builder.finalize(current_bin_len, next_bv_idx);
 
-        // Add buffer views — one (values) or two (values + offsets) per column
         let mut offset = current_bin_len as u32;
         for col in &columns {
             let val_len = col.values_bytes.len() as u32;
@@ -322,11 +474,9 @@ impl GlbBuilder {
 
         self.binary_data.extend_from_slice(&extra_bytes);
 
-        // Attach EXT_structural_metadata extension to glTF root
         let ext_json = crate::structural_metadata::PropertyTableBuilder::to_extension_json(&columns, count);
         self.gltf.extensions = Some(ext_json);
 
-        // Wire up EXT_mesh_features propertyTable reference on each primitive with _FEATURE_ID_0
         for mesh in &mut self.gltf.meshes {
             for prim in &mut mesh.primitives {
                 if prim.attributes.contains_key("_FEATURE_ID_0") {
@@ -344,12 +494,10 @@ impl GlbBuilder {
         }
     }
 
-    /// Serialize to binary GLB (header + JSON chunk + BIN chunk).
-    /// Consumes the builder and returns both the GLB bytes and the accumulated feature mappings.
+    /// Serialize to binary GLB. Returns the bytes and accumulated feature mappings.
     pub fn build_glb(mut self) -> (Vec<u8>, Vec<FeatureMapping>) {
         self.attach_structural_metadata();
 
-        // Update buffer byte length
         let bin_len = self.binary_data.len() as u32;
         if self.gltf.buffers.is_empty() {
             self.gltf.buffers.push(Buffer { byte_length: bin_len, uri: None });
@@ -357,12 +505,10 @@ impl GlbBuilder {
             self.gltf.buffers[0].byte_length = bin_len;
         }
 
-        // JSON chunk
         let json_bytes = serde_json::to_vec(&self.gltf).expect("gltf serialization");
         let json_padded_len = (json_bytes.len() + 3) & !3;
         let json_padding = json_padded_len - json_bytes.len();
 
-        // BIN chunk
         let bin_padded_len = (self.binary_data.len() + 3) & !3;
         let bin_padding = bin_padded_len - self.binary_data.len();
 
@@ -370,22 +516,23 @@ impl GlbBuilder {
 
         let mut out = Vec::with_capacity(total_len);
 
-        // GLB header
-        out.extend_from_slice(b"glTF");          // magic
-        out.extend_from_slice(&2u32.to_le_bytes()); // version
-        out.extend_from_slice(&(total_len as u32).to_le_bytes()); // total length
+        out.extend_from_slice(b"glTF");
+        out.extend_from_slice(&2u32.to_le_bytes());
+        out.extend_from_slice(&(total_len as u32).to_le_bytes());
 
-        // JSON chunk header
         out.extend_from_slice(&(json_padded_len as u32).to_le_bytes());
         out.extend_from_slice(b"JSON");
         out.extend_from_slice(&json_bytes);
-        for _ in 0..json_padding { out.push(0x20); } // space pad
+        for _ in 0..json_padding {
+            out.push(0x20);
+        }
 
-        // BIN chunk header
         out.extend_from_slice(&(bin_padded_len as u32).to_le_bytes());
         out.extend_from_slice(b"BIN\0");
         out.extend_from_slice(&self.binary_data);
-        for _ in 0..bin_padding { out.push(0); }
+        for _ in 0..bin_padding {
+            out.push(0);
+        }
 
         (out, self.feature_mappings)
     }

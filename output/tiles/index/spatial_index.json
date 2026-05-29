@@ -17,7 +17,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 87
+      "feature_id": 59
     },
     {
       "object_id": "obj_e8bfb51f27de8ce50c50f44b58ec9f9e",
@@ -34,7 +34,7 @@
         0.656
       ],
       "tile_id": "area-a/content",
-      "feature_id": 60
+      "feature_id": 13
     },
     {
       "object_id": "obj_5436fb4960f6a505257f9024b222227f",
@@ -51,7 +51,7 @@
         0.606
       ],
       "tile_id": "area-a/content",
-      "feature_id": 16
+      "feature_id": 0
     },
     {
       "object_id": "obj_9873a143029052739bfc6aa51b6981d8",
@@ -68,7 +68,7 @@
         0.656
       ],
       "tile_id": "area-a/content",
-      "feature_id": 61
+      "feature_id": 14
     },
     {
       "object_id": "obj_a15292af362152358f397142b94587a3",
@@ -85,7 +85,7 @@
         0.606
       ],
       "tile_id": "area-a/content",
-      "feature_id": 17
+      "feature_id": 1
     },
     {
       "object_id": "obj_1e130b90c7492cd16bf3964065fbb8d6",
@@ -102,7 +102,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 90
+      "feature_id": 62
     },
     {
       "object_id": "obj_5402c3ee5033f49e91550a3b52a5be3a",
@@ -119,7 +119,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 89
+      "feature_id": 61
     },
     {
       "object_id": "obj_2f5849776819890528c5154d0ee747f4",
@@ -136,7 +136,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 88
+      "feature_id": 60
     },
     {
       "object_id": "obj_df7d008c5f2e9cf87ba33b504250b754",
@@ -153,7 +153,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 92
+      "feature_id": 64
     },
     {
       "object_id": "obj_9f8d7f354ca29cfb4e4de13193c0a681",
@@ -170,7 +170,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 91
+      "feature_id": 63
     },
     {
       "object_id": "obj_42cdb75a104cc77764f475124c7f60f2",
@@ -187,7 +187,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 47
+      "feature_id": 33
     },
     {
       "object_id": "obj_710832f1f6cbbfcfb4f28d5a3fadc143",
@@ -204,7 +204,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 46
+      "feature_id": 32
     },
     {
       "object_id": "obj_ece9c858080e26fbdadc557953285c8b",
@@ -221,7 +221,7 @@
         0.586
       ],
       "tile_id": "area-a/content",
-      "feature_id": 32
+      "feature_id": 4
     },
     {
       "object_id": "obj_9c5a3a56814296558a90dea0041be894",
@@ -238,7 +238,7 @@
         0.586
       ],
       "tile_id": "area-a/content",
-      "feature_id": 34
+      "feature_id": 6
     },
     {
       "object_id": "obj_c50d4170b264d21fb10aeb4fcb8aa3f5",
@@ -255,7 +255,7 @@
         0.586
       ],
       "tile_id": "area-a/content",
-      "feature_id": 33
+      "feature_id": 5
     },
     {
       "object_id": "obj_efa66d80926599bfa00fd67446e40767",
@@ -272,7 +272,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 44
+      "feature_id": 30
     },
     {
       "object_id": "obj_db662818e5ee34f6d60bc97e51acb3cc",
@@ -289,7 +289,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 42
+      "feature_id": 28
     },
     {
       "object_id": "obj_e8bccda8690c1ccff28fae3f31281f9a",
@@ -306,7 +306,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 49
+      "feature_id": 35
     },
     {
       "object_id": "obj_1dd7e4aa5cc01f1d5863bc72ea4c04d3",
@@ -323,7 +323,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 45
+      "feature_id": 31
     },
     {
       "object_id": "obj_0bf89e75b9fd3b30b77c5228ccdc484a",
@@ -340,7 +340,7 @@
         0.606
       ],
       "tile_id": "area-a/content",
-      "feature_id": 19
+      "feature_id": 3
     },
     {
       "object_id": "obj_378ecf02f6cd7626f3db4e9881fb3639",
@@ -357,7 +357,7 @@
         0.656
       ],
       "tile_id": "area-a/content",
-      "feature_id": 62
+      "feature_id": 15
     },
     {
       "object_id": "obj_b8c8aa6466bf0d4bcea7028175226bb4",
@@ -374,7 +374,7 @@
         0.606
       ],
       "tile_id": "area-a/content",
-      "feature_id": 18
+      "feature_id": 2
     },
     {
       "object_id": "obj_ab16a4640d9b10cda2761ef768241bf4",
@@ -391,7 +391,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 32
+      "feature_id": 22
     },
     {
       "object_id": "obj_c131576b9bee4efda6ebca6ebefdc81b",
@@ -408,7 +408,7 @@
         0.656
       ],
       "tile_id": "area-a/content",
-      "feature_id": 63
+      "feature_id": 16
     },
     {
       "object_id": "obj_5185a98702f5f050748a196675971ac2",
@@ -442,7 +442,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 100
+      "feature_id": 72
     },
     {
       "object_id": "obj_1febca3ebdec3624124e97f6136ded92",
@@ -459,7 +459,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 38
+      "feature_id": 28
     },
     {
       "object_id": "obj_68b65aa8e8d2df61fe46c32c9ac92813",
@@ -476,7 +476,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 37
+      "feature_id": 27
     },
     {
       "object_id": "obj_05605f08a60d8939eff3ef743f0d7a1a",
@@ -493,7 +493,7 @@
         0.586
       ],
       "tile_id": "area-a/content",
-      "feature_id": 35
+      "feature_id": 7
     },
     {
       "object_id": "obj_e69a06c24a2203e3470640f653123fc5",
@@ -510,7 +510,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 53
+      "feature_id": 39
     },
     {
       "object_id": "obj_a42ef2f02823aff55d2179db1db86285",
@@ -527,7 +527,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 52
+      "feature_id": 38
     },
     {
       "object_id": "obj_87f7d061ce843b65ec7c91c272946ef1",
@@ -544,7 +544,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 56
+      "feature_id": 42
     },
     {
       "object_id": "obj_96f2f62509e5a1f658c6d76bb7b53b59",
@@ -561,7 +561,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 55
+      "feature_id": 41
     },
     {
       "object_id": "obj_36be43d1f6d3f1583dbda0f9533638aa",
@@ -578,7 +578,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 57
+      "feature_id": 43
     },
     {
       "object_id": "obj_0969b8fc8a7dd154cdf5544f65d673a3",
@@ -595,7 +595,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 54
+      "feature_id": 40
     },
     {
       "object_id": "obj_5836fcdd7f99fbc97dc184fa3ea6421b",
@@ -612,7 +612,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 59
+      "feature_id": 45
     },
     {
       "object_id": "obj_bfa15f6af90427b45639127881e9e456",
@@ -629,7 +629,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 58
+      "feature_id": 44
     },
     {
       "object_id": "obj_02b6cc579e4c74779f4472cdc5761406",
@@ -646,7 +646,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 83
+      "feature_id": 55
     },
     {
       "object_id": "obj_1e78f83802082ac1dfa4aef4ef0b670c",
@@ -680,7 +680,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 82
+      "feature_id": 54
     },
     {
       "object_id": "obj_9c2a193af2fd80fde4cc57135e18b15d",
@@ -697,7 +697,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 20
+      "feature_id": 10
     },
     {
       "object_id": "obj_ea9cd2057168282731933587122e1603",
@@ -714,7 +714,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 84
+      "feature_id": 56
     },
     {
       "object_id": "obj_04c7b5190135789768e298e5b500f393",
@@ -731,7 +731,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 85
+      "feature_id": 57
     },
     {
       "object_id": "obj_81dff8556c233e8c05eab6c404b5ec53",
@@ -748,7 +748,7 @@
         0.7
       ],
       "tile_id": "area-a/content",
-      "feature_id": 76
+      "feature_id": 21
     },
     {
       "object_id": "obj_8745dea8547ed3a097ba30ec96342f98",
@@ -765,7 +765,7 @@
         0.7
       ],
       "tile_id": "area-a/content",
-      "feature_id": 36
+      "feature_id": 8
     },
     {
       "object_id": "obj_baf95cd4eea1c346722cefd317761215",
@@ -782,7 +782,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 94
+      "feature_id": 66
     },
     {
       "object_id": "obj_a8b7dcf9df33e8d59d178f32dd4bb624",
@@ -799,7 +799,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 93
+      "feature_id": 65
     },
     {
       "object_id": "obj_c578da168378643e58cf96c95ac46727",
@@ -816,7 +816,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 97
+      "feature_id": 69
     },
     {
       "object_id": "obj_a833a06475111b04bafaffeba0f844d8",
@@ -833,7 +833,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 96
+      "feature_id": 68
     },
     {
       "object_id": "obj_c97cbb5725e680676e0e8ab96f465cbb",
@@ -850,7 +850,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 95
+      "feature_id": 67
     },
     {
       "object_id": "obj_291ad9bb143d4a7b781449640ee3f554",
@@ -867,7 +867,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 99
+      "feature_id": 71
     },
     {
       "object_id": "obj_60a84b143fd6b8cb6706ba2839412666",
@@ -884,7 +884,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 98
+      "feature_id": 70
     },
     {
       "object_id": "obj_dad2df050a4f6d8bc8e49f0d3c1c1346",
@@ -901,7 +901,7 @@
         10.061591983208718
       ],
       "tile_id": "area-a/content",
-      "feature_id": 37
+      "feature_id": 0
     },
     {
       "object_id": "obj_3c1a5d23a4e7ab2fea4711ea7fb22f4b",
@@ -918,7 +918,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 86
+      "feature_id": 58
     },
     {
       "object_id": "obj_f5dc6733312d592256a32551fd3abb3a",
@@ -935,7 +935,7 @@
         2.0
       ],
       "tile_id": "area-a/content",
-      "feature_id": 101
+      "feature_id": 73
     },
     {
       "object_id": "obj_6b4674df97204cfe0f211b5fa710dd82",
@@ -952,7 +952,7 @@
         10.061591983208718
       ],
       "tile_id": "area-a/content",
-      "feature_id": 77
+      "feature_id": 1
     },
     {
       "object_id": "obj_dc72617427c9eb645b9ed98d9e525658",
@@ -969,7 +969,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 26
+      "feature_id": 16
     },
     {
       "object_id": "obj_c101894a4c26d29137b61fd334c4eca9",
@@ -986,7 +986,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 23
+      "feature_id": 13
     },
     {
       "object_id": "obj_46f105637d02a143ba18ed1805502640",
@@ -1003,7 +1003,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 22
+      "feature_id": 12
     },
     {
       "object_id": "obj_f8fe0e584302ab0d2869c5fd38c5932c",
@@ -1020,7 +1020,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 36
+      "feature_id": 26
     },
     {
       "object_id": "obj_d7e639006fe2b8e4e997b209030db212",
@@ -1037,7 +1037,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 29
+      "feature_id": 19
     },
     {
       "object_id": "obj_2a89cea83d7e002ba658e9f13a12d00b",
@@ -1054,7 +1054,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 27
+      "feature_id": 17
     },
     {
       "object_id": "obj_9160606ebac7da3020c5b848cf3eae78",
@@ -1071,7 +1071,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 21
+      "feature_id": 11
     },
     {
       "object_id": "obj_b64e46063de49e7655059eb2ae143103",
@@ -1088,7 +1088,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 39
+      "feature_id": 29
     },
     {
       "object_id": "obj_ec4b9d20be3cb772f76e41703cf057a8",
@@ -1105,7 +1105,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 28
+      "feature_id": 18
     },
     {
       "object_id": "obj_d3075f3e16019ca95cebe0934fc10f00",
@@ -1122,7 +1122,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 31
+      "feature_id": 21
     },
     {
       "object_id": "obj_70b0844d72cf037c1a8dddfc2d9313aa",
@@ -1139,7 +1139,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 25
+      "feature_id": 15
     },
     {
       "object_id": "obj_53fe1446e5e2b0d7ac6f73104c0e2c64",
@@ -1156,7 +1156,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 24
+      "feature_id": 14
     },
     {
       "object_id": "obj_46e2323d0abdf46a3b958d893afc4d1c",
@@ -1173,7 +1173,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 35
+      "feature_id": 25
     },
     {
       "object_id": "obj_35b1051d2878baf381e5164f5d3d6039",
@@ -1190,7 +1190,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 33
+      "feature_id": 23
     },
     {
       "object_id": "obj_76d6989818ef6cc3de0136598bd1d29d",
@@ -1207,7 +1207,7 @@
         10.061591983208718
       ],
       "tile_id": "area-b/content",
-      "feature_id": 15
+      "feature_id": 0
     },
     {
       "object_id": "obj_248473b1701214ffc33c8c3c73749875",
@@ -1224,7 +1224,7 @@
         0.7
       ],
       "tile_id": "area-b/content",
-      "feature_id": 14
+      "feature_id": 4
     },
     {
       "object_id": "obj_13fe6314f214fb847d86e854d8abf9be",
@@ -1241,7 +1241,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 34
+      "feature_id": 24
     },
     {
       "object_id": "obj_4352843cd86096dc6c34d3e1ac3f6d24",
@@ -1258,7 +1258,7 @@
         2.0
       ],
       "tile_id": "area-b/content",
-      "feature_id": 30
+      "feature_id": 20
     },
     {
       "object_id": "obj_dc710ab2e0d6cd527cea52522b933885",
@@ -1292,7 +1292,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 43
+      "feature_id": 29
     },
     {
       "object_id": "obj_ec4044d3bb8a51e382d03e51c1c342b3",
@@ -1309,7 +1309,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 38
+      "feature_id": 9
     },
     {
       "object_id": "obj_8f0582c02ab7b06af711446b72267b75",
@@ -1326,7 +1326,7 @@
         0.556
       ],
       "tile_id": "area-a/content",
-      "feature_id": 73
+      "feature_id": 18
     },
     {
       "object_id": "obj_fefda1d853bd60d277f0594f5f9a0509",
@@ -1343,7 +1343,7 @@
         0.556
       ],
       "tile_id": "area-a/content",
-      "feature_id": 72
+      "feature_id": 17
     },
     {
       "object_id": "obj_e54a940f0ca3ce3b6c5e0411304b6b93",
@@ -1445,7 +1445,7 @@
         3.1
       ],
       "tile_id": "area-a/content",
-      "feature_id": 102
+      "feature_id": 74
     },
     {
       "object_id": "obj_31c3122caf0cb405773881747e8e8954",
@@ -1462,7 +1462,7 @@
         3.1
       ],
       "tile_id": "area-a/content",
-      "feature_id": 103
+      "feature_id": 75
     },
     {
       "object_id": "obj_c10ca15ad0bd7db5941b8deaed87cbd0",
@@ -1479,7 +1479,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 78
+      "feature_id": 22
     },
     {
       "object_id": "obj_70f654f21a9d633ae7e2e300823d9d02",
@@ -1496,7 +1496,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 40
+      "feature_id": 11
     },
     {
       "object_id": "obj_084220f613f6a35c1120af420db35ec5",
@@ -1513,7 +1513,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 39
+      "feature_id": 10
     },
     {
       "object_id": "obj_b7f957c244cd5691d052a7cf992f8a8e",
@@ -1530,7 +1530,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 80
+      "feature_id": 24
     },
     {
       "object_id": "obj_0952e45b8c7212a2017adec9b1ed28b0",
@@ -1547,7 +1547,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 79
+      "feature_id": 23
     },
     {
       "object_id": "obj_997cc9fb1f5b4cf778da43f055d84bc0",
@@ -1564,7 +1564,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 41
+      "feature_id": 12
     },
     {
       "object_id": "obj_51ce5c2e1831ed1397c397939bb1cf40",
@@ -1581,7 +1581,7 @@
         1.65
       ],
       "tile_id": "area-a/content",
-      "feature_id": 81
+      "feature_id": 25
     },
     {
       "object_id": "obj_f17326a7daced0f3393d1a2ed823d07d",
@@ -1598,7 +1598,7 @@
         0.556
       ],
       "tile_id": "area-b/content",
-      "feature_id": 11
+      "feature_id": 1
     },
     {
       "object_id": "obj_2f793a8169979ddaf6ffbd0eb600796c",
@@ -1615,7 +1615,7 @@
         0.556
       ],
       "tile_id": "area-a/content",
-      "feature_id": 75
+      "feature_id": 20
     },
     {
       "object_id": "obj_22cdcc1224b5fb3b2b13ae293b7cba32",
@@ -1632,7 +1632,7 @@
         0.556
       ],
       "tile_id": "area-a/content",
-      "feature_id": 74
+      "feature_id": 19
     },
     {
       "object_id": "obj_dd2422f782a6d9ef54977d4658ef3143",
@@ -1649,7 +1649,7 @@
         0.556
       ],
       "tile_id": "area-b/content",
-      "feature_id": 13
+      "feature_id": 3
     },
     {
       "object_id": "obj_ff36580ffa3898252569cc5dcf7ab41c",
@@ -1666,7 +1666,7 @@
         0.556
       ],
       "tile_id": "area-b/content",
-      "feature_id": 12
+      "feature_id": 2
     },
     {
       "object_id": "obj_2fc55d32b477ddefa5ca543a71a4f8ae",
@@ -1683,7 +1683,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 50
+      "feature_id": 36
     },
     {
       "object_id": "obj_6a9a93560c7214c66037ec66c0ec431c",
@@ -1700,7 +1700,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 48
+      "feature_id": 34
     },
     {
       "object_id": "obj_53f9f2cdc4c5d8aee03eb9414eb12615",
@@ -1717,7 +1717,7 @@
         0.556
       ],
       "tile_id": "area-b/content",
-      "feature_id": 10
+      "feature_id": 0
     },
     {
       "object_id": "obj_d4ebd6c20d62bab13d9dd2f45a8c6b2c",
@@ -1734,7 +1734,7 @@
         0.578
       ],
       "tile_id": "area-a/content",
-      "feature_id": 51
+      "feature_id": 37
     },
     {
       "object_id": "obj_4a7c77187e0a450f0d49eaf5875a9d38",
@@ -1751,7 +1751,7 @@
         1.65
       ],
       "tile_id": "area-b/content",
-      "feature_id": 17
+      "feature_id": 6
     },
     {
       "object_id": "obj_20a032ec6b469a1afeb68da660a7445a",
@@ -1768,7 +1768,7 @@
         3.1
       ],
       "tile_id": "area-b/content",
-      "feature_id": 41
+      "feature_id": 31
     },
     {
       "object_id": "obj_fd916d14c2cfdfffe0b0bd8f237200d1",
@@ -1785,7 +1785,7 @@
         3.1
       ],
       "tile_id": "area-b/content",
-      "feature_id": 40
+      "feature_id": 30
     },
     {
       "object_id": "obj_4f5d16986e7e41bb347656be95e3874f",
@@ -1802,7 +1802,7 @@
         1.65
       ],
       "tile_id": "area-b/content",
-      "feature_id": 19
+      "feature_id": 8
     },
     {
       "object_id": "obj_82c289e3c60737d674cf03f48acb2179",
@@ -1819,7 +1819,7 @@
         1.65
       ],
       "tile_id": "area-b/content",
-      "feature_id": 18
+      "feature_id": 7
     },
     {
       "object_id": "obj_119ed8982108483b62b7b2c13b55b0e4",
@@ -1870,7 +1870,7 @@
         1.65
       ],
       "tile_id": "area-b/content",
-      "feature_id": 16
+      "feature_id": 5
     },
     {
       "object_id": "obj_5f95ed3122723647201944347cd7138f",
@@ -1904,7 +1904,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 25
+      "feature_id": 21
     },
     {
       "object_id": "obj_a4aee1e97d3c1e57d866fd1c566bed1c",
@@ -1921,7 +1921,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 21
+      "feature_id": 17
     },
     {
       "object_id": "obj_97fadbcf986d4e16c55fa8f7c9a6e988",
@@ -1938,7 +1938,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 20
+      "feature_id": 16
     },
     {
       "object_id": "obj_3fede2e8a70ee03500f343c9006f0f0e",
@@ -1989,7 +1989,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 24
+      "feature_id": 20
     },
     {
       "object_id": "obj_d26d5fbdda0654ee3b44d2887e983bae",
@@ -2006,7 +2006,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 23
+      "feature_id": 19
     },
     {
       "object_id": "obj_3382873fff759c6c0a26fd7e36f7a91d",
@@ -2023,7 +2023,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 22
+      "feature_id": 18
     },
     {
       "object_id": "obj_86d06ec11e2149c21528ed5dca07e401",
@@ -2040,7 +2040,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 27
+      "feature_id": 23
     },
     {
       "object_id": "obj_838b7cf1f2e243e59acd3d2c813563a0",
@@ -2057,7 +2057,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 26
+      "feature_id": 22
     },
     {
       "object_id": "obj_366db97f57978422f2912a97dd655667",
@@ -2074,7 +2074,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 68
+      "feature_id": 50
     },
     {
       "object_id": "obj_61c63645babbfa8b795516ab6b8ef5d2",
@@ -2091,7 +2091,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 67
+      "feature_id": 49
     },
     {
       "object_id": "obj_d30011592de092bbf75a5608ae700a6a",
@@ -2108,7 +2108,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 66
+      "feature_id": 48
     },
     {
       "object_id": "obj_1d9f147375610026a600da7bd1d1703b",
@@ -2125,7 +2125,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 28
+      "feature_id": 24
     },
     {
       "object_id": "obj_765f70476ea720c74e7d2950cf8b64a6",
@@ -2142,7 +2142,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 69
+      "feature_id": 51
     },
     {
       "object_id": "obj_c855c790bc72aa0038a6efd5db89dc81",
@@ -2159,7 +2159,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 65
+      "feature_id": 47
     },
     {
       "object_id": "obj_f52b3241322cc0b8b7c25329e4d76d59",
@@ -2176,7 +2176,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 64
+      "feature_id": 46
     },
     {
       "object_id": "obj_e34e2c3308aab5fe2cd0917790d07d63",
@@ -2193,7 +2193,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 71
+      "feature_id": 53
     },
     {
       "object_id": "obj_5d073edfe4e33bfe2c9acbd44b57b1d7",
@@ -2210,7 +2210,7 @@
         0.528
       ],
       "tile_id": "area-a/content",
-      "feature_id": 70
+      "feature_id": 52
     },
     {
       "object_id": "obj_7905b57e4bfacdafd2ded2f30c9e004a",
@@ -2312,7 +2312,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 30
+      "feature_id": 26
     },
     {
       "object_id": "obj_602d18010a039130742d74d4f508a767",
@@ -2329,7 +2329,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 29
+      "feature_id": 25
     },
     {
       "object_id": "obj_dceae650d2fbd38a9836f37bc1305f94",
@@ -2363,7 +2363,7 @@
         0.543
       ],
       "tile_id": "area-a/content",
-      "feature_id": 31
+      "feature_id": 27
     },
     {
       "object_id": "obj_ce3f72330a2cacfb736036f63a0d671f",

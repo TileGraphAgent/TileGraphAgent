@@ -1,13 +1,13 @@
 use clap::Args;
 use std::path::Path;
-use tilegraph_core::{Aabb, FeatureId, FeatureTable, GraphNodeExport, IndustrialObject, TileId};
+use tilegraph_core::{Aabb, FeatureId, FeatureTable, IndustrialObject, TileId};
 use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
 use tilegraph_geometry::GeometryGroup;
 use tilegraph_gltf::GlbWriter;
 use tilegraph_tiles::{
-    builder::{AreaBatch, TilesetBuilder},
+    builder::{LodBatch, TilesetBuilder},
     validate::validate_tileset,
-    TilesetWriter,
+    ClassBasedLod, LodLevel, LodStrategy, TilesetWriter,
 };
 use tilegraph_spatial::SpatialIndex;
 use std::collections::HashMap;
@@ -35,8 +35,6 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
         .map(|o| (o.object_id.to_string(), o))
         .collect();
 
-    // Find the area tag for each object by walking up the parent chain.
-    // Area nodes have ObjectClass::Area. Their tag is "10" or "20".
     let resolve_area = |start: &IndustrialObject| -> String {
         let mut current = start;
         for _ in 0..10 {
@@ -46,14 +44,16 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
             if let Some(pid) = &current.parent_id {
                 if let Some(parent) = obj_by_id.get(&pid.to_string()) {
                     current = parent;
-                } else { break; }
-            } else { break; }
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
         }
-        // fallback: use area from tag pattern or default
         "area-a".to_string()
     };
 
-    // Map from area tag ("10", "20") to an area_id slug ("area-a", "area-b")
     let area_tag_to_id: HashMap<String, String> = scene.objects.iter()
         .filter(|o| o.class == tilegraph_core::ObjectClass::Area)
         .enumerate()
@@ -65,7 +65,9 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
 
     let mut area_objects: HashMap<String, Vec<IndustrialObject>> = HashMap::new();
     for obj in &scene.objects {
-        if !obj.class.has_geometry() { continue; }
+        if !obj.class.has_geometry() {
+            continue;
+        }
         let area_tag = resolve_area(obj);
         let area_id = area_tag_to_id.get(&area_tag)
             .cloned()
@@ -73,111 +75,127 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
         area_objects.entry(area_id).or_default().push(obj.clone());
     }
 
-    // Ensure at least one area is populated
     if area_objects.is_empty() {
         area_objects.insert("area-a".to_string(), scene.objects.clone());
     }
 
+    let lod_strategy = ClassBasedLod;
     let glb_writer = GlbWriter::new(&content_dir);
     let mut plant_aabb = Aabb::empty();
-    let mut all_feature_mappings = tilegraph_core::FeatureTable::new();
-    let mut tileset_builder = TilesetBuilder::new(Aabb::empty()); // will replace after areas
-
-    let mut all_area_aabbs: Vec<Aabb> = Vec::new();
+    let mut all_feature_mappings = FeatureTable::new();
+    let mut all_lod_batches: Vec<LodBatch> = Vec::new();
     let mut updated_objects: Vec<IndustrialObject> = scene.objects.clone();
 
     for (area_id, objects) in &area_objects {
-        if objects.is_empty() { continue; }
+        if objects.is_empty() {
+            continue;
+        }
 
-        let mut geo_group = GeometryGroup::new(area_id);
-
-        // Track feature_id → object_id mapping for this area
-        let mut fid_map: HashMap<u32, usize> = HashMap::new(); // feature_id → index in updated_objects
+        // Split objects into 3 LOD groups
+        let mut lod0_objs: Vec<&IndustrialObject> = Vec::new();
+        let mut lod1_objs: Vec<&IndustrialObject> = Vec::new();
+        let mut lod2_objs: Vec<&IndustrialObject> = Vec::new();
 
         for obj in objects {
-            let fid = geo_group.process_object(obj);
-            if let Some(fid) = fid {
-                // Update the object in updated_objects with the feature_id
-                if let Some(pos) = updated_objects.iter().position(|o| o.object_id == obj.object_id) {
-                    updated_objects[pos].feature_id = Some(FeatureId(fid));
-                    updated_objects[pos].tile_id = Some(TileId(format!("{}/{}", area_id, "content")));
-                }
+            match lod_strategy.assign_lod(obj) {
+                LodLevel::Lod0 => lod0_objs.push(obj),
+                LodLevel::Lod1 => lod1_objs.push(obj),
+                LodLevel::Lod2 => lod2_objs.push(obj),
             }
         }
 
         let tile_id = TileId(format!("{}/content", area_id));
 
-        for batch in geo_group.batches() {
-            if batch.meshes.is_empty() { continue; }
+        let lod_slices: &[(&[&IndustrialObject], LodLevel)] = &[
+            (&lod0_objs, LodLevel::Lod0),
+            (&lod1_objs, LodLevel::Lod1),
+            (&lod2_objs, LodLevel::Lod2),
+        ];
 
-            let (_, mappings) = glb_writer.write_batch(batch, objects, &tile_id)?;
-            for m in mappings {
-                plant_aabb = plant_aabb.union(&m.world_aabb);
-                all_feature_mappings.mappings.push(m);
+        for (lod_objs, lod_level) in lod_slices {
+            if lod_objs.is_empty() {
+                continue;
             }
 
-            let batch_aabb = batch.combined_aabb().unwrap_or(Aabb::empty());
-            all_area_aabbs.push(batch_aabb.clone());
+            let group_id = format!("{}-lod{}", area_id, *lod_level as u8);
+            let mut geo_group = GeometryGroup::new(&group_id);
 
-            tileset_builder.add_area_batch(AreaBatch {
-                area_id: area_id.clone(),
-                batch_id: batch.batch_id.clone(),
-                content_uri: format!("content/{}.glb", batch.batch_id),
-                aabb: batch_aabb,
-                object_count: batch.meshes.len(),
-                triangle_count: batch.total_triangles(),
-            });
+            for obj in lod_objs.iter() {
+                if let Some(fid) = geo_group.process_object(obj) {
+                    if let Some(pos) = updated_objects.iter().position(|o| o.object_id == obj.object_id) {
+                        updated_objects[pos].feature_id = Some(FeatureId(fid));
+                        updated_objects[pos].tile_id = Some(tile_id.clone());
+                    }
+                }
+            }
+
+            // Owned slice of objects for write_batch calls
+            let owned_objs: Vec<IndustrialObject> = lod_objs.iter().map(|o| (*o).clone()).collect();
+
+            for batch in geo_group.batches() {
+                if batch.meshes.is_empty() {
+                    continue;
+                }
+
+                // Use instanced writer for LOD2 (supports instancing of repeated geometry)
+                let (_, mappings) = if *lod_level == LodLevel::Lod2 {
+                    glb_writer.write_batch_instanced(batch, &owned_objs, &tile_id)?
+                } else {
+                    glb_writer.write_batch(batch, &owned_objs, &tile_id)?
+                };
+
+                for m in &mappings {
+                    plant_aabb = plant_aabb.union(&m.world_aabb);
+                }
+                all_feature_mappings.mappings.extend(mappings);
+
+                let batch_aabb = batch.combined_aabb().unwrap_or(Aabb::empty());
+                all_lod_batches.push(LodBatch {
+                    area_id: area_id.clone(),
+                    sector_id: "sector-00".to_string(),
+                    lod_level: *lod_level,
+                    batch_id: batch.batch_id.clone(),
+                    content_uri: format!("content/{}.glb", batch.batch_id),
+                    aabb: batch_aabb,
+                    object_count: batch.meshes.len(),
+                    triangle_count: batch.total_triangles(),
+                });
+            }
         }
     }
 
-    // If plant_aabb is still empty (no geometry), use a default
     if !plant_aabb.is_valid() {
         plant_aabb = Aabb::new([0.0, 0.0, 0.0], [120.0, 40.0, 15.0]);
     }
 
-    // Rebuild TilesetBuilder with correct plant AABB
-    let mut tileset_builder2 = TilesetBuilder::new(plant_aabb.clone());
-    for (area_id, objects) in &area_objects {
-        if objects.is_empty() { continue; }
-        let mut geo_group = GeometryGroup::new(area_id);
-        for obj in objects { geo_group.process_object(obj); }
-        for batch in geo_group.batches() {
-            if batch.meshes.is_empty() { continue; }
-            let batch_aabb = batch.combined_aabb().unwrap_or(Aabb::new([0.0,0.0,0.0],[1.0,1.0,1.0]));
-            tileset_builder2.add_area_batch(AreaBatch {
-                area_id: area_id.clone(),
-                batch_id: batch.batch_id.clone(),
-                content_uri: format!("content/{}.glb", batch.batch_id),
-                aabb: batch_aabb,
-                object_count: batch.meshes.len(),
-                triangle_count: batch.total_triangles(),
-            });
-        }
+    // Build tileset from collected LOD batches
+    let mut tileset_builder = TilesetBuilder::new(plant_aabb.clone());
+    for batch in all_lod_batches {
+        tileset_builder.add_lod_batch(batch);
     }
+    let tileset = tileset_builder.build();
 
-    let tileset = tileset_builder2.build();
-
-    // Validate tileset
     let validation = validate_tileset(&tileset);
     if !validation.is_ok() {
         for e in &validation.errors {
             tracing::error!("Tileset validation: {}", e);
         }
     }
-    tracing::info!("Tileset: {} tiles, {} leaf tiles", validation.tile_count, validation.leaf_tile_count);
+    tracing::info!(
+        "Tileset: {} tiles, {} leaf tiles",
+        validation.tile_count,
+        validation.leaf_tile_count
+    );
 
-    // Write tileset.json
     let ts_writer = TilesetWriter::new(&tiles_dir);
     ts_writer.write(&tileset)?;
 
-    // Write feature table
     all_feature_mappings.version = "1.0.0".to_string();
     all_feature_mappings.generated_at = chrono_now();
     let ft_path = metadata_dir.join("tile_feature_map.json");
     std::fs::write(&ft_path, serde_json::to_string_pretty(&all_feature_mappings)?)?;
     tracing::info!("Wrote feature table: {} entries", all_feature_mappings.mappings.len());
 
-    // Write object properties table
     let obj_props: Vec<serde_json::Value> = updated_objects.iter().map(|o| {
         let mut v = serde_json::json!({
             "object_id": o.object_id.to_string(),
@@ -197,12 +215,15 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
         serde_json::to_string_pretty(&obj_props)?,
     )?;
 
-    // Build and save spatial index
     let spatial_idx = SpatialIndex::build_from_objects(&updated_objects);
     let idx_path = tiles_dir.join("index").join("spatial_index.json");
     std::fs::create_dir_all(idx_path.parent().unwrap())?;
     spatial_idx.save(&idx_path)?;
-    tracing::info!("Spatial index: {} records → {}", spatial_idx.record_count(), idx_path.display());
+    tracing::info!(
+        "Spatial index: {} records → {}",
+        spatial_idx.record_count(),
+        idx_path.display()
+    );
 
     println!("\nbuild-tiles complete");
     println!("  Tiles dir:     {}", tiles_dir.display());
@@ -214,7 +235,6 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
 }
 
 fn chrono_now() -> String {
-    // Simple timestamp without chrono dep
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| format!("unix:{}", d.as_secs()))
