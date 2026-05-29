@@ -647,7 +647,7 @@ Create stack grid:
 ## TypeScript apps
 
 - `tilegraphmcp`
-- `tilegraph-viewer`
+- `tilegraphviewer`
 
 ## Data systems
 

@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "mcp": "cd apps/tilegraphmcp && npm run dev",
-    "viewer": "cd apps/tilegraph-viewer && npm run dev",
-    "install:all": "npm install && cd apps/tilegraphmcp && npm install && cd ../tilegraph-viewer && npm install"
+    "viewer": "cd apps/tilegraphviewer && npm run dev",
+    "install:all": "npm install && cd apps/tilegraphmcp && npm install && cd ../tilegraphviewer && npm install"
   }
 }

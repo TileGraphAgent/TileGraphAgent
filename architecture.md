@@ -33,7 +33,7 @@ TileGraphAgent is an AI-driven industrial plant viewer that combines a **Rust da
                         │   ├── R2 binding → spatial_index.json                │
                         │   └── Durable Object: ViewerHub (WebSocket)          │
                         │                           │                          │
-                        │  Pages: tilegraph-viewer (CesiumJS + Vite)           │
+                        │  Pages: tilegraphviewer (CesiumJS + Vite)           │
                         │   ├── loads tiles from R2 (public URL)               │
                         │   ├── REST ──▶ Worker /chat, /hierarchy              │
                         │   └── WS   ──▶ Worker /ws/viewer (ViewerHub DO)      │
@@ -261,37 +261,38 @@ new_classes = ["ViewerHub"]
 
 ---
 
-### 4. Cloudflare Pages — Viewer (`tilegraph-viewer`)
+### 4. Cloudflare Pages — Viewer (`tilegraphviewer`)
 
 A static single-page application (Vite + CesiumJS) hosted on Cloudflare Pages. All assets are served from Cloudflare's CDN edge.
 
-**Pages project name:** `tilegraph-viewer`
+**Pages project name:** `tilegraphviewer`
 
 **Build:**
 
-```bash
-cd apps/tilegraph-viewer
+```bashs
+cd apps/tilegraphviewer
 npm run build   # → dist/
 ```
 
 **Cloudflare Pages build settings:**
 
-| Setting          | Value                   |
-| ---------------- | ----------------------- |
-| Framework preset | None (Vite)             |
-| Build command    | `npm run build`         |
-| Output directory | `dist`                  |
-| Root directory   | `apps/tilegraph-viewer` |
-| Node.js version  | 20                      |
+| Setting          | Value                  |
+| ---------------- | ---------------------- |
+| Framework preset | None (Vite)            |
+| Build command    | `npm run build`        |
+| Output directory | `dist`                 |
+| Root directory   | `apps/tilegraphviewer` |
+| Node.js version  | 20                     |
 
 **Environment variables (Pages → Settings → Environment Variables):**
 
 | Variable            | Value                                                                    |
 | ------------------- | ------------------------------------------------------------------------ |
 | `VITE_TILESET_PATH` | `https://pub-65db26f12b0942ce8e8a9d5cb5f36314.r2.dev/tiles/tileset.json` |
-| `VITE_MCP_REST_URL` | `https://tilegraphmcp.<account>.workers.dev`                             |
-| `VITE_WS_URL`       | `wss://tilegraphmcp.<account>.workers.dev/ws/viewer`                     |
+| `VITE_MCP_REST_URL` | `https://tilegraphmcp.quatricmorph.workers.dev`                          |
+| `VITE_WS_URL`       | `wss://tilegraphmcp.quatricmorph.workers.dev/ws/viewer`                  |
 
+s
 The viewer's three runtime dependencies are all cloud-hosted:
 
 | Dependency                            | Protocol    | Source                             |
@@ -352,7 +353,7 @@ Key properties on every node:
 2. Developer uploads outputs to R2
    └── tiles/, metadata/, index/ → tilegraph-data bucket
 
-3. Browser loads tilegraph-viewer (Cloudflare Pages)
+3. Browser loads tilegraphviewer (Cloudflare Pages)
    ├── CesiumJS fetches tileset.json from R2
    ├── CesiumJS streams *.glb tiles from R2 (LOD-based)
    └── JS connects WebSocket to Worker → ViewerHub DO
@@ -390,7 +391,7 @@ cd apps/tilegraphmcp
 npm run dev   # wrangler dev on :9000, with miniflare R2 simulation
 
 # Terminal 4: Run viewer
-cd apps/tilegraph-viewer
+cd apps/tilegraphviewer
 npm run dev   # Vite on :5173
 ```
 
@@ -447,14 +448,14 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm ci
-        working-directory: apps/tilegraph-viewer
+        working-directory: apps/tilegraphviewer
       - run: npm run build
-        working-directory: apps/tilegraph-viewer
+        working-directory: apps/tilegraphviewer
       - uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: pages deploy dist --project-name tilegraph-viewer
-          workingDirectory: apps/tilegraph-viewer
+          command: pages deploy dist --project-name tilegraphviewer
+          workingDirectory: apps/tilegraphviewer
 ```
 
 Cloudflare Pages can also be connected directly to the GitHub repo for zero-config automatic deploys (recommended for the viewer).

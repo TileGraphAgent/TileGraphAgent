@@ -58,7 +58,7 @@ Stage 4.3 — WebSocket heartbeat & command queue
 - src/viewer/bridge.ts — clients tracked by ID in a Map; 30 s heartbeat pings
   every client; pong-timeout terminates stale connections; commandQueue (last 10)
   replayed to new connections; primary-client tracking
-- apps/tilegraph-viewer/src/agent/ws_client.ts — responds to ping with pong
+- apps/tilegraphviewer/src/agent/ws_client.ts — responds to ping with pong
   before the command switch
 
 Stage 4.4 — Audit log persistence & session queries
@@ -189,7 +189,7 @@ Stage 4.3 — WebSocket heartbeat & command queue
 - src/viewer/bridge.ts — clients tracked by ID in a Map; 30 s heartbeat pings
   every client; pong-timeout terminates stale connections; commandQueue (last 10)
   replayed to new connections; primary-client tracking
-- apps/tilegraph-viewer/src/agent/ws_client.ts — responds to ping with pong
+- apps/tilegraphviewer/src/agent/ws_client.ts — responds to ping with pong
   before the command switch
 
 Stage 4.4 — Audit log persistence & session queries

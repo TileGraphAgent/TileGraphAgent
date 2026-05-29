@@ -174,7 +174,7 @@ Use TypeScript for:
   - audit logging
   - viewer event bridge
 
-- `apps/tilegraph-viewer`
+- `apps/tilegraphviewer`
   - CesiumJS viewer
   - load generated 3D Tiles tileset
   - object selection
@@ -380,7 +380,7 @@ tilegraph-agent/
     tilegraph-cli/
   apps/
     tilegraphmcp/
-    tilegraph-viewer/
+    tilegraphviewer/
   data/
     synth/
     ifc/

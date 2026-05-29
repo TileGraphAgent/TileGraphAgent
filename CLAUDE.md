@@ -52,10 +52,10 @@ npm run build    # tsc → dist/
 npm run test     # vitest run
 ```
 
-### TypeScript viewer (`apps/tilegraph-viewer`)
+### TypeScript viewer (`apps/tilegraphviewer`)
 
 ```bash
-cd apps/tilegraph-viewer
+cd apps/tilegraphviewer
 npm install
 npm run dev      # vite dev server on :5173
 npm run build    # vite production build
@@ -86,7 +86,7 @@ data/synth/plant_spec.json
   → tilegraph-graph-export: output/graph/nodes.csv + relationships.csv + import.cypher
   → Neo4j (via docker-compose or --push-to-neo4j flag)
   → tilegraphmcp (reads Neo4j + spatial_index.json, exposes MCP tools)
-  → tilegraph-viewer (CesiumJS loads tileset.json, receives viewer commands via WebSocket)
+  → tilegraphviewer (CesiumJS loads tileset.json, receives viewer commands via WebSocket)
 ```
 
 ### Crate responsibilities

@@ -1,5 +1,5 @@
 {
-  "name": "tilegraph-viewer",
+  "name": "tilegraphviewer",
   "version": "0.1.0",
   "description": "CesiumJS industrial 3D viewer with MCP agent integration panel",
   "type": "module",

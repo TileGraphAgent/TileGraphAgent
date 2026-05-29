@@ -12,19 +12,19 @@ You are implementing production improvements to **TileGraphAgent**, an industria
 ## Repository overview
 
 - **Root:** `/Users/thanh/Workspace/TileGraphAgent`
-- **Viewer app:** `apps/tilegraph-viewer/`
+- **Viewer app:** `apps/tilegraphviewer/`
 - **MCP server app:** `apps/tilegraphmcp/`
-- **Viewer entry:** `apps/tilegraph-viewer/src/main.ts`
-- **Viewer HTML:** `apps/tilegraph-viewer/index.html`
-- **Cesium init:** `apps/tilegraph-viewer/src/viewer/cesium_init.ts`
-- **State store:** `apps/tilegraph-viewer/src/state/store.ts`
-- **WS client:** `apps/tilegraph-viewer/src/agent/ws_client.ts`
+- **Viewer entry:** `apps/tilegraphviewer/src/main.ts`
+- **Viewer HTML:** `apps/tilegraphviewer/index.html`
+- **Cesium init:** `apps/tilegraphviewer/src/viewer/cesium_init.ts`
+- **State store:** `apps/tilegraphviewer/src/state/store.ts`
+- **WS client:** `apps/tilegraphviewer/src/agent/ws_client.ts`
 
 **Install and dev commands:**
 
 ```bash
 # From repo root
-cd apps/tilegraph-viewer && npm install && npm run dev
+cd apps/tilegraphviewer && npm install && npm run dev
 # Viewer runs at http://localhost:5173
 
 cd apps/tilegraphmcp && npm install && npm run dev
@@ -35,10 +35,10 @@ cd apps/tilegraphmcp && npm install && npm run dev
 
 Read the following files in full before making any changes:
 
-- `apps/tilegraph-viewer/src/viewer/cesium_init.ts` — current feature picking (broken), highlight stubs
-- `apps/tilegraph-viewer/src/main.ts` — app entry point
-- `apps/tilegraph-viewer/src/state/store.ts` — `ViewerState` type
-- `apps/tilegraph-viewer/index.html` — HTML structure with panels
+- `apps/tilegraphviewer/src/viewer/cesium_init.ts` — current feature picking (broken), highlight stubs
+- `apps/tilegraphviewer/src/main.ts` — app entry point
+- `apps/tilegraphviewer/src/state/store.ts` — `ViewerState` type
+- `apps/tilegraphviewer/index.html` — HTML structure with panels
 - `apps/tilegraphmcp/src/db/neo4j.ts` — `getObjectProperties` method
 - `apps/tilegraphmcp/src/index.ts` — MCP server startup
 
@@ -59,7 +59,7 @@ This is unreliable because:
 2. The `featureIdToObjectId` and `objectIdToFeatureId` maps are declared but never populated
 3. `getProperty("object_id")` returns `undefined` until `EXT_structural_metadata` is active
 
-### Fix in `apps/tilegraph-viewer/src/viewer/cesium_init.ts`
+### Fix in `apps/tilegraphviewer/src/viewer/cesium_init.ts`
 
 **Replace** the existing pick handler and add tile-load population of the lookup maps:
 
@@ -140,7 +140,7 @@ Return these maps from `initCesiumViewer`.
 
 The current `highlightObjects` uses a generic style string that doesn't correctly match feature properties. The correct approach uses a `conditions` array in `Cesium3DTileStyle`.
 
-### Fix in `apps/tilegraph-viewer/src/viewer/cesium_init.ts`
+### Fix in `apps/tilegraphviewer/src/viewer/cesium_init.ts`
 
 Add color constants and a helper:
 
@@ -300,7 +300,7 @@ async healthCheck(): Promise<{ connected: boolean; latency_ms: number }> {
 
 ### Step B — Properties panel in the viewer
 
-**New file: `apps/tilegraph-viewer/src/ui/properties_panel.ts`**
+**New file: `apps/tilegraphviewer/src/ui/properties_panel.ts`**
 
 ```typescript
 const MCP_REST_BASE = import.meta.env.VITE_MCP_REST_URL ?? "http://localhost:9000"
@@ -369,7 +369,7 @@ function renderPropertiesTable(props: Record<string, unknown>): string {
 }
 ```
 
-**Update `apps/tilegraph-viewer/src/main.ts`** to call `fetchAndRenderProperties` on selection:
+**Update `apps/tilegraphviewer/src/main.ts`** to call `fetchAndRenderProperties` on selection:
 
 ```typescript
 import { fetchAndRenderProperties } from "./ui/properties_panel.js"
@@ -382,7 +382,7 @@ const tileGraph = await initCesiumViewer("cesium-container", TILESET_PATH, async
 })
 ```
 
-**Update `apps/tilegraph-viewer/index.html`** — add CSS for the properties table:
+**Update `apps/tilegraphviewer/index.html`** — add CSS for the properties table:
 
 In the `<style>` block, add:
 
@@ -419,7 +419,7 @@ In the `<style>` block, add:
 
 ## Stage 5.4 — Model tree panel
 
-**New file: `apps/tilegraph-viewer/src/ui/model_tree.ts`**
+**New file: `apps/tilegraphviewer/src/ui/model_tree.ts`**
 
 ```typescript
 const MCP_REST_BASE = import.meta.env.VITE_MCP_REST_URL ?? "http://localhost:9000"
@@ -591,7 +591,7 @@ app.get("/hierarchy", async (_req, res) => {
 })
 ```
 
-**Update `apps/tilegraph-viewer/index.html`** — add a model tree panel and CSS:
+**Update `apps/tilegraphviewer/index.html`** — add a model tree panel and CSS:
 
 Replace the `<div id="sidebar">` content to add a tree panel:
 
@@ -666,7 +666,7 @@ Add CSS for tree:
 }
 ```
 
-**Update `apps/tilegraph-viewer/src/main.ts`** to initialize the tree:
+**Update `apps/tilegraphviewer/src/main.ts`** to initialize the tree:
 
 ```typescript
 import { initModelTree } from "./ui/model_tree.js"
@@ -706,7 +706,7 @@ cat output/graph/schema.cypher output/graph/import.cypher | \
 cd apps/tilegraphmcp && npm install && npm run dev &
 
 # 4. Start viewer
-cd apps/tilegraph-viewer && npm install && npm run dev &
+cd apps/tilegraphviewer && npm install && npm run dev &
 
 # 5. Verify REST API works
 curl http://localhost:9000/health

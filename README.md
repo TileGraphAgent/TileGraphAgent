@@ -55,7 +55,7 @@ cat output/graph/schema.cypher output/graph/import.cypher | \
 cd apps/tilegraphmcp && npm install && npm run dev
 
 # 7. Start viewer
-cd apps/tilegraph-viewer && npm install && npm run dev
+cd apps/tilegraphviewer && npm install && npm run dev
 
 # 8. Validate pipeline
 cargo run --bin tilegraph -- validate

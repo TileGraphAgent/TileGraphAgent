@@ -17,7 +17,7 @@ You are implementing production improvements to **TileGraphAgent**. This session
 ## Repository overview
 
 - **MCP server:** `apps/tilegraphmcp/`
-- **Viewer:** `apps/tilegraph-viewer/`
+- **Viewer:** `apps/tilegraphviewer/`
 - **Agent system prompt:** `docs/mcp/agent_system_prompt.md`
 
 **Install the Anthropic SDK:**
@@ -229,7 +229,7 @@ app.post("/chat", async (req, res) => {
 
 ## Stage 5.5 (viewer) — Wire "Ask" button to SSE stream
 
-### What to add in `apps/tilegraph-viewer/src/agent/claude_client.ts`
+### What to add in `apps/tilegraphviewer/src/agent/claude_client.ts`
 
 ```typescript
 const AGENT_API_BASE = import.meta.env.VITE_MCP_REST_URL ?? "http://localhost:9000"
@@ -288,7 +288,7 @@ export async function sendAgentMessage(
 }
 ```
 
-### Update `apps/tilegraph-viewer/src/main.ts`
+### Update `apps/tilegraphviewer/src/main.ts`
 
 Wire the submit button:
 
@@ -604,7 +604,7 @@ npm run dev &
 sleep 3
 
 # Start viewer
-cd ../tilegraph-viewer && npm run dev &
+cd ../tilegraphviewer && npm run dev &
 
 # Open http://localhost:5173
 # Type in the agent panel: "Find all pumps connected to LINE-1001"

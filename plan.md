@@ -429,7 +429,7 @@ interface ViewerClient {
 
 **Problem:** Object selection uses `Cesium3DTileFeature` but the current pick handler checks `instanceof Cesium3DTileFeature` without first confirming `EXT_mesh_features` is active. In practice, the pick may return a `Cesium3DTile` or a `Model` instead of a feature. Also `getProperty("object_id")` only works after `EXT_structural_metadata` is implemented (Project 2.1).
 
-**Fix in `apps/tilegraph-viewer/src/viewer/cesium_init.ts`:**
+**Fix in `apps/tilegraphviewer/src/viewer/cesium_init.ts`:**
 
 ```typescript
 viewer.screenSpaceEventHandler.setInputAction((movement) => {
@@ -494,7 +494,7 @@ Add `colorToHex(c: Cesium.Color): string` utility and define `highlightColor`, `
 
 **Problem:** The selection panel shows only `object_id` and `tag` from the glTF pick. It does not fetch full engineering properties from the MCP server.
 
-**What to implement in `apps/tilegraph-viewer/src/ui/properties_panel.ts`:**
+**What to implement in `apps/tilegraphviewer/src/ui/properties_panel.ts`:**
 
 ```typescript
 export async function fetchAndRenderProperties(objectId: string, panelEl: HTMLElement): Promise<void> {
@@ -517,7 +517,7 @@ Add a REST endpoint to the MCP server (`GET /objects/:id`) that calls `getObject
 
 **Problem:** There is no way to browse the plant hierarchy (Plant → Area → System → Line → Equipment) in the viewer without selecting objects individually.
 
-**What to implement in `apps/tilegraph-viewer/src/ui/model_tree.ts`:**
+**What to implement in `apps/tilegraphviewer/src/ui/model_tree.ts`:**
 
 1. On viewer startup, fetch `tilegraph://model/summary` MCP resource to get area/system list
 2. Render a collapsible tree:
@@ -541,7 +541,7 @@ Add a REST endpoint to the MCP server (`GET /objects/:id`) that calls `getObject
 
 **Problem:** The agent chat panel in `index.html` has an input box but clicking "Ask" does nothing — `main.ts` does not connect the input to any LLM.
 
-**What to implement in `apps/tilegraph-viewer/src/agent/claude_client.ts`:**
+**What to implement in `apps/tilegraphviewer/src/agent/claude_client.ts`:**
 
 ```typescript
 export async function sendAgentMessage(message: string, onStream: (chunk: string) => void): Promise<void> {
@@ -734,7 +734,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
       - run: cd apps/tilegraphmcp && npm ci && npm run build
-      - run: cd apps/tilegraph-viewer && npm ci && npm run build
+      - run: cd apps/tilegraphviewer && npm ci && npm run build
 ```
 
 ---

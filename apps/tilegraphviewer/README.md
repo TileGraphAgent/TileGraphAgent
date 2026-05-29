@@ -1,4 +1,4 @@
-# tilegraph-viewer
+# tilegraphviewer
 
 CesiumJS-based industrial 3D viewer for TileGraphAgent, deployed to **Cloudflare Pages**. It streams 3D Tiles from **Cloudflare R2** and communicates with the MCP server via the **Cloudflare Worker** REST/WebSocket API.
 
@@ -26,7 +26,7 @@ Browser (Cloudflare Pages)
 ## Local development
 
 ```bash
-cd apps/tilegraph-viewer
+cd apps/tilegraphviewer
 npm install
 npm run dev      # Vite dev server on http://localhost:5173
 ```
@@ -66,15 +66,15 @@ npx wrangler pages deploy dist --project-name tilegraphviewer
 | Framework preset       | None (Vite)             |
 | Build command          | `npm run build`         |
 | Build output directory | `dist`                  |
-| Root directory         | `apps/tilegraph-viewer` |
+| Root directory         | `apps/tilegraphviewer` |
 
 ### Environment variables (set in Cloudflare Pages → Settings → Environment Variables)
 
 | Variable            | Production value                                             | Description                         |
 | ------------------- | ------------------------------------------------------------ | ----------------------------------- |
 | `VITE_TILESET_PATH` | `https://pub-65db26f12b0942ce8e8a9d5cb5f36314.r2.dev/tiles/tileset.json`                 | R2 public URL for the root tileset  |
-| `VITE_MCP_REST_URL` | `https://tilegraphmcp.<account>.workers.dev`         | Cloudflare Worker base URL          |
-| `VITE_WS_URL`       | `wss://tilegraphmcp.<account>.workers.dev/ws/viewer` | WebSocket endpoint (Durable Object) |
+| `VITE_MCP_REST_URL` | `https://tilegraphmcp.quatricmorph.workers.dev`         | Cloudflare Worker base URL          |
+| `VITE_WS_URL`       | `wss://tilegraphmcp.quatricmorph.workers.dev/ws/viewer` | WebSocket endpoint (Durable Object) |
 
 ## Tile data on Cloudflare R2
 
@@ -118,7 +118,7 @@ The R2 bucket must allow cross-origin reads from the Pages domain. Set via `wran
 ```json
 [
   {
-    "AllowedOrigins": ["https://tilegraph-viewer.pages.dev", "http://localhost:5173"],
+    "AllowedOrigins": ["https://tilegraphviewer.pages.dev", "http://localhost:5173"],
     "AllowedMethods": ["GET", "HEAD"],
     "AllowedHeaders": ["*"],
     "MaxAgeSeconds": 3600

@@ -146,14 +146,14 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: apps/tilegraph-viewer/package-lock.json
+          cache-dependency-path: apps/tilegraphviewer/package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/tilegraph-viewer
+        working-directory: apps/tilegraphviewer
         run: npm ci
 
       - name: Build viewer
-        working-directory: apps/tilegraph-viewer
+        working-directory: apps/tilegraphviewer
         run: npm run build
 
   integration:
@@ -600,13 +600,13 @@ mcp-dev:
 	cd apps/tilegraphmcp && npm run dev
 
 viewer-dev:
-	cd apps/tilegraph-viewer && npm run dev
+	cd apps/tilegraphviewer && npm run dev
 
 mcp-build:
 	cd apps/tilegraphmcp && npm run build
 
 viewer-build:
-	cd apps/tilegraph-viewer && npm run build
+	cd apps/tilegraphviewer && npm run build
 ```
 
 ---
@@ -638,7 +638,7 @@ cargo run --bin tilegraph -- validate
 
 # 4. TypeScript
 cd apps/tilegraphmcp && npm ci && npm run build && npm run test
-cd ../tilegraph-viewer && npm ci && npm run build
+cd ../tilegraphviewer && npm ci && npm run build
 cd ../..
 
 echo "All checks passed — ready to push"

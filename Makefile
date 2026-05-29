@@ -53,10 +53,10 @@ mcp-dev:
 	cd apps/tilegraphmcp && npm run dev
 
 viewer-dev:
-	cd apps/tilegraph-viewer && npm run dev
+	cd apps/tilegraphviewer && npm run dev
 
 mcp-build:
 	cd apps/tilegraphmcp && npm run build
 
 viewer-build:
-	cd apps/tilegraph-viewer && npm run build
+	cd apps/tilegraphviewer && npm run build

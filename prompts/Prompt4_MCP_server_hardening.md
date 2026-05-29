@@ -431,7 +431,7 @@ export class ViewerBridge {
 
 **Update the viewer's `ws_client.ts`** to respond to heartbeat pings:
 
-In `apps/tilegraph-viewer/src/agent/ws_client.ts`, inside the `ws.onmessage` handler, add before the `switch` statement:
+In `apps/tilegraphviewer/src/agent/ws_client.ts`, inside the `ws.onmessage` handler, add before the `switch` statement:
 
 ```typescript
 if (cmd.type === "ping") {
