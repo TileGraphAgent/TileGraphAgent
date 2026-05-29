@@ -1,20 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { readFileSync } from "fs";
-import { join } from "path";
-import { fileURLToPath } from "url";
 import type { ToolContext } from "../tools/index.js";
 import { TOOLS } from "../tools/index.js";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const SYSTEM_PROMPT_PATH = join(__dirname, "./docs/mcp/agent_system_prompt.md");
-
-function loadSystemPrompt(): string {
-  try {
-    return readFileSync(SYSTEM_PROMPT_PATH, "utf-8");
-  } catch {
-    return "You are TileGraphAgent. Always use tools to retrieve engineering data. Never infer facts.";
-  }
-}
+const DEFAULT_SYSTEM_PROMPT =
+  "You are TileGraphAgent. Always use tools to retrieve engineering data. Never infer facts.";
 
 function mcpToolsToAnthropicTools(): Anthropic.Tool[] {
   return TOOLS.map((t) => ({
@@ -34,10 +23,10 @@ export async function runAgentLoop(
   userMessage: string,
   ctx: ToolContext,
   onChunk: (chunk: string) => void,
+  systemPrompt = DEFAULT_SYSTEM_PROMPT,
   maxToolRounds = 8,
 ): Promise<AgentTurn[]> {
   const client = new Anthropic();
-  const systemPrompt = loadSystemPrompt();
   const anthropicTools = mcpToolsToAnthropicTools();
 
   const turns: AgentTurn[] = [];

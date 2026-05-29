@@ -1,6 +1,3 @@
-import { readFile } from "fs/promises";
-import { existsSync } from "fs";
-
 export interface SpatialRecord {
   object_id: string;
   tag: string | null;
@@ -17,24 +14,27 @@ interface SerializedIndex {
   records: SpatialRecord[];
 }
 
-export class SpatialIndexClient {
-  private records: SpatialRecord[] = [];
-  private path: string;
+const R2_KEY = "tiles/index/spatial_index.json";
 
-  constructor(path: string) {
-    this.path = path;
+export class R2SpatialIndexClient {
+  private records: SpatialRecord[] = [];
+  private bucket: R2Bucket;
+
+  constructor(bucket: R2Bucket) {
+    this.bucket = bucket;
   }
 
-  // Satisfies ISpatialIndexClient interface; also called at Node.js startup
+  // Call once at worker startup before serving requests
   async load(): Promise<void> {
-    if (!existsSync(this.path)) {
-      console.error(`[SpatialIndex] File not found: ${this.path} — spatial queries will be empty`);
+    const obj = await this.bucket.get(R2_KEY);
+    if (!obj) {
+      console.error(`[SpatialIndex] R2 key not found: ${R2_KEY}`);
       return;
     }
-    const raw = await readFile(this.path, "utf-8");
-    const data: SerializedIndex = JSON.parse(raw);
+    const text = await obj.text();
+    const data: SerializedIndex = JSON.parse(text);
     this.records = data.records;
-    console.error(`[SpatialIndex] Loaded ${this.records.length} records`);
+    console.error(`[SpatialIndex] Loaded ${this.records.length} records from R2`);
   }
 
   center(rec: SpatialRecord): [number, number, number] {
@@ -56,7 +56,7 @@ export class SpatialIndexClient {
   queryNearby(
     center: [number, number, number],
     radiusM: number,
-    classFilter?: string
+    classFilter?: string,
   ): Array<SpatialRecord & { distance_m: number }> {
     return this.records
       .filter((r) => {
