@@ -4,12 +4,23 @@ use tilegraph_geometry::{GeometryBatch, Material, MaterialLibrary, MeshPrimitive
 use crate::schema::*;
 use crate::feature_id::make_feature_id_buffer;
 
+/// Per-feature metadata collected during add_mesh_primitive, ordered by feature_id.
+#[derive(Default)]
+struct FeatureProperties {
+    object_id: String,
+    tag: String,
+    class: String,
+    system: String,
+    feature_id: u32,
+}
+
 /// Builds a GLB binary from a GeometryBatch.
 pub struct GlbBuilder {
     gltf: Gltf,
     binary_data: Vec<u8>,
     material_index: HashMap<String, u32>,
     feature_mappings: Vec<FeatureMapping>,
+    feature_properties: Vec<FeatureProperties>,
     tile_id: TileId,
     content_uri: String,
 }
@@ -18,11 +29,13 @@ impl GlbBuilder {
     pub fn new(tile_id: TileId, content_uri: impl Into<String>) -> Self {
         let mut gltf = Gltf::default();
         gltf.extensions_used.push("EXT_mesh_features".to_string());
+        gltf.extensions_used.push("EXT_structural_metadata".to_string());
         Self {
             gltf,
             binary_data: Vec::new(),
             material_index: HashMap::new(),
             feature_mappings: Vec::new(),
+            feature_properties: Vec::new(),
             tile_id,
             content_uri: content_uri.into(),
         }
@@ -232,12 +245,110 @@ impl GlbBuilder {
             world_aabb: prim.world_aabb.clone(),
         });
 
+        // Record per-feature properties for EXT_structural_metadata property table
+        self.feature_properties.push(FeatureProperties {
+            object_id: oid_str.clone(),
+            tag: obj.and_then(|o| o.tag.clone()).unwrap_or_default(),
+            class: obj.map(|o| o.class.to_string()).unwrap_or_default(),
+            system: obj
+                .and_then(|o| o.properties.get("system"))
+                .and_then(|v| v.as_str())
+                .map(String::from)
+                .unwrap_or_default(),
+            feature_id: prim.feature_id,
+        });
+
         node_idx
+    }
+
+    /// Build EXT_structural_metadata property table and attach it to the glTF root.
+    fn attach_structural_metadata(&mut self) {
+        if self.feature_properties.is_empty() {
+            return;
+        }
+
+        // Sort by feature_id so row index matches feature ID
+        self.feature_properties.sort_by_key(|fp| fp.feature_id);
+        let count = self.feature_properties.len();
+
+        let object_ids: Vec<&str> = self.feature_properties.iter().map(|fp| fp.object_id.as_str()).collect();
+        let tags: Vec<&str> = self.feature_properties.iter().map(|fp| fp.tag.as_str()).collect();
+        let classes: Vec<&str> = self.feature_properties.iter().map(|fp| fp.class.as_str()).collect();
+        let systems: Vec<&str> = self.feature_properties.iter().map(|fp| fp.system.as_str()).collect();
+        let fids: Vec<u32> = self.feature_properties.iter().map(|fp| fp.feature_id).collect();
+
+        let mut table_builder = crate::structural_metadata::PropertyTableBuilder::new(count);
+        table_builder.add_string_column("object_id", &object_ids);
+        table_builder.add_string_column("tag", &tags);
+        table_builder.add_string_column("class", &classes);
+        table_builder.add_string_column("system", &systems);
+        table_builder.add_uint32_column("feature_id", &fids);
+
+        let current_bin_len = self.binary_data.len();
+        let next_bv_idx = self.gltf.buffer_views.len() as u32;
+        let (columns, extra_bytes) = table_builder.finalize(current_bin_len, next_bv_idx);
+
+        // Add buffer views — one (values) or two (values + offsets) per column
+        let mut offset = current_bin_len as u32;
+        for col in &columns {
+            let val_len = col.values_bytes.len() as u32;
+            self.gltf.buffer_views.push(crate::schema::BufferView {
+                buffer: 0,
+                byte_offset: offset,
+                byte_length: val_len,
+                byte_stride: None,
+                target: 0,
+            });
+            offset += val_len;
+            while offset % 4 != 0 {
+                offset += 1;
+            }
+
+            if let Some(offsets_bytes) = &col.string_offsets {
+                let off_len = offsets_bytes.len() as u32;
+                self.gltf.buffer_views.push(crate::schema::BufferView {
+                    buffer: 0,
+                    byte_offset: offset,
+                    byte_length: off_len,
+                    byte_stride: None,
+                    target: 0,
+                });
+                offset += off_len;
+                while offset % 4 != 0 {
+                    offset += 1;
+                }
+            }
+        }
+
+        self.binary_data.extend_from_slice(&extra_bytes);
+
+        // Attach EXT_structural_metadata extension to glTF root
+        let ext_json = crate::structural_metadata::PropertyTableBuilder::to_extension_json(&columns, count);
+        self.gltf.extensions = Some(ext_json);
+
+        // Wire up EXT_mesh_features propertyTable reference on each primitive with _FEATURE_ID_0
+        for mesh in &mut self.gltf.meshes {
+            for prim in &mut mesh.primitives {
+                if prim.attributes.contains_key("_FEATURE_ID_0") {
+                    prim.extensions = Some(serde_json::json!({
+                        "EXT_mesh_features": {
+                            "featureIds": [{
+                                "featureCount": count,
+                                "attribute": 0,
+                                "propertyTable": 0
+                            }]
+                        }
+                    }));
+                }
+            }
+        }
     }
 
     /// Serialize to binary GLB (header + JSON chunk + BIN chunk).
     /// Consumes the builder and returns both the GLB bytes and the accumulated feature mappings.
     pub fn build_glb(mut self) -> (Vec<u8>, Vec<FeatureMapping>) {
+        self.attach_structural_metadata();
+
         // Update buffer byte length
         let bin_len = self.binary_data.len() as u32;
         if self.gltf.buffers.is_empty() {

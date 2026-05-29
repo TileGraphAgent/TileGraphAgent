@@ -305,7 +305,34 @@
       "version": "0.1.0"
     }
   },
+  "schema": {
+    "classes": {
+      "IndustrialObject": {
+        "name": "Industrial Object",
+        "properties": {
+          "class": {
+            "type": "STRING"
+          },
+          "feature_id": {
+            "componentType": "UINT32",
+            "type": "SCALAR"
+          },
+          "object_id": {
+            "type": "STRING"
+          },
+          "system": {
+            "type": "STRING"
+          },
+          "tag": {
+            "type": "STRING"
+          }
+        }
+      }
+    },
+    "id": "tilegraph_plant_schema"
+  },
   "extensionsUsed": [
-    "EXT_mesh_features"
+    "EXT_mesh_features",
+    "EXT_structural_metadata"
   ]
 }

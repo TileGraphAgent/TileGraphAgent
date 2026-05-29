@@ -109,8 +109,25 @@ impl TilesetBuilder {
                     "version": "0.1.0"
                 })),
             },
-            schema: None,
-            extensions_used: vec!["EXT_mesh_features".to_string()],
+            schema: Some(serde_json::json!({
+                "id": "tilegraph_plant_schema",
+                "classes": {
+                    "IndustrialObject": {
+                        "name": "Industrial Object",
+                        "properties": {
+                            "object_id":  { "type": "STRING" },
+                            "tag":        { "type": "STRING" },
+                            "class":      { "type": "STRING" },
+                            "system":     { "type": "STRING" },
+                            "feature_id": { "type": "SCALAR", "componentType": "UINT32" }
+                        }
+                    }
+                }
+            })),
+            extensions_used: vec![
+                "EXT_mesh_features".to_string(),
+                "EXT_structural_metadata".to_string(),
+            ],
             properties: None,
             extras: None,
         }

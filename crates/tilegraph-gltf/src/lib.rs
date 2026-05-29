@@ -4,6 +4,7 @@ pub mod writer;
 pub mod feature_id;
 pub mod traits;
 pub mod validate;
+pub mod structural_metadata;
 
 pub use builder::GlbBuilder;
 pub use writer::GlbWriter;

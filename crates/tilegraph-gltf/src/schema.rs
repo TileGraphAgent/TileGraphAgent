@@ -23,8 +23,10 @@ pub struct Gltf {
     pub buffer_views: Vec<BufferView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub buffers: Vec<Buffer>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "extensionsUsed", skip_serializing_if = "Vec::is_empty")]
     pub extensions_used: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extensions: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extras: Option<serde_json::Value>,
 }
