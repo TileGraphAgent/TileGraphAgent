@@ -65,6 +65,9 @@ pub struct Node {
     /// Industrial object metadata stored in glTF extras.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extras: Option<NodeExtras>,
+    /// glTF node extensions (e.g. EXT_mesh_gpu_instancing).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extensions: Option<serde_json::Value>,
 }
 
 /// Per-node industrial metadata injected into glTF `extras`.
