@@ -1,14 +1,13 @@
-use std::collections::HashMap;
-use tilegraph_core::{
-    Aabb, GraphRelationshipExport, IndustrialObject, ObjectClass, ObjectId,
-    Transform3D,
-};
 use crate::{
     config::PlantSpec,
     connections::{ConnectionGraph, PumpSide},
     primitives::{Axis, CylinderPrimitive, EquipmentSizer},
     tag::TagFactory,
     validate::{validate_objects, SynthValidationReport},
+};
+use std::collections::HashMap;
+use tilegraph_core::{
+    Aabb, GraphRelationshipExport, IndustrialObject, ObjectClass, ObjectId, Transform3D,
 };
 
 /// Output of the full plant generation pass.
@@ -55,6 +54,7 @@ pub struct WorkPackage {
 #[allow(dead_code)]
 struct Rng(u64);
 
+#[allow(dead_code)]
 impl Rng {
     fn new(seed: u64) -> Self {
         Self(if seed == 0 { 0xdeadbeef_cafebabe } else { seed })
@@ -78,13 +78,17 @@ impl Rng {
 
 pub struct PlantGenerator {
     spec: PlantSpec,
+    #[allow(dead_code)]
     rng: Rng,
 }
 
 impl PlantGenerator {
     pub fn new(spec: PlantSpec) -> Self {
         let seed = spec.generation.seed;
-        Self { spec, rng: Rng::new(seed) }
+        Self {
+            spec,
+            rng: Rng::new(seed),
+        }
     }
 
     pub fn generate(&mut self) -> GeneratedPlant {
@@ -93,8 +97,9 @@ impl PlantGenerator {
 
         // --- Plant node ---
         let plant_id = ObjectId::from_source("synth", &self.spec.plant.tag);
-        let plant_obj = IndustrialObject::new(plant_id.clone(), &self.spec.plant.name, ObjectClass::Plant)
-            .with_tag(&self.spec.plant.tag);
+        let plant_obj =
+            IndustrialObject::new(plant_id.clone(), &self.spec.plant.name, ObjectClass::Plant)
+                .with_tag(&self.spec.plant.tag);
         plant.objects.push(plant_obj);
 
         for area_cfg in &self.spec.areas.clone() {
@@ -111,10 +116,11 @@ impl PlantGenerator {
                     area_cfg.dimensions[2] * 0.5,
                 ],
             );
-            let area_obj = IndustrialObject::new(area_id.clone(), &area_cfg.name, ObjectClass::Area)
-                .with_tag(&area_cfg.tag)
-                .with_aabb(area_aabb)
-                .with_parent(plant_id.clone());
+            let area_obj =
+                IndustrialObject::new(area_id.clone(), &area_cfg.name, ObjectClass::Area)
+                    .with_tag(&area_cfg.tag)
+                    .with_aabb(area_aabb)
+                    .with_parent(plant_id.clone());
             connections.part_of(&area_id, &plant_id);
             plant.objects.push(area_obj);
 
@@ -132,18 +138,20 @@ impl PlantGenerator {
             for (sys_i, sys_cfg) in area_systems.iter().enumerate() {
                 let sys_seq_base = (sys_i as u32) * 100 + 1; // 1, 101, 201 ... per system
                 let sys_id = ObjectId::from_source("synth", &sys_cfg.tag);
-                let sys_obj = IndustrialObject::new(sys_id.clone(), &sys_cfg.name, ObjectClass::System)
-                    .with_tag(&sys_cfg.tag)
-                    .with_parent(area_id.clone());
+                let sys_obj =
+                    IndustrialObject::new(sys_id.clone(), &sys_cfg.name, ObjectClass::System)
+                        .with_tag(&sys_cfg.tag)
+                        .with_parent(area_id.clone());
                 connections.part_of(&sys_id, &area_id);
                 plant.objects.push(sys_obj);
 
                 // --- Lines ---
                 for (line_idx, line_cfg) in sys_cfg.lines.iter().enumerate() {
                     let line_id = ObjectId::from_source("synth", &line_cfg.tag);
-                    let line_obj = IndustrialObject::new(line_id.clone(), &line_cfg.tag, ObjectClass::Line)
-                        .with_tag(&line_cfg.tag)
-                        .with_parent(sys_id.clone());
+                    let line_obj =
+                        IndustrialObject::new(line_id.clone(), &line_cfg.tag, ObjectClass::Line)
+                            .with_tag(&line_cfg.tag)
+                            .with_parent(sys_id.clone());
                     connections.part_of(&line_id, &sys_id);
                     plant.objects.push(line_obj);
 
@@ -172,10 +180,17 @@ impl PlantGenerator {
                             ObjectClass::PipeSegment,
                         )
                         .with_tag(&seg_tag)
-                        .with_transform(Transform3D::from_translation(seg_x + 1.0, seg_origin[1], seg_origin[2]))
+                        .with_transform(Transform3D::from_translation(
+                            seg_x + 1.0,
+                            seg_origin[1],
+                            seg_origin[2],
+                        ))
                         .with_aabb(seg_aabb)
                         .with_parent(line_id.clone());
-                        seg_obj.set_property("nominal_bore_mm", serde_json::json!(line_cfg.nominal_bore_mm));
+                        seg_obj.set_property(
+                            "nominal_bore_mm",
+                            serde_json::json!(line_cfg.nominal_bore_mm),
+                        );
                         seg_obj.set_property("pipe_class", serde_json::json!(line_cfg.pipe_class));
                         seg_obj.set_property("insulated", serde_json::json!(line_cfg.insulation));
                         connections.connect_segment_to_line(&seg_id, &line_id);
@@ -188,24 +203,30 @@ impl PlantGenerator {
                         let suffix = (b'A' + v_i as u8) as char;
                         let valve_tag = tf.valve(sys_seq_base + line_idx as u32, suffix);
                         let valve_id = ObjectId::from_source("synth", &valve_tag);
-                        let v_x = seg_origin[0] + (v_i as f64 + 0.5) * (line_cfg.segment_count as f64 * 2.0 / valve_count as f64);
+                        let v_x = seg_origin[0]
+                            + (v_i as f64 + 0.5)
+                                * (line_cfg.segment_count as f64 * 2.0 / valve_count as f64);
                         let valve_half = EquipmentSizer::valve_box(line_cfg.nominal_bore_mm);
                         let valve_aabb = Aabb::from_center_half_extents(
                             [v_x, seg_origin[1], seg_origin[2]],
                             valve_half,
                         );
-                        let mut valve_obj = IndustrialObject::new(
-                            valve_id.clone(),
-                            &valve_tag,
-                            ObjectClass::Valve,
-                        )
-                        .with_tag(&valve_tag)
-                        .with_transform(Transform3D::from_translation(v_x, seg_origin[1], seg_origin[2]))
-                        .with_aabb(valve_aabb)
-                        .with_parent(line_id.clone());
+                        let mut valve_obj =
+                            IndustrialObject::new(valve_id.clone(), &valve_tag, ObjectClass::Valve)
+                                .with_tag(&valve_tag)
+                                .with_transform(Transform3D::from_translation(
+                                    v_x,
+                                    seg_origin[1],
+                                    seg_origin[2],
+                                ))
+                                .with_aabb(valve_aabb)
+                                .with_parent(line_id.clone());
                         valve_obj.set_property("valve_type", serde_json::json!("GATE"));
                         valve_obj.set_property("actuator", serde_json::json!("MANUAL"));
-                        valve_obj.set_property("nominal_bore_mm", serde_json::json!(line_cfg.nominal_bore_mm));
+                        valve_obj.set_property(
+                            "nominal_bore_mm",
+                            serde_json::json!(line_cfg.nominal_bore_mm),
+                        );
                         connections.connect_valve_to_line(&valve_id, &line_id);
                         plant.objects.push(valve_obj);
                     }
@@ -227,19 +248,26 @@ impl PlantGenerator {
                         axis: Axis::Z,
                     };
                     let pump_aabb = cyl.to_aabb();
-                    let mut pump_obj = IndustrialObject::new(
-                        pump_id.clone(),
-                        &pump_tag,
-                        ObjectClass::Pump,
-                    )
-                    .with_tag(&pump_tag)
-                    .with_transform(Transform3D::from_translation(pump_x, pump_y, pump_z + h * 0.5))
-                    .with_aabb(pump_aabb)
-                    .with_parent(sys_id.clone());
+                    let mut pump_obj =
+                        IndustrialObject::new(pump_id.clone(), &pump_tag, ObjectClass::Pump)
+                            .with_tag(&pump_tag)
+                            .with_transform(Transform3D::from_translation(
+                                pump_x,
+                                pump_y,
+                                pump_z + h * 0.5,
+                            ))
+                            .with_aabb(pump_aabb)
+                            .with_parent(sys_id.clone());
                     pump_obj.set_property("power_kw", serde_json::json!(22.0));
                     pump_obj.set_property("fluid", serde_json::json!(sys_cfg.fluid));
-                    pump_obj.set_property("design_pressure_bar", serde_json::json!(sys_cfg.design_pressure_bar));
-                    pump_obj.set_property("design_temperature_c", serde_json::json!(sys_cfg.design_temperature_c));
+                    pump_obj.set_property(
+                        "design_pressure_bar",
+                        serde_json::json!(sys_cfg.design_pressure_bar),
+                    );
+                    pump_obj.set_property(
+                        "design_temperature_c",
+                        serde_json::json!(sys_cfg.design_temperature_c),
+                    );
 
                     // Connect first line of this system as suction/discharge
                     if let Some(first_line) = sys_cfg.lines.first() {
@@ -269,19 +297,18 @@ impl PlantGenerator {
                     let tank_y = area_cfg.offset[1] + area_cfg.dimensions[1] * 0.6;
                     let tank_z = area_cfg.offset[2];
                     let half = EquipmentSizer::tank_box(100.0);
-                    let tank_aabb = Aabb::from_center_half_extents(
-                        [tank_x, tank_y, tank_z + half[2]],
-                        half,
-                    );
-                    let mut tank_obj = IndustrialObject::new(
-                        tank_id.clone(),
-                        &tank_tag,
-                        ObjectClass::Tank,
-                    )
-                    .with_tag(&tank_tag)
-                    .with_transform(Transform3D::from_translation(tank_x, tank_y, tank_z + half[2]))
-                    .with_aabb(tank_aabb)
-                    .with_parent(sys_id.clone());
+                    let tank_aabb =
+                        Aabb::from_center_half_extents([tank_x, tank_y, tank_z + half[2]], half);
+                    let mut tank_obj =
+                        IndustrialObject::new(tank_id.clone(), &tank_tag, ObjectClass::Tank)
+                            .with_tag(&tank_tag)
+                            .with_transform(Transform3D::from_translation(
+                                tank_x,
+                                tank_y,
+                                tank_z + half[2],
+                            ))
+                            .with_aabb(tank_aabb)
+                            .with_parent(sys_id.clone());
                     tank_obj.set_property("volume_m3", serde_json::json!(100.0));
                     tank_obj.set_property("fluid", serde_json::json!(sys_cfg.fluid));
                     connections.part_of(&tank_id, &sys_id);
@@ -289,9 +316,11 @@ impl PlantGenerator {
                 }
 
                 // --- Instruments ---
-                let instr_count = self.spec.generation.instrument_count / self.spec.systems.len() as u32;
+                let instr_count =
+                    self.spec.generation.instrument_count / self.spec.systems.len() as u32;
                 for i_i in 0..instr_count.max(1) {
-                    let instr_type = crate::tag::INSTRUMENT_TYPES[i_i as usize % crate::tag::INSTRUMENT_TYPES.len()];
+                    let instr_type = crate::tag::INSTRUMENT_TYPES
+                        [i_i as usize % crate::tag::INSTRUMENT_TYPES.len()];
                     let instr_tag = tf.instrument(instr_type, sys_seq_base + i_i);
                     let instr_id = ObjectId::from_source("synth", &instr_tag);
                     let instr_x = area_cfg.offset[0] + i_i as f64 * 2.0;
@@ -325,11 +354,16 @@ impl PlantGenerator {
                     [supp_x, area_cfg.offset[1] + 0.05, area_cfg.offset[2] + 1.0],
                     [0.05, 0.05, 1.0],
                 );
-                let supp_obj = IndustrialObject::new(supp_id.clone(), &supp_tag, ObjectClass::Support)
-                    .with_tag(&supp_tag)
-                    .with_transform(Transform3D::from_translation(supp_x, area_cfg.offset[1] + 0.05, area_cfg.offset[2] + 1.0))
-                    .with_aabb(supp_aabb)
-                    .with_parent(area_id.clone());
+                let supp_obj =
+                    IndustrialObject::new(supp_id.clone(), &supp_tag, ObjectClass::Support)
+                        .with_tag(&supp_tag)
+                        .with_transform(Transform3D::from_translation(
+                            supp_x,
+                            area_cfg.offset[1] + 0.05,
+                            area_cfg.offset[2] + 1.0,
+                        ))
+                        .with_aabb(supp_aabb)
+                        .with_parent(area_id.clone());
                 connections.part_of(&supp_id, &area_id);
                 plant.objects.push(supp_obj);
             }
@@ -339,7 +373,11 @@ impl PlantGenerator {
                 let ct_tag = format!("{}-CT-{:03}", area_cfg.tag, ct_i + 1);
                 let ct_id = ObjectId::from_source("synth", &ct_tag);
                 let ct_aabb = Aabb::from_center_half_extents(
-                    [area_cfg.offset[0] + area_cfg.dimensions[0] * 0.5, area_cfg.offset[1] - 1.0, area_cfg.offset[2] + 3.0],
+                    [
+                        area_cfg.offset[0] + area_cfg.dimensions[0] * 0.5,
+                        area_cfg.offset[1] - 1.0,
+                        area_cfg.offset[2] + 3.0,
+                    ],
                     [area_cfg.dimensions[0] * 0.5, 0.15, 0.1],
                 );
                 let ct_obj = IndustrialObject::new(ct_id.clone(), &ct_tag, ObjectClass::CableTray)
@@ -356,9 +394,16 @@ impl PlantGenerator {
             let area = &self.spec.areas[doc_i as usize % self.spec.areas.len()];
             let tf2 = TagFactory::new("PLT", &area.tag[..2].to_uppercase());
             let pid_tag = tf2.pid_document(doc_i + 1);
-            let obj_refs: Vec<String> = plant.objects
+            let obj_refs: Vec<String> = plant
+                .objects
                 .iter()
-                .filter(|o| o.parent_id.as_ref().map(|p| p.to_string()).unwrap_or_default().contains(&area.id))
+                .filter(|o| {
+                    o.parent_id
+                        .as_ref()
+                        .map(|p| p.to_string())
+                        .unwrap_or_default()
+                        .contains(&area.id)
+                })
                 .take(15)
                 .map(|o| o.object_id.to_string())
                 .collect();
@@ -380,13 +425,22 @@ impl PlantGenerator {
             "Pipe support inspection",
             "Tank internal inspection",
         ];
-        for (i, title) in wp_titles.iter().enumerate().take(self.spec.generation.work_package_count as usize) {
+        for (i, title) in wp_titles
+            .iter()
+            .enumerate()
+            .take(self.spec.generation.work_package_count as usize)
+        {
             plant.work_packages.push(WorkPackage {
                 wp_id: format!("WP-{:04}", i + 1),
                 title: title.to_string(),
                 description: format!("Planned maintenance: {}", title),
                 status: "PLANNED".to_string(),
-                object_refs: plant.objects.iter().take(5).map(|o| o.object_id.to_string()).collect(),
+                object_refs: plant
+                    .objects
+                    .iter()
+                    .take(5)
+                    .map(|o| o.object_id.to_string())
+                    .collect(),
             });
         }
 

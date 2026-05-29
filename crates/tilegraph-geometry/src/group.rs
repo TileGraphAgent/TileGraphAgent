@@ -1,9 +1,9 @@
-use tilegraph_core::{Aabb, IndustrialObject, ObjectClass};
 use crate::{
     material::MaterialLibrary,
     mesh::MeshPrimitive,
     primitives::{tessellate_box, tessellate_cylinder},
 };
+use tilegraph_core::{Aabb, IndustrialObject, ObjectClass};
 
 // Pipe/equipment sizing constants (mirrors tilegraph-synth::primitives::EquipmentSizer)
 fn pipe_outer_radius_m(nominal_bore_mm: u32) -> f64 {

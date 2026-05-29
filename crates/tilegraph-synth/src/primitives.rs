@@ -26,7 +26,11 @@ pub struct TorsPrimitive {
 }
 
 #[derive(Debug, Clone)]
-pub enum Axis { X, Y, Z }
+pub enum Axis {
+    X,
+    Y,
+    Z,
+}
 
 impl CylinderPrimitive {
     pub fn to_aabb(&self) -> Aabb {
@@ -36,8 +40,16 @@ impl CylinderPrimitive {
             Axis::Z => (self.radius, self.radius, self.height * 0.5),
         };
         Aabb::new(
-            [self.center[0] - rx, self.center[1] - ry, self.center[2] - rz],
-            [self.center[0] + rx, self.center[1] + ry, self.center[2] + rz],
+            [
+                self.center[0] - rx,
+                self.center[1] - ry,
+                self.center[2] - rz,
+            ],
+            [
+                self.center[0] + rx,
+                self.center[1] + ry,
+                self.center[2] + rz,
+            ],
         )
     }
 }

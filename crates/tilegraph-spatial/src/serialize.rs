@@ -1,7 +1,7 @@
-use std::path::Path;
-use serde::{Deserialize, Serialize};
-use tilegraph_core::Result;
 use crate::{index::SpatialIndex, record::SpatialIndexRecord};
+use serde::{Deserialize, Serialize};
+use std::path::Path;
+use tilegraph_core::Result;
 
 /// Serialized spatial index for persistence and MCP server use.
 #[derive(Debug, Serialize, Deserialize)]
@@ -39,7 +39,9 @@ impl SerializedSpatialIndex {
 impl SpatialIndex {
     pub fn build_from_records_raw(records: Vec<SpatialIndexRecord>) -> Self {
         use rstar::RTree;
-        Self { tree: RTree::bulk_load(records) }
+        Self {
+            tree: RTree::bulk_load(records),
+        }
     }
 
     pub fn save(&self, path: &Path) -> Result<()> {

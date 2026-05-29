@@ -1,5 +1,5 @@
-use tilegraph_core::{ObjectId, RelationshipType, GraphRelationshipExport};
 use std::collections::HashMap;
+use tilegraph_core::{GraphRelationshipExport, ObjectId, RelationshipType};
 
 /// Connection graph builder — encodes P&ID-style connectivity.
 /// Rules:
@@ -14,7 +14,9 @@ pub struct ConnectionGraph {
 
 impl ConnectionGraph {
     pub fn new() -> Self {
-        Self { relationships: Vec::new() }
+        Self {
+            relationships: Vec::new(),
+        }
     }
 
     pub fn add(&mut self, source: &ObjectId, target: &ObjectId, rel: RelationshipType) {
@@ -26,12 +28,7 @@ impl ConnectionGraph {
         });
     }
 
-    pub fn connect_pump_to_line(
-        &mut self,
-        pump_id: &ObjectId,
-        line_id: &ObjectId,
-        side: PumpSide,
-    ) {
+    pub fn connect_pump_to_line(&mut self, pump_id: &ObjectId, line_id: &ObjectId, side: PumpSide) {
         let rel = match side {
             PumpSide::Suction => RelationshipType::DownstreamOf,
             PumpSide::Discharge => RelationshipType::UpstreamOf,

@@ -1,5 +1,5 @@
-use tilegraph_core::IndustrialObject;
 use std::collections::{HashMap, HashSet};
+use tilegraph_core::IndustrialObject;
 
 #[derive(Debug, Default)]
 pub struct SynthValidationReport {
@@ -29,7 +29,9 @@ pub fn validate_objects(objects: &[IndustrialObject]) -> SynthValidationReport {
         let id_str = obj.object_id.to_string();
 
         if !seen_ids.insert(id_str.clone()) {
-            report.errors.push(format!("Duplicate object_id: {}", id_str));
+            report
+                .errors
+                .push(format!("Duplicate object_id: {}", id_str));
         }
 
         if let Some(tag) = &obj.tag {
@@ -59,7 +61,9 @@ pub fn validate_objects(objects: &[IndustrialObject]) -> SynthValidationReport {
 
     for (tag, count) in &seen_tags {
         if *count > 1 {
-            report.errors.push(format!("Duplicate tag '{}' used {} times", tag, count));
+            report
+                .errors
+                .push(format!("Duplicate tag '{}' used {} times", tag, count));
         }
     }
 

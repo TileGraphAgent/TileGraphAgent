@@ -26,7 +26,9 @@ pub fn validate_glb(bytes: &[u8]) -> GlbValidationReport {
 
     let version = u32::from_le_bytes(bytes[4..8].try_into().unwrap());
     if version != 2 {
-        report.errors.push(format!("Expected version 2, got {}", version));
+        report
+            .errors
+            .push(format!("Expected version 2, got {}", version));
     }
 
     let total_len = u32::from_le_bytes(bytes[8..12].try_into().unwrap()) as usize;
@@ -39,7 +41,9 @@ pub fn validate_glb(bytes: &[u8]) -> GlbValidationReport {
     }
 
     if bytes.len() < 20 {
-        report.errors.push("GLB too short for JSON chunk header".into());
+        report
+            .errors
+            .push("GLB too short for JSON chunk header".into());
         return report;
     }
 
@@ -138,10 +142,10 @@ pub fn validate_glb(bytes: &[u8]) -> GlbValidationReport {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tilegraph_core::{ObjectId, TileId};
-    use tilegraph_geometry::{GeometryBatch, MaterialLibrary};
-    use tilegraph_geometry::primitives::tessellate_box;
     use crate::builder::GlbBuilder;
+    use tilegraph_core::{ObjectId, TileId};
+    use tilegraph_geometry::primitives::tessellate_box;
+    use tilegraph_geometry::{GeometryBatch, MaterialLibrary};
 
     #[test]
     fn glb_roundtrip_validates_clean() {

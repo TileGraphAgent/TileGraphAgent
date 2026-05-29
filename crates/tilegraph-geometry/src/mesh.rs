@@ -37,7 +37,11 @@ impl MeshPrimitive {
     pub fn compute_aabb(&self) -> Aabb {
         let mut aabb = Aabb::empty();
         for v in &self.vertices {
-            aabb.expand_by_point([v.position[0] as f64, v.position[1] as f64, v.position[2] as f64]);
+            aabb.expand_by_point([
+                v.position[0] as f64,
+                v.position[1] as f64,
+                v.position[2] as f64,
+            ]);
         }
         aabb
     }

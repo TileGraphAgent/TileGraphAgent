@@ -1,9 +1,9 @@
-use rstar::{RTree, AABB};
-use tilegraph_core::IndustrialObject;
 use crate::{
     query::{BboxQuery, NearbyQuery, QueryResult},
     record::SpatialIndexRecord,
 };
+use rstar::{RTree, AABB};
+use tilegraph_core::IndustrialObject;
 
 pub struct SpatialIndex {
     pub(crate) tree: RTree<SpatialIndexRecord>,
@@ -32,7 +32,9 @@ impl SpatialIndex {
             })
             .collect();
 
-        Self { tree: RTree::bulk_load(records) }
+        Self {
+            tree: RTree::bulk_load(records),
+        }
     }
 
     /// Find all objects whose AABB intersects the query box.
@@ -143,8 +145,8 @@ impl Default for SpatialIndex {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tilegraph_core::{Aabb, IndustrialObject, ObjectClass, ObjectId};
     use crate::query::NearbyQuery;
+    use tilegraph_core::{Aabb, IndustrialObject, ObjectClass, ObjectId};
 
     fn make_obj(tag: &str, center: [f64; 3], half: f64) -> IndustrialObject {
         let id = ObjectId::from_source("test", tag);
@@ -188,14 +190,17 @@ mod tests {
     #[test]
     fn nearest_n_returns_closest_not_arbitrary() {
         let objects = vec![
-            make_obj("P-FAR",   [100.0, 0.0, 0.0], 0.5),
-            make_obj("P-CLOSE", [1.0,   0.0, 0.0], 0.5),
-            make_obj("P-MID",   [10.0,  0.0, 0.0], 0.5),
+            make_obj("P-FAR", [100.0, 0.0, 0.0], 0.5),
+            make_obj("P-CLOSE", [1.0, 0.0, 0.0], 0.5),
+            make_obj("P-MID", [10.0, 0.0, 0.0], 0.5),
         ];
         let idx = SpatialIndex::build_from_objects(&objects);
         let nearest = idx.nearest_n([0.0, 0.0, 0.0], 1);
         assert_eq!(nearest.len(), 1);
-        assert_eq!(nearest[0].tag.as_deref(), Some("P-CLOSE"),
-            "nearest should be the closest object, not first-inserted");
+        assert_eq!(
+            nearest[0].tag.as_deref(),
+            Some("P-CLOSE"),
+            "nearest should be the closest object, not first-inserted"
+        );
     }
 }

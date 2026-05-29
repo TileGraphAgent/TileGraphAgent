@@ -1,5 +1,5 @@
-use tilegraph_core::Result;
 use crate::scene::NormalizedScene;
+use tilegraph_core::Result;
 
 /// Core trait every source adapter must implement.
 /// V1: SynthAdapter
@@ -23,7 +23,9 @@ pub struct AdapterRegistry {
 
 impl AdapterRegistry {
     pub fn new() -> Self {
-        Self { adapters: Vec::new() }
+        Self {
+            adapters: Vec::new(),
+        }
     }
 
     pub fn register(&mut self, adapter: Box<dyn SourceAdapter>) {
@@ -31,7 +33,10 @@ impl AdapterRegistry {
     }
 
     pub fn find_for(&self, path: &std::path::Path) -> Option<&dyn SourceAdapter> {
-        self.adapters.iter().find(|a| a.can_handle(path)).map(|a| a.as_ref())
+        self.adapters
+            .iter()
+            .find(|a| a.can_handle(path))
+            .map(|a| a.as_ref())
     }
 }
 

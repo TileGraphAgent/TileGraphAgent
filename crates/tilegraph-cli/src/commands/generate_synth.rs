@@ -67,11 +67,20 @@ pub async fn run(args: GenerateSynthArgs, output_dir: &Path) -> anyhow::Result<(
 
     // Write documents
     let docs_path = synth_dir.join("pid_documents.json");
-    std::fs::write(&docs_path, serde_json::to_string_pretty(&scene.documents.pid_documents)?)?;
+    std::fs::write(
+        &docs_path,
+        serde_json::to_string_pretty(&scene.documents.pid_documents)?,
+    )?;
     let ds_path = synth_dir.join("datasheets.json");
-    std::fs::write(&ds_path, serde_json::to_string_pretty(&scene.documents.datasheets)?)?;
+    std::fs::write(
+        &ds_path,
+        serde_json::to_string_pretty(&scene.documents.datasheets)?,
+    )?;
     let wp_path = synth_dir.join("work_packages.json");
-    std::fs::write(&wp_path, serde_json::to_string_pretty(&scene.documents.work_packages)?)?;
+    std::fs::write(
+        &wp_path,
+        serde_json::to_string_pretty(&scene.documents.work_packages)?,
+    )?;
 
     println!("\ngenerate-synth complete");
     println!("  Objects:       {}", scene.metadata.object_count);

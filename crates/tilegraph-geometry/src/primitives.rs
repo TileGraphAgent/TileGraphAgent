@@ -1,6 +1,6 @@
+use crate::mesh::{MeshPrimitive, Triangle, Vertex};
 use std::f32::consts::PI;
 use tilegraph_core::{Aabb, ObjectId};
-use crate::mesh::{MeshPrimitive, Triangle, Vertex};
 
 /// Tessellated cylinder (used for pipes, pump bodies, tank shells).
 #[allow(clippy::too_many_arguments)]
@@ -38,18 +38,34 @@ pub fn tessellate_cylinder(
 
         let (bx, by, bz, tx, ty, tz) = if axis_z {
             (
-                cx + r * cos_a, cy + r * sin_a, cz - half_h,
-                cx + r * cos_a, cy + r * sin_a, cz + half_h,
+                cx + r * cos_a,
+                cy + r * sin_a,
+                cz - half_h,
+                cx + r * cos_a,
+                cy + r * sin_a,
+                cz + half_h,
             )
         } else {
             (
-                cx - half_h, cy + r * cos_a, cz + r * sin_a,
-                cx + half_h, cy + r * cos_a, cz + r * sin_a,
+                cx - half_h,
+                cy + r * cos_a,
+                cz + r * sin_a,
+                cx + half_h,
+                cy + r * cos_a,
+                cz + r * sin_a,
             )
         };
 
-        vertices.push(Vertex { position: [bx, by, bz], normal: [nx, ny, nz], uv: None });
-        vertices.push(Vertex { position: [tx, ty, tz], normal: [nx, ny, nz], uv: None });
+        vertices.push(Vertex {
+            position: [bx, by, bz],
+            normal: [nx, ny, nz],
+            uv: None,
+        });
+        vertices.push(Vertex {
+            position: [tx, ty, tz],
+            normal: [nx, ny, nz],
+            uv: None,
+        });
     }
 
     // Side triangles
@@ -63,7 +79,11 @@ pub fn tessellate_cylinder(
     // Compute real AABB from vertices
     let mut aabb = Aabb::empty();
     for v in &vertices {
-        aabb.expand_by_point([v.position[0] as f64, v.position[1] as f64, v.position[2] as f64]);
+        aabb.expand_by_point([
+            v.position[0] as f64,
+            v.position[1] as f64,
+            v.position[2] as f64,
+        ]);
     }
 
     MeshPrimitive {
@@ -89,19 +109,31 @@ pub fn tessellate_box(
 
     // 8 corners
     let corners = [
-        [-hx, -hy, -hz], [ hx, -hy, -hz], [ hx,  hy, -hz], [-hx,  hy, -hz],
-        [-hx, -hy,  hz], [ hx, -hy,  hz], [ hx,  hy,  hz], [-hx,  hy,  hz],
+        [-hx, -hy, -hz],
+        [hx, -hy, -hz],
+        [hx, hy, -hz],
+        [-hx, hy, -hz],
+        [-hx, -hy, hz],
+        [hx, -hy, hz],
+        [hx, hy, hz],
+        [-hx, hy, hz],
     ];
 
     let face_normals: [[f32; 3]; 6] = [
-        [0.0, 0.0, -1.0], [0.0, 0.0, 1.0],
-        [-1.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-        [0.0, -1.0, 0.0], [0.0, 1.0, 0.0],
+        [0.0, 0.0, -1.0],
+        [0.0, 0.0, 1.0],
+        [-1.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0],
+        [0.0, -1.0, 0.0],
+        [0.0, 1.0, 0.0],
     ];
     let face_corners: [[usize; 4]; 6] = [
-        [0, 1, 2, 3], [4, 7, 6, 5],
-        [0, 3, 7, 4], [1, 5, 6, 2],
-        [0, 4, 5, 1], [3, 2, 6, 7],
+        [0, 1, 2, 3],
+        [4, 7, 6, 5],
+        [0, 3, 7, 4],
+        [1, 5, 6, 2],
+        [0, 4, 5, 1],
+        [3, 2, 6, 7],
     ];
 
     let mut vertices = Vec::new();

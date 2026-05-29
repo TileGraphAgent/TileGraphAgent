@@ -1,6 +1,5 @@
-use std::path::Path;
-use tilegraph_core::Result;
 use crate::schema::Tileset;
+use tilegraph_core::Result;
 
 pub struct TilesetWriter {
     pub output_dir: std::path::PathBuf,
@@ -8,7 +7,9 @@ pub struct TilesetWriter {
 
 impl TilesetWriter {
     pub fn new(output_dir: impl Into<std::path::PathBuf>) -> Self {
-        Self { output_dir: output_dir.into() }
+        Self {
+            output_dir: output_dir.into(),
+        }
     }
 
     pub fn write(&self, tileset: &Tileset) -> Result<std::path::PathBuf> {

@@ -1,8 +1,8 @@
-use std::collections::HashMap;
-use tilegraph_core::{FeatureId, FeatureMapping, ObjectId, TileId};
-use tilegraph_geometry::{GeometryBatch, InstanceGroup, MaterialLibrary, MeshPrimitive};
-use crate::schema::*;
 use crate::feature_id::make_feature_id_buffer;
+use crate::schema::*;
+use std::collections::HashMap;
+use tilegraph_core::{FeatureId, FeatureMapping, TileId};
+use tilegraph_geometry::{GeometryBatch, InstanceGroup, MaterialLibrary, MeshPrimitive};
 
 /// Per-feature metadata collected during add_mesh_primitive, ordered by feature_id.
 #[derive(Default)]
@@ -29,7 +29,8 @@ impl GlbBuilder {
     pub fn new(tile_id: TileId, content_uri: impl Into<String>) -> Self {
         let mut gltf = Gltf::default();
         gltf.extensions_used.push("EXT_mesh_features".to_string());
-        gltf.extensions_used.push("EXT_structural_metadata".to_string());
+        gltf.extensions_used
+            .push("EXT_structural_metadata".to_string());
         Self {
             gltf,
             binary_data: Vec::new(),
@@ -57,7 +58,11 @@ impl GlbBuilder {
         }
     }
 
-    pub fn add_batch(&mut self, batch: &GeometryBatch, objects: &[tilegraph_core::IndustrialObject]) {
+    pub fn add_batch(
+        &mut self,
+        batch: &GeometryBatch,
+        objects: &[tilegraph_core::IndustrialObject],
+    ) {
         let object_map: HashMap<String, &tilegraph_core::IndustrialObject> = objects
             .iter()
             .map(|o| (o.object_id.to_string(), o))
@@ -81,7 +86,10 @@ impl GlbBuilder {
         });
 
         if self.gltf.scenes.is_empty() {
-            self.gltf.scenes.push(Scene { nodes: Vec::new(), name: Some("root".to_string()) });
+            self.gltf.scenes.push(Scene {
+                nodes: Vec::new(),
+                name: Some("root".to_string()),
+            });
             self.gltf.scene = Some(0);
         }
         self.gltf.scenes[0].nodes.push(root_node_idx);
@@ -92,17 +100,23 @@ impl GlbBuilder {
     fn add_mesh_geometry(&mut self, prim: &MeshPrimitive) -> u32 {
         let pos_buf_offset = self.binary_data.len() as u32;
         for v in &prim.vertices {
-            self.binary_data.extend_from_slice(&v.position[0].to_le_bytes());
-            self.binary_data.extend_from_slice(&v.position[1].to_le_bytes());
-            self.binary_data.extend_from_slice(&v.position[2].to_le_bytes());
+            self.binary_data
+                .extend_from_slice(&v.position[0].to_le_bytes());
+            self.binary_data
+                .extend_from_slice(&v.position[1].to_le_bytes());
+            self.binary_data
+                .extend_from_slice(&v.position[2].to_le_bytes());
         }
         let pos_len = self.binary_data.len() as u32 - pos_buf_offset;
 
         let norm_buf_offset = self.binary_data.len() as u32;
         for v in &prim.vertices {
-            self.binary_data.extend_from_slice(&v.normal[0].to_le_bytes());
-            self.binary_data.extend_from_slice(&v.normal[1].to_le_bytes());
-            self.binary_data.extend_from_slice(&v.normal[2].to_le_bytes());
+            self.binary_data
+                .extend_from_slice(&v.normal[0].to_le_bytes());
+            self.binary_data
+                .extend_from_slice(&v.normal[1].to_le_bytes());
+            self.binary_data
+                .extend_from_slice(&v.normal[2].to_le_bytes());
         }
         let norm_len = self.binary_data.len() as u32 - norm_buf_offset;
 
@@ -369,7 +383,10 @@ impl GlbBuilder {
 
         let node_idx = self.gltf.nodes.len() as u32;
         self.gltf.nodes.push(Node {
-            name: format!("instances_{:?}_{}", group.key.class, group.key.nominal_bore_mm),
+            name: format!(
+                "instances_{:?}_{}",
+                group.key.class, group.key.nominal_bore_mm
+            ),
             mesh: Some(mesh_idx),
             matrix: None,
             children: None,
@@ -405,12 +422,21 @@ impl GlbBuilder {
             });
         }
 
-        if !self.gltf.extensions_used.contains(&"EXT_mesh_gpu_instancing".to_string()) {
-            self.gltf.extensions_used.push("EXT_mesh_gpu_instancing".to_string());
+        if !self
+            .gltf
+            .extensions_used
+            .contains(&"EXT_mesh_gpu_instancing".to_string())
+        {
+            self.gltf
+                .extensions_used
+                .push("EXT_mesh_gpu_instancing".to_string());
         }
 
         if self.gltf.scenes.is_empty() {
-            self.gltf.scenes.push(Scene { nodes: Vec::new(), name: Some("root".to_string()) });
+            self.gltf.scenes.push(Scene {
+                nodes: Vec::new(),
+                name: Some("root".to_string()),
+            });
             self.gltf.scene = Some(0);
         }
         self.gltf.scenes[0].nodes.push(node_idx);
@@ -424,11 +450,31 @@ impl GlbBuilder {
         self.feature_properties.sort_by_key(|fp| fp.feature_id);
         let count = self.feature_properties.len();
 
-        let object_ids: Vec<&str> = self.feature_properties.iter().map(|fp| fp.object_id.as_str()).collect();
-        let tags: Vec<&str> = self.feature_properties.iter().map(|fp| fp.tag.as_str()).collect();
-        let classes: Vec<&str> = self.feature_properties.iter().map(|fp| fp.class.as_str()).collect();
-        let systems: Vec<&str> = self.feature_properties.iter().map(|fp| fp.system.as_str()).collect();
-        let fids: Vec<u32> = self.feature_properties.iter().map(|fp| fp.feature_id).collect();
+        let object_ids: Vec<&str> = self
+            .feature_properties
+            .iter()
+            .map(|fp| fp.object_id.as_str())
+            .collect();
+        let tags: Vec<&str> = self
+            .feature_properties
+            .iter()
+            .map(|fp| fp.tag.as_str())
+            .collect();
+        let classes: Vec<&str> = self
+            .feature_properties
+            .iter()
+            .map(|fp| fp.class.as_str())
+            .collect();
+        let systems: Vec<&str> = self
+            .feature_properties
+            .iter()
+            .map(|fp| fp.system.as_str())
+            .collect();
+        let fids: Vec<u32> = self
+            .feature_properties
+            .iter()
+            .map(|fp| fp.feature_id)
+            .collect();
 
         let mut table_builder = crate::structural_metadata::PropertyTableBuilder::new(count);
         table_builder.add_string_column("object_id", &object_ids);
@@ -474,7 +520,8 @@ impl GlbBuilder {
 
         self.binary_data.extend_from_slice(&extra_bytes);
 
-        let ext_json = crate::structural_metadata::PropertyTableBuilder::to_extension_json(&columns, count);
+        let ext_json =
+            crate::structural_metadata::PropertyTableBuilder::to_extension_json(&columns, count);
         self.gltf.extensions = Some(ext_json);
 
         for mesh in &mut self.gltf.meshes {
@@ -500,7 +547,10 @@ impl GlbBuilder {
 
         let bin_len = self.binary_data.len() as u32;
         if self.gltf.buffers.is_empty() {
-            self.gltf.buffers.push(Buffer { byte_length: bin_len, uri: None });
+            self.gltf.buffers.push(Buffer {
+                byte_length: bin_len,
+                uri: None,
+            });
         } else {
             self.gltf.buffers[0].byte_length = bin_len;
         }
@@ -523,16 +573,12 @@ impl GlbBuilder {
         out.extend_from_slice(&(json_padded_len as u32).to_le_bytes());
         out.extend_from_slice(b"JSON");
         out.extend_from_slice(&json_bytes);
-        for _ in 0..json_padding {
-            out.push(0x20);
-        }
+        out.resize(out.len() + json_padding, 0x20);
 
         out.extend_from_slice(&(bin_padded_len as u32).to_le_bytes());
         out.extend_from_slice(b"BIN\0");
         out.extend_from_slice(&self.binary_data);
-        for _ in 0..bin_padding {
-            out.push(0);
-        }
+        out.resize(out.len() + bin_padding, 0);
 
         (out, self.feature_mappings)
     }

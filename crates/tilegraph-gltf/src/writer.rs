@@ -1,8 +1,8 @@
+use crate::builder::GlbBuilder;
+use crate::traits::TileWriter;
 use std::collections::HashMap;
 use tilegraph_core::{FeatureMapping, IndustrialObject, ObjectClass, Result, TileId};
 use tilegraph_geometry::{build_instance_groups, GeometryBatch, MaterialLibrary, MeshPrimitive};
-use crate::builder::GlbBuilder;
-use crate::traits::TileWriter;
 
 pub struct GlbWriter {
     pub output_dir: std::path::PathBuf,

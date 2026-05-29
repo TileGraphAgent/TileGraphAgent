@@ -8,7 +8,9 @@ pub struct CsvExporter {
 
 impl CsvExporter {
     pub fn new(output_dir: impl Into<std::path::PathBuf>) -> Self {
-        Self { output_dir: output_dir.into() }
+        Self {
+            output_dir: output_dir.into(),
+        }
     }
 
     pub fn write_nodes(&self, nodes: &[GraphNodeExport]) -> Result<std::path::PathBuf> {
@@ -22,8 +24,14 @@ impl CsvExporter {
             let tag = node.tag.as_deref().unwrap_or("");
             let tile_id = node.tile_id.as_deref().unwrap_or("");
             let feature_id = node.feature_id.map(|f| f.to_string()).unwrap_or_default();
-            let (amin_x, amin_y, amin_z) = node.aabb_min.map(|a| (a[0], a[1], a[2])).unwrap_or((0.0, 0.0, 0.0));
-            let (amax_x, amax_y, amax_z) = node.aabb_max.map(|a| (a[0], a[1], a[2])).unwrap_or((0.0, 0.0, 0.0));
+            let (amin_x, amin_y, amin_z) = node
+                .aabb_min
+                .map(|a| (a[0], a[1], a[2]))
+                .unwrap_or((0.0, 0.0, 0.0));
+            let (amax_x, amax_y, amax_z) = node
+                .aabb_max
+                .map(|a| (a[0], a[1], a[2]))
+                .unwrap_or((0.0, 0.0, 0.0));
 
             csv.push_str(&format!(
                 "{},{},{},EngObject;{},{},{},{},{},{},{},{},{},{},{}\n",
@@ -35,8 +43,12 @@ impl CsvExporter {
                 Self::escape(&format!("{:?}", node.status)),
                 Self::escape(tile_id),
                 feature_id,
-                amin_x, amin_y, amin_z,
-                amax_x, amax_y, amax_z,
+                amin_x,
+                amin_y,
+                amin_z,
+                amax_x,
+                amax_y,
+                amax_z,
             ));
         }
 
@@ -44,7 +56,10 @@ impl CsvExporter {
         Ok(path)
     }
 
-    pub fn write_relationships(&self, rels: &[GraphRelationshipExport]) -> Result<std::path::PathBuf> {
+    pub fn write_relationships(
+        &self,
+        rels: &[GraphRelationshipExport],
+    ) -> Result<std::path::PathBuf> {
         let path = self.output_dir.join("relationships.csv");
 
         let mut csv = String::new();

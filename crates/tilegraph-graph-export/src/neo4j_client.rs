@@ -5,10 +5,10 @@ use tilegraph_core::Result;
 
 #[derive(Debug, Clone)]
 pub struct Neo4jConfig {
-    pub url: String,          // e.g. http://localhost:7474
+    pub url: String, // e.g. http://localhost:7474
     pub username: String,
     pub password: String,
-    pub database: String,     // e.g. "neo4j"
+    pub database: String, // e.g. "neo4j"
 }
 
 impl Neo4jConfig {
@@ -52,27 +52,36 @@ impl Neo4jClient {
     }
 
     pub async fn execute(&self, cypher: &str) -> Result<CypherResponse> {
-        let url = format!(
-            "{}/db/{}/tx/commit",
-            self.config.url, self.config.database
-        );
+        let url = format!("{}/db/{}/tx/commit", self.config.url, self.config.database);
         let body = CypherRequest {
-            statements: vec![Statement { statement: cypher.to_string() }],
+            statements: vec![Statement {
+                statement: cypher.to_string(),
+            }],
         };
 
-        let resp = self.http
+        let resp = self
+            .http
             .post(&url)
             .basic_auth(&self.config.username, Some(&self.config.password))
             .json(&body)
             .send()
             .await
-            .map_err(|e| tilegraph_core::TileGraphError::GraphExportError { reason: e.to_string() })?;
+            .map_err(|e| tilegraph_core::TileGraphError::GraphExportError {
+                reason: e.to_string(),
+            })?;
 
-        let text = resp.text().await
-            .map_err(|e| tilegraph_core::TileGraphError::GraphExportError { reason: e.to_string() })?;
+        let text =
+            resp.text()
+                .await
+                .map_err(|e| tilegraph_core::TileGraphError::GraphExportError {
+                    reason: e.to_string(),
+                })?;
 
-        let parsed: CypherResponse = serde_json::from_str(&text)
-            .map_err(|e| tilegraph_core::TileGraphError::GraphExportError { reason: e.to_string() })?;
+        let parsed: CypherResponse = serde_json::from_str(&text).map_err(|e| {
+            tilegraph_core::TileGraphError::GraphExportError {
+                reason: e.to_string(),
+            }
+        })?;
 
         if !parsed.errors.is_empty() {
             return Err(tilegraph_core::TileGraphError::GraphExportError {

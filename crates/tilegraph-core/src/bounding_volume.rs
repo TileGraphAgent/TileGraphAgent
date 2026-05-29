@@ -58,9 +58,7 @@ impl Aabb {
     }
 
     pub fn is_valid(&self) -> bool {
-        self.min[0] <= self.max[0]
-            && self.min[1] <= self.max[1]
-            && self.min[2] <= self.max[2]
+        self.min[0] <= self.max[0] && self.min[1] <= self.max[1] && self.min[2] <= self.max[2]
     }
 
     pub fn union(&self, other: &Aabb) -> Aabb {
@@ -110,7 +108,9 @@ impl Aabb {
     pub fn to_3dtiles_box(&self) -> [f64; 12] {
         let c = self.center();
         let h = self.half_extents();
-        [c[0], c[1], c[2], h[0], 0.0, 0.0, 0.0, h[1], 0.0, 0.0, 0.0, h[2]]
+        [
+            c[0], c[1], c[2], h[0], 0.0, 0.0, 0.0, h[1], 0.0, 0.0, 0.0, h[2],
+        ]
     }
 }
 

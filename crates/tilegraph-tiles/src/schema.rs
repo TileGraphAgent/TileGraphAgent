@@ -43,7 +43,7 @@ pub struct TilesetTile {
     pub bounding_volume: TilesetBoundingVolume,
     #[serde(rename = "geometricError")]
     pub geometric_error: f64,
-    pub refine: String,  // "ADD" or "REPLACE"
+    pub refine: String, // "ADD" or "REPLACE"
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<TilesetContent>,
     #[serde(skip_serializing_if = "Vec::is_empty", default)]
@@ -66,8 +66,8 @@ pub struct TilesetContent {
 #[serde(rename_all = "camelCase")]
 pub enum TilesetBoundingVolume {
     Box([f64; 12]),
-    Sphere([f64; 4]),       // [cx, cy, cz, radius]
-    Region([f64; 6]),       // [west, south, east, north, minH, maxH]
+    Sphere([f64; 4]), // [cx, cy, cz, radius]
+    Region([f64; 6]), // [west, south, east, north, minH, maxH]
 }
 
 impl TilesetBoundingVolume {

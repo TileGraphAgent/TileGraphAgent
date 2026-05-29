@@ -1,7 +1,7 @@
-use std::collections::{HashMap, HashSet};
-use serde::{Deserialize, Serialize};
-use tilegraph_core::{Aabb, IndustrialObject, ObjectClass, ObjectId};
 use crate::mesh::MeshPrimitive;
+use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet};
+use tilegraph_core::{Aabb, IndustrialObject, ObjectClass, ObjectId};
 
 /// Grouping key for identical geometry — same class and same nominal bore.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -18,7 +18,10 @@ impl InstanceKey {
             .get("nominal_bore_mm")
             .and_then(|v| v.as_u64())
             .unwrap_or(0) as u32;
-        Self { class: obj.class.clone(), nominal_bore_mm: nb }
+        Self {
+            class: obj.class.clone(),
+            nominal_bore_mm: nb,
+        }
     }
 }
 
@@ -94,11 +97,7 @@ pub fn build_instance_groups(
                         t.rotation[2] as f32,
                         t.rotation[3] as f32,
                     ],
-                    scale: [
-                        t.scale[0] as f32,
-                        t.scale[1] as f32,
-                        t.scale[2] as f32,
-                    ],
+                    scale: [t.scale[0] as f32, t.scale[1] as f32, t.scale[2] as f32],
                     feature_id: meshes[i].feature_id,
                     world_aabb: obj.aabb.clone().unwrap_or_else(Aabb::empty),
                 }
@@ -106,7 +105,11 @@ pub fn build_instance_groups(
             .collect();
 
         instanced_indices.extend(indices.iter().copied());
-        instance_groups.push(InstanceGroup { key, prototype_mesh, instances });
+        instance_groups.push(InstanceGroup {
+            key,
+            prototype_mesh,
+            instances,
+        });
     }
 
     let individual: Vec<MeshPrimitive> = meshes

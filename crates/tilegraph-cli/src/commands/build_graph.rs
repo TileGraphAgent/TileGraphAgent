@@ -1,14 +1,14 @@
 use clap::Args;
 use std::path::Path;
 use tilegraph_core::GraphNodeExport;
-use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
 use tilegraph_graph_export::{
     csv_export::CsvExporter,
     cypher::CypherGenerator,
-    neo4j_client::{Neo4jConfig, Neo4jClient},
+    neo4j_client::{Neo4jClient, Neo4jConfig},
     schema::GraphSchema,
     validate::validate_graph,
 };
+use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
 
 #[derive(Args)]
 pub struct BuildGraphArgs {
@@ -31,7 +31,9 @@ pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> 
     let scene = adapter.ingest(&args.spec)?;
 
     // Convert objects to graph node exports
-    let nodes: Vec<GraphNodeExport> = scene.objects.iter()
+    let nodes: Vec<GraphNodeExport> = scene
+        .objects
+        .iter()
         .map(|obj| GraphNodeExport::from_object(obj, obj.tile_id.as_ref(), obj.feature_id))
         .collect();
 
@@ -39,7 +41,9 @@ pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> 
     let report = validate_graph(&nodes, &scene.relationships);
     tracing::info!(
         "Graph: {} nodes, {} relationships, {} orphan rels",
-        report.node_count, report.rel_count, report.orphan_rel_count
+        report.node_count,
+        report.rel_count,
+        report.orphan_rel_count
     );
     for e in &report.errors {
         tracing::error!("Graph error: {}", e);
@@ -55,7 +59,11 @@ pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> 
     let exporter = CsvExporter::new(&graph_dir);
     let nodes_csv = exporter.write_nodes(&nodes)?;
     let rels_csv = exporter.write_relationships(&scene.relationships)?;
-    tracing::info!("Wrote CSV: {} and {}", nodes_csv.display(), rels_csv.display());
+    tracing::info!(
+        "Wrote CSV: {} and {}",
+        nodes_csv.display(),
+        rels_csv.display()
+    );
 
     // Write Cypher import script
     let cypher_script = CypherGenerator::full_import_script(&nodes, &scene.relationships);
@@ -84,13 +92,23 @@ pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> 
 
         if args.init_schema {
             tracing::info!("Initializing Neo4j schema...");
-            for stmt in GraphSchema::init_cypher().split(';').filter(|s| !s.trim().is_empty()) {
+            for stmt in GraphSchema::init_cypher()
+                .split(';')
+                .filter(|s| !s.trim().is_empty())
+            {
                 client.execute(&format!("{};", stmt.trim())).await?;
             }
         }
 
-        let stmts: Vec<String> = nodes.iter().map(CypherGenerator::node_merge)
-            .chain(scene.relationships.iter().map(CypherGenerator::relationship_merge))
+        let stmts: Vec<String> = nodes
+            .iter()
+            .map(CypherGenerator::node_merge)
+            .chain(
+                scene
+                    .relationships
+                    .iter()
+                    .map(CypherGenerator::relationship_merge),
+            )
             .collect();
 
         tracing::info!("Pushing {} statements to Neo4j...", stmts.len());

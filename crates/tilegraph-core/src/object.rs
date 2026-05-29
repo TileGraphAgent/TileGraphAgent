@@ -1,6 +1,6 @@
+use crate::{Aabb, FeatureId, ObjectId, RevisionId, SourceId, TileId, Transform3D};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::{Aabb, FeatureId, ObjectId, RevisionId, SourceId, TileId, Transform3D};
 
 /// Classification of industrial object type.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -163,9 +163,7 @@ impl IndustrialObject {
     }
 
     pub fn display_label(&self) -> String {
-        self.tag
-            .clone()
-            .unwrap_or_else(|| self.name.clone())
+        self.tag.clone().unwrap_or_else(|| self.name.clone())
     }
 }
 
@@ -184,8 +182,8 @@ mod tests {
     #[test]
     fn industrial_object_builder() {
         let id = ObjectId::from_source("synth", "P-1001");
-        let obj = IndustrialObject::new(id.clone(), "Cooling Pump", ObjectClass::Pump)
-            .with_tag("P-1001");
+        let obj =
+            IndustrialObject::new(id.clone(), "Cooling Pump", ObjectClass::Pump).with_tag("P-1001");
         assert_eq!(obj.tag, Some("P-1001".to_string()));
         assert_eq!(obj.object_id, id);
     }

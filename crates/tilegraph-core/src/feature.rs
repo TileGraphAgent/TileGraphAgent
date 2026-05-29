@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::{Aabb, FeatureId, ObjectId, TileId};
+use serde::{Deserialize, Serialize};
 
 /// Maps a visual glTF feature back to its engineering object.
 /// This is the critical identity bridge: every triangle in a GLB file

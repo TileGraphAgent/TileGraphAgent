@@ -1,14 +1,14 @@
+pub mod group;
+pub mod instance;
+pub mod material;
 pub mod mesh;
 pub mod primitives;
-pub mod material;
-pub mod instance;
-pub mod group;
 pub mod traits;
 
-pub use mesh::{MeshPrimitive, Vertex, Triangle};
-pub use material::{Material, MaterialLibrary};
+pub use group::{GeometryBatch, GeometryGroup};
 pub use instance::{
     build_instance_groups, InstanceGroup, InstanceKey, InstanceRecord, MIN_INSTANCE_GROUP_SIZE,
 };
-pub use group::{GeometryGroup, GeometryBatch};
+pub use material::{Material, MaterialLibrary};
+pub use mesh::{MeshPrimitive, Triangle, Vertex};
 pub use traits::GeometryEmitter;

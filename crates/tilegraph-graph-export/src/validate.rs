@@ -1,5 +1,5 @@
-use tilegraph_core::{GraphNodeExport, GraphRelationshipExport};
 use std::collections::HashSet;
+use tilegraph_core::{GraphNodeExport, GraphRelationshipExport};
 
 #[derive(Debug, Default)]
 pub struct GraphValidationReport {
@@ -11,7 +11,9 @@ pub struct GraphValidationReport {
 }
 
 impl GraphValidationReport {
-    pub fn is_ok(&self) -> bool { self.errors.is_empty() }
+    pub fn is_ok(&self) -> bool {
+        self.errors.is_empty()
+    }
 }
 
 pub fn validate_graph(
@@ -29,7 +31,9 @@ pub fn validate_graph(
 
     for node in nodes {
         if !dup_ids.insert(node.object_id.as_str()) {
-            report.errors.push(format!("Duplicate node object_id: {}", node.object_id));
+            report
+                .errors
+                .push(format!("Duplicate node object_id: {}", node.object_id));
         }
     }
 

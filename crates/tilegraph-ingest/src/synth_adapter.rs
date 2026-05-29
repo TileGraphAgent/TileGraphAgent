@@ -1,10 +1,10 @@
-use std::path::Path;
-use tilegraph_core::Result;
-use tilegraph_synth::{PlantGenerator, PlantSpec};
 use crate::{
     adapter::SourceAdapter,
     scene::{IngestMetadata, NormalizedScene},
 };
+use std::path::Path;
+use tilegraph_core::Result;
+use tilegraph_synth::{PlantGenerator, PlantSpec};
 
 /// Re-export document types from tilegraph-synth so scene.rs can use them.
 pub use tilegraph_synth::generator::{Datasheet, PidDocument, WorkPackage};
@@ -37,7 +37,8 @@ impl SourceAdapter for SynthAdapter {
 
     fn can_handle(&self, path: &Path) -> bool {
         path.extension().map(|e| e == "json").unwrap_or(false)
-            && path.file_name()
+            && path
+                .file_name()
                 .and_then(|n| n.to_str())
                 .map(|n| n.contains("plant_spec"))
                 .unwrap_or(false)
@@ -54,11 +55,15 @@ impl SourceAdapter for SynthAdapter {
         let mut gen = PlantGenerator::new(spec);
         let generated = gen.generate();
 
-        let geometry_count = generated.objects.iter().filter(|o| o.aabb.is_some()).count();
+        let geometry_count = generated
+            .objects
+            .iter()
+            .filter(|o| o.aabb.is_some())
+            .count();
         let obj_count = generated.objects.len();
         let rel_count = generated.relationships.len();
 
-        let mut warnings = generated.validation.warnings.clone();
+        let warnings = generated.validation.warnings.clone();
         let errors = generated.validation.errors.clone();
 
         if !errors.is_empty() {

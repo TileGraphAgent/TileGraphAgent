@@ -30,12 +30,23 @@ impl TagFactory {
 
     /// Line tag: {NB}-{system}-{area}{seq} e.g. 4"-CS-1001-A1A
     pub fn line(&self, nominal_bore_inch: u32, pipe_class: &str, seq: u32) -> String {
-        format!("{}\"-{}-{}{:04}", nominal_bore_inch, pipe_class, self.area_number(), seq)
+        format!(
+            "{}\"-{}-{}{:04}",
+            nominal_bore_inch,
+            pipe_class,
+            self.area_number(),
+            seq
+        )
     }
 
     /// Instrument tag: {type}-{area}{seq} e.g. FT-1001 (flow transmitter)
     pub fn instrument(&self, instrument_type: &str, seq: u32) -> String {
-        format!("{}-{}{:02}", instrument_type.to_uppercase(), self.area_number(), seq)
+        format!(
+            "{}-{}{:02}",
+            instrument_type.to_uppercase(),
+            self.area_number(),
+            seq
+        )
     }
 
     /// P&ID document number
@@ -45,7 +56,11 @@ impl TagFactory {
 
     /// System tag
     pub fn system(&self, name: &str) -> String {
-        format!("SYS-{}-{}", self.plant_code, name.to_uppercase().replace(' ', "-"))
+        format!(
+            "SYS-{}-{}",
+            self.plant_code,
+            name.to_uppercase().replace(' ', "-")
+        )
     }
 
     fn area_number(&self) -> &str {

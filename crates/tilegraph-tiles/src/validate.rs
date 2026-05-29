@@ -20,7 +20,9 @@ pub fn validate_tileset(tileset: &Tileset) -> TilesetValidationReport {
     validate_tile(&tileset.root, &mut report, 0);
 
     if report.leaf_tile_count == 0 {
-        report.errors.push("No leaf tiles with content found".to_string());
+        report
+            .errors
+            .push("No leaf tiles with content found".to_string());
     }
 
     if tileset.asset.version != "1.1" {
@@ -37,7 +39,10 @@ fn validate_tile(tile: &TilesetTile, report: &mut TilesetValidationReport, depth
     report.tile_count += 1;
 
     if tile.geometric_error < 0.0 {
-        report.errors.push(format!("Tile at depth {} has negative geometric error", depth));
+        report.errors.push(format!(
+            "Tile at depth {} has negative geometric error",
+            depth
+        ));
     }
 
     match &tile.bounding_volume {
@@ -52,7 +57,10 @@ fn validate_tile(tile: &TilesetTile, report: &mut TilesetValidationReport, depth
         }
         TilesetBoundingVolume::Sphere(s) => {
             if s[3] < 0.0 {
-                report.errors.push(format!("Tile at depth {} has negative sphere radius", depth));
+                report.errors.push(format!(
+                    "Tile at depth {} has negative sphere radius",
+                    depth
+                ));
             }
         }
         _ => {}
@@ -63,10 +71,15 @@ fn validate_tile(tile: &TilesetTile, report: &mut TilesetValidationReport, depth
         if let Some(content) = &tile.content {
             report.total_content_uris += 1;
             if content.uri.is_empty() {
-                report.errors.push(format!("Leaf tile at depth {} has empty content URI", depth));
+                report.errors.push(format!(
+                    "Leaf tile at depth {} has empty content URI",
+                    depth
+                ));
             }
         } else {
-            report.warnings.push(format!("Leaf tile at depth {} has no content", depth));
+            report
+                .warnings
+                .push(format!("Leaf tile at depth {} has no content", depth));
         }
     }
 

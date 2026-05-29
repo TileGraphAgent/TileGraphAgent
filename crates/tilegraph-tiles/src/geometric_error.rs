@@ -1,5 +1,5 @@
-use tilegraph_core::Aabb;
 use crate::lod::LodLevel;
+use tilegraph_core::Aabb;
 
 pub const ROOT_ERROR_FACTOR: f64 = 1.0;
 pub const LEAF_ERROR_FACTOR: f64 = 0.05;

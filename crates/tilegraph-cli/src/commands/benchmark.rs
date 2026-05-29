@@ -1,9 +1,9 @@
 use clap::Args;
 use std::path::Path;
 use std::time::Instant;
-use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
-use tilegraph_spatial::{SpatialIndex, NearbyQuery};
 use tilegraph_graph_export::cypher::CypherGenerator;
+use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
+use tilegraph_spatial::{NearbyQuery, SpatialIndex};
 
 #[derive(Args)]
 pub struct BenchmarkArgs {
@@ -20,13 +20,21 @@ pub async fn run(args: BenchmarkArgs, output_dir: &Path) -> anyhow::Result<()> {
     let scene = adapter.ingest(&args.spec)?;
     let ingest_ms = t0.elapsed().as_millis();
 
-    println!("Ingest (synth):          {:>6}ms  [{} objects]", ingest_ms, scene.objects.len());
+    println!(
+        "Ingest (synth):          {:>6}ms  [{} objects]",
+        ingest_ms,
+        scene.objects.len()
+    );
 
     // Spatial index build
     let t1 = Instant::now();
     let idx = SpatialIndex::build_from_objects(&scene.objects);
     let spatial_build_ms = t1.elapsed().as_millis();
-    println!("Spatial index build:     {:>6}ms  [{} records]", spatial_build_ms, idx.record_count());
+    println!(
+        "Spatial index build:     {:>6}ms  [{} records]",
+        spatial_build_ms,
+        idx.record_count()
+    );
 
     // Tag query (find by tag)
     let t2 = Instant::now();
@@ -50,13 +58,19 @@ pub async fn run(args: BenchmarkArgs, output_dir: &Path) -> anyhow::Result<()> {
 
     // Cypher generation
     let t4 = Instant::now();
-    let nodes: Vec<_> = scene.objects.iter()
+    let nodes: Vec<_> = scene
+        .objects
+        .iter()
         .map(|o| tilegraph_core::GraphNodeExport::from_object(o, o.tile_id.as_ref(), o.feature_id))
         .collect();
     let _ = CypherGenerator::full_import_script(&nodes, &scene.relationships);
     let cypher_ms = t4.elapsed().as_millis();
-    println!("Cypher script gen:       {:>6}ms  [{} nodes, {} rels]",
-        cypher_ms, nodes.len(), scene.relationships.len());
+    println!(
+        "Cypher script gen:       {:>6}ms  [{} nodes, {} rels]",
+        cypher_ms,
+        nodes.len(),
+        scene.relationships.len()
+    );
 
     // Summary
     let report = serde_json::json!({

@@ -1,16 +1,16 @@
 use clap::Args;
+use std::collections::HashMap;
 use std::path::Path;
 use tilegraph_core::{Aabb, FeatureId, FeatureTable, IndustrialObject, TileId};
-use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
 use tilegraph_geometry::GeometryGroup;
 use tilegraph_gltf::GlbWriter;
+use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
+use tilegraph_spatial::SpatialIndex;
 use tilegraph_tiles::{
     builder::{LodBatch, TilesetBuilder},
     validate::validate_tileset,
     ClassBasedLod, LodLevel, LodStrategy, TilesetWriter,
 };
-use tilegraph_spatial::SpatialIndex;
-use std::collections::HashMap;
 
 #[derive(Args)]
 pub struct BuildTilesArgs {
@@ -31,7 +31,9 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
     std::fs::create_dir_all(&metadata_dir)?;
 
     // Build parent-id → object map for ancestry traversal
-    let obj_by_id: HashMap<String, &IndustrialObject> = scene.objects.iter()
+    let obj_by_id: HashMap<String, &IndustrialObject> = scene
+        .objects
+        .iter()
         .map(|o| (o.object_id.to_string(), o))
         .collect();
 
@@ -54,7 +56,9 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
         "area-a".to_string()
     };
 
-    let area_tag_to_id: HashMap<String, String> = scene.objects.iter()
+    let area_tag_to_id: HashMap<String, String> = scene
+        .objects
+        .iter()
         .filter(|o| o.class == tilegraph_core::ObjectClass::Area)
         .enumerate()
         .map(|(i, o)| {
@@ -69,7 +73,8 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
             continue;
         }
         let area_tag = resolve_area(obj);
-        let area_id = area_tag_to_id.get(&area_tag)
+        let area_id = area_tag_to_id
+            .get(&area_tag)
             .cloned()
             .unwrap_or_else(|| format!("area-{}", &area_tag));
         area_objects.entry(area_id).or_default().push(obj.clone());
@@ -122,7 +127,10 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
 
             for obj in lod_objs.iter() {
                 if let Some(fid) = geo_group.process_object(obj) {
-                    if let Some(pos) = updated_objects.iter().position(|o| o.object_id == obj.object_id) {
+                    if let Some(pos) = updated_objects
+                        .iter()
+                        .position(|o| o.object_id == obj.object_id)
+                    {
                         updated_objects[pos].feature_id = Some(FeatureId(fid));
                         updated_objects[pos].tile_id = Some(tile_id.clone());
                     }
@@ -193,23 +201,32 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path) -> anyhow::Result<()> 
     all_feature_mappings.version = "1.0.0".to_string();
     all_feature_mappings.generated_at = chrono_now();
     let ft_path = metadata_dir.join("tile_feature_map.json");
-    std::fs::write(&ft_path, serde_json::to_string_pretty(&all_feature_mappings)?)?;
-    tracing::info!("Wrote feature table: {} entries", all_feature_mappings.mappings.len());
+    std::fs::write(
+        &ft_path,
+        serde_json::to_string_pretty(&all_feature_mappings)?,
+    )?;
+    tracing::info!(
+        "Wrote feature table: {} entries",
+        all_feature_mappings.mappings.len()
+    );
 
-    let obj_props: Vec<serde_json::Value> = updated_objects.iter().map(|o| {
-        let mut v = serde_json::json!({
-            "object_id": o.object_id.to_string(),
-            "tag": o.tag,
-            "name": o.name,
-            "class": o.class.to_string(),
-            "feature_id": o.feature_id.map(|f| f.0),
-            "tile_id": o.tile_id.as_ref().map(|t| t.0.clone()),
-        });
-        for (k, pv) in &o.properties {
-            v[k] = pv.clone();
-        }
-        v
-    }).collect();
+    let obj_props: Vec<serde_json::Value> = updated_objects
+        .iter()
+        .map(|o| {
+            let mut v = serde_json::json!({
+                "object_id": o.object_id.to_string(),
+                "tag": o.tag,
+                "name": o.name,
+                "class": o.class.to_string(),
+                "feature_id": o.feature_id.map(|f| f.0),
+                "tile_id": o.tile_id.as_ref().map(|t| t.0.clone()),
+            });
+            for (k, pv) in &o.properties {
+                v[k] = pv.clone();
+            }
+            v
+        })
+        .collect();
     std::fs::write(
         metadata_dir.join("object_properties.json"),
         serde_json::to_string_pretty(&obj_props)?,

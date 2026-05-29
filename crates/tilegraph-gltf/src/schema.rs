@@ -94,7 +94,7 @@ pub struct Primitive {
     pub indices: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub material: Option<u32>,
-    pub mode: u32,  // 4 = TRIANGLES
+    pub mode: u32, // 4 = TRIANGLES
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extensions: Option<serde_json::Value>,
 }
@@ -146,7 +146,7 @@ pub struct BufferView {
     #[serde(rename = "byteStride")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub byte_stride: Option<u32>,
-    pub target: u32,  // 34962=ARRAY_BUFFER, 34963=ELEMENT_ARRAY_BUFFER
+    pub target: u32, // 34962=ARRAY_BUFFER, 34963=ELEMENT_ARRAY_BUFFER
 }
 
 #[derive(Debug, Serialize, Deserialize)]

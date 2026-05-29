@@ -1,5 +1,5 @@
-use tilegraph_core::{GraphRelationshipExport, IndustrialObject};
 use crate::synth_adapter::DocumentBundle;
+use tilegraph_core::{GraphRelationshipExport, IndustrialObject};
 
 /// Normalized intermediate representation — output of any source adapter,
 /// input to the geometry and graph export stages.

@@ -4,7 +4,6 @@
 /// A property table is a column-oriented binary store where each column corresponds to a property
 /// (tag, class, object_id, etc.) and each row corresponds to one feature (one industrial object).
 /// Strings are stored as a contiguous values buffer + a u32-LE offsets buffer.
-
 use serde::{Deserialize, Serialize};
 
 /// One column in the property table — all values packed into the BIN chunk.
@@ -36,7 +35,10 @@ pub struct PropertyTableBuilder {
 
 impl PropertyTableBuilder {
     pub fn new(feature_count: usize) -> Self {
-        Self { feature_count, columns: Vec::new() }
+        Self {
+            feature_count,
+            columns: Vec::new(),
+        }
     }
 
     /// Add a string column. `values[i]` is the string for feature i.
@@ -81,7 +83,11 @@ impl PropertyTableBuilder {
     /// Returns (column list with buffer view indices assigned, extra bytes to append to BIN chunk).
     /// `bin_offset_start` is the current byte length of the BIN chunk before appending.
     /// `next_bv_index` is the next available buffer view index in the glTF JSON.
-    pub fn finalize(mut self, bin_offset_start: usize, next_bv_index: u32) -> (Vec<PropertyColumn>, Vec<u8>) {
+    pub fn finalize(
+        mut self,
+        bin_offset_start: usize,
+        next_bv_index: u32,
+    ) -> (Vec<PropertyColumn>, Vec<u8>) {
         let mut extra_bytes: Vec<u8> = Vec::new();
         let mut next_bv = next_bv_index;
 
@@ -107,7 +113,10 @@ impl PropertyTableBuilder {
     }
 
     /// Generate the EXT_structural_metadata JSON extension object for the glTF root.
-    pub fn to_extension_json(columns: &[PropertyColumn], feature_count: usize) -> serde_json::Value {
+    pub fn to_extension_json(
+        columns: &[PropertyColumn],
+        feature_count: usize,
+    ) -> serde_json::Value {
         let schema = serde_json::json!({
             "id": "tilegraph_plant_schema",
             "classes": {
@@ -128,14 +137,17 @@ impl PropertyTableBuilder {
             }
         });
 
-        let property_table_props: serde_json::Map<String, serde_json::Value> = columns.iter().map(|c| {
-            let mut col_json = serde_json::json!({ "values": c.values_buffer_view });
-            if let Some(offsets_bv) = c.offsets_buffer_view {
-                col_json["stringOffsets"] = serde_json::json!(offsets_bv);
-                col_json["stringOffsetType"] = serde_json::json!("UINT32");
-            }
-            (c.name.clone(), col_json)
-        }).collect();
+        let property_table_props: serde_json::Map<String, serde_json::Value> = columns
+            .iter()
+            .map(|c| {
+                let mut col_json = serde_json::json!({ "values": c.values_buffer_view });
+                if let Some(offsets_bv) = c.offsets_buffer_view {
+                    col_json["stringOffsets"] = serde_json::json!(offsets_bv);
+                    col_json["stringOffsetType"] = serde_json::json!("UINT32");
+                }
+                (c.name.clone(), col_json)
+            })
+            .collect();
 
         serde_json::json!({
             "EXT_structural_metadata": {

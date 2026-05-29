@@ -45,12 +45,18 @@ mod tests {
 
     #[test]
     fn tank_is_lod0() {
-        assert_eq!(ClassBasedLod.assign_lod(&obj(ObjectClass::Tank)), LodLevel::Lod0);
+        assert_eq!(
+            ClassBasedLod.assign_lod(&obj(ObjectClass::Tank)),
+            LodLevel::Lod0
+        );
     }
 
     #[test]
     fn pump_is_lod1() {
-        assert_eq!(ClassBasedLod.assign_lod(&obj(ObjectClass::Pump)), LodLevel::Lod1);
+        assert_eq!(
+            ClassBasedLod.assign_lod(&obj(ObjectClass::Pump)),
+            LodLevel::Lod1
+        );
     }
 
     #[test]

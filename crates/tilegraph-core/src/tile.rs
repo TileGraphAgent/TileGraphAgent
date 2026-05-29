@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::{Aabb, ObjectId, TileId};
+use serde::{Deserialize, Serialize};
 
 /// A node in the 3D Tiles tile hierarchy.
 #[derive(Debug, Clone, Serialize, Deserialize)]

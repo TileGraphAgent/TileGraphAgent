@@ -1,0 +1,30 @@
+[geometry]
+# Number of tessellation segments for cylinder cross-sections
+default_cylinder_segments = 12
+pump_cylinder_segments = 16
+# Maximum triangles per GLB batch before flushing to disk
+max_triangles_per_batch = 500_000
+
+[tiles]
+root_error_factor = 1.0
+leaf_error_factor = 0.05
+# Number of spatial sectors per area (n x n grid)
+sector_grid = [2, 2]
+
+[graph]
+# Number of Cypher statements per transaction batch
+import_batch_size = 500
+# Maximum parallel transactions when pushing to Neo4j
+import_parallelism = 8
+# Query timeout in milliseconds
+query_timeout_ms = 3000
+
+[spatial]
+nearby_query_default_radius_m = 5.0
+nearest_n_initial_radius_m = 10.0
+
+[pipeline]
+# Maximum objects loaded into memory at once during streaming
+streaming_buffer_size = 1000
+# Enable incremental build (skip unchanged batches)
+incremental = true

@@ -1,10 +1,10 @@
-use std::collections::BTreeMap;
-use tilegraph_core::Aabb;
 use crate::{
     geometric_error::{lod_geometric_error, root_geometric_error, tileset_geometric_error},
     lod::LodLevel,
     schema::{Tileset, TilesetAsset, TilesetBoundingVolume, TilesetContent, TilesetTile},
 };
+use std::collections::BTreeMap;
+use tilegraph_core::Aabb;
 
 /// A LOD-tagged batch of meshes for one GLB content file.
 pub struct LodBatch {
@@ -148,9 +148,7 @@ impl TilesetBuilder {
                     content: None,
                     children: vec![cell_tile],
                     transform: None,
-                    extras: Some(
-                        serde_json::json!({ "area_id": area_id, "sector_id": sector_id }),
-                    ),
+                    extras: Some(serde_json::json!({ "area_id": area_id, "sector_id": sector_id })),
                 });
             }
 

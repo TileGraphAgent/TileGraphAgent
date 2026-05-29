@@ -1,13 +1,13 @@
+use crate::{FeatureId, ObjectClass, ObjectStatus, TileId};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::{FeatureId, ObjectClass, ObjectStatus, TileId};
 
 /// A serialized node ready for Neo4j import (CSV or Cypher).
 /// All graph-foreign-key references are ObjectId strings.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GraphNodeExport {
     pub object_id: String,
-    pub label: String,            // Neo4j label = ObjectClass::neo4j_label()
+    pub label: String, // Neo4j label = ObjectClass::neo4j_label()
     pub tag: Option<String>,
     pub name: String,
     pub class: ObjectClass,

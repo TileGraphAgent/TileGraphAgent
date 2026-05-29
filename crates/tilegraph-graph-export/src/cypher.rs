@@ -1,5 +1,5 @@
-use tilegraph_core::{GraphNodeExport, GraphRelationshipExport};
 use std::fmt::Write as FmtWrite;
+use tilegraph_core::{GraphNodeExport, GraphRelationshipExport};
 
 /// Generates Cypher import scripts for bulk Neo4j import.
 pub struct CypherGenerator;
@@ -10,7 +10,10 @@ impl CypherGenerator {
         let mut props = serde_json::Map::new();
         props.insert("object_id".to_string(), serde_json::json!(node.object_id));
         props.insert("name".to_string(), serde_json::json!(node.name));
-        props.insert("class".to_string(), serde_json::json!(node.class.to_string()));
+        props.insert(
+            "class".to_string(),
+            serde_json::json!(node.class.to_string()),
+        );
         props.insert("status".to_string(), serde_json::json!(node.status));
         if let Some(tag) = &node.tag {
             props.insert("tag".to_string(), serde_json::json!(tag));

@@ -61,7 +61,9 @@ impl GraphSchema {
         format!(
             "MATCH (a:EngObject {{object_id: '{src}'}}), (b:EngObject {{object_id: '{tgt}'}}) \
              MERGE (a)-[:{rel}]->(b);",
-            src = src, rel = rel, tgt = tgt,
+            src = src,
+            rel = rel,
+            tgt = tgt,
         )
     }
 }

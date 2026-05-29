@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Transform3D {
     pub translation: [f64; 3],
-    pub rotation: [f64; 4],    // quaternion [x, y, z, w]
+    pub rotation: [f64; 4], // quaternion [x, y, z, w]
     pub scale: [f64; 3],
 }
 

@@ -1,6 +1,6 @@
 use clap::Args;
 use std::path::Path;
-use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
+use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
 use tilegraph_spatial::SpatialIndex;
 
 #[derive(Args)]
@@ -13,15 +13,14 @@ pub struct InspectObjectArgs {
     pub nearby_radius: Option<f64>,
 }
 
-pub async fn run(args: InspectObjectArgs, output_dir: &Path) -> anyhow::Result<()> {
+pub async fn run(args: InspectObjectArgs, _output_dir: &Path) -> anyhow::Result<()> {
     let spec_path = Path::new("data/synth/plant_spec.json");
     let adapter = SynthAdapter::new();
     let scene = adapter.ingest(spec_path)?;
 
     // Find by tag or object_id
     let obj = scene.objects.iter().find(|o| {
-        o.tag.as_deref() == Some(&args.identifier)
-            || o.object_id.to_string() == args.identifier
+        o.tag.as_deref() == Some(&args.identifier) || o.object_id.to_string() == args.identifier
     });
 
     match obj {
@@ -50,13 +49,21 @@ pub async fn run(args: InspectObjectArgs, output_dir: &Path) -> anyhow::Result<(
             }
 
             // Connected objects
-            let connected: Vec<_> = scene.relationships.iter()
-                .filter(|r| r.source_id == obj.object_id.to_string() || r.target_id == obj.object_id.to_string())
+            let connected: Vec<_> = scene
+                .relationships
+                .iter()
+                .filter(|r| {
+                    r.source_id == obj.object_id.to_string()
+                        || r.target_id == obj.object_id.to_string()
+                })
                 .collect();
             if !connected.is_empty() {
                 println!("  relationships ({}):", connected.len());
                 for rel in &connected {
-                    println!("    [{:?}] {} ← → {}", rel.rel_type, rel.source_id, rel.target_id);
+                    println!(
+                        "    [{:?}] {} ← → {}",
+                        rel.rel_type, rel.source_id, rel.target_id
+                    );
                 }
             }
 
@@ -71,7 +78,10 @@ pub async fn run(args: InspectObjectArgs, output_dir: &Path) -> anyhow::Result<(
                         class_filter: None,
                     });
                     println!("\nNearby objects within {:.1}m:", radius);
-                    for n in nearby.iter().filter(|n| n.object_id != obj.object_id.to_string()) {
+                    for n in nearby
+                        .iter()
+                        .filter(|n| n.object_id != obj.object_id.to_string())
+                    {
                         println!(
                             "  {:?} {} ({:.2}m)",
                             n.class,

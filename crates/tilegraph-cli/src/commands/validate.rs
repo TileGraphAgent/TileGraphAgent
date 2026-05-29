@@ -1,10 +1,10 @@
 use clap::Args;
 use std::path::Path;
-use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
+use tilegraph_core::GraphNodeExport;
+use tilegraph_graph_export::validate::validate_graph;
+use tilegraph_ingest::{adapter::SourceAdapter, SynthAdapter};
 use tilegraph_synth::validate::validate_objects;
 use tilegraph_tiles::validate::validate_tileset;
-use tilegraph_graph_export::validate::validate_graph;
-use tilegraph_core::GraphNodeExport;
 
 #[derive(Args)]
 pub struct ValidateArgs {
@@ -54,7 +54,11 @@ pub async fn run(args: ValidateArgs, output_dir: &Path) -> anyhow::Result<()> {
 
     // Scene validation
     let scene_report = validate_objects(&scene.objects);
-    tracing::info!("Scene: {} objects, {} errors", scene.objects.len(), scene_report.errors.len());
+    tracing::info!(
+        "Scene: {} objects, {} errors",
+        scene.objects.len(),
+        scene_report.errors.len()
+    );
 
     // Tileset validation (if tileset.json exists)
     let tileset_path = output_dir.join("tiles").join("tileset.json");
@@ -78,13 +82,18 @@ pub async fn run(args: ValidateArgs, output_dir: &Path) -> anyhow::Result<()> {
     };
 
     // Graph validation
-    let nodes: Vec<GraphNodeExport> = scene.objects.iter()
+    let nodes: Vec<GraphNodeExport> = scene
+        .objects
+        .iter()
         .map(|o| GraphNodeExport::from_object(o, o.tile_id.as_ref(), o.feature_id))
         .collect();
     let graph_report = validate_graph(&nodes, &scene.relationships);
 
     let passed = scene_report.errors.is_empty()
-        && tileset_section.errors.iter().all(|e| e.contains("not found"))
+        && tileset_section
+            .errors
+            .iter()
+            .all(|e| e.contains("not found"))
         && graph_report.errors.is_empty();
 
     let report = ValidationReport {

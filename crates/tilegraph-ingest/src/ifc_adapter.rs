@@ -1,13 +1,13 @@
+use crate::{
+    adapter::SourceAdapter,
+    scene::{IngestMetadata, NormalizedScene},
+    synth_adapter::DocumentBundle,
+};
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use tilegraph_core::{
     Aabb, GraphRelationshipExport, IndustrialObject, ObjectClass, ObjectId, RelationshipType,
     RevisionId, SourceId, Transform3D,
-};
-use crate::{
-    adapter::SourceAdapter,
-    scene::{IngestMetadata, NormalizedScene},
-    synth_adapter::DocumentBundle,
 };
 
 // ── Minimal IFC STEP tokenizer ────────────────────────────────────────────────
@@ -49,7 +49,13 @@ impl IfcEntity {
             StepAttr::List(items) => Some(
                 items
                     .iter()
-                    .filter_map(|a| if let StepAttr::Ref(id) = a { Some(*id) } else { None })
+                    .filter_map(|a| {
+                        if let StepAttr::Ref(id) = a {
+                            Some(*id)
+                        } else {
+                            None
+                        }
+                    })
                     .collect(),
             ),
             _ => None,
@@ -73,11 +79,12 @@ impl<'a> IfcStepParser<'a> {
     }
 
     pub fn parse(&self) -> tilegraph_core::Result<Vec<IfcEntity>> {
-        let data_start =
-            self.input.find("DATA;").ok_or_else(|| tilegraph_core::TileGraphError::SourceAdapterError {
+        let data_start = self.input.find("DATA;").ok_or_else(|| {
+            tilegraph_core::TileGraphError::SourceAdapterError {
                 adapter: "ifc".to_string(),
                 reason: "No DATA section found in IFC file".to_string(),
-            })?;
+            }
+        })?;
 
         let data_section = &self.input[data_start..];
         let mut entities = Vec::new();
@@ -97,7 +104,11 @@ impl<'a> IfcStepParser<'a> {
 
     fn parse_entity_line(line: &str) -> Result<IfcEntity, ()> {
         let (id_part, rest) = line.split_once('=').ok_or(())?;
-        let id: u64 = id_part.trim().trim_start_matches('#').parse().map_err(|_| ())?;
+        let id: u64 = id_part
+            .trim()
+            .trim_start_matches('#')
+            .parse()
+            .map_err(|_| ())?;
 
         let rest = rest.trim();
         let paren_pos = rest.find('(').ok_or(())?;
@@ -113,7 +124,11 @@ impl<'a> IfcStepParser<'a> {
 
         let attributes = Self::parse_attributes(args_str);
 
-        Ok(IfcEntity { id, entity_type, attributes })
+        Ok(IfcEntity {
+            id,
+            entity_type,
+            attributes,
+        })
     }
 
     fn parse_attributes(s: &str) -> Vec<StepAttr> {
@@ -160,8 +175,8 @@ impl<'a> IfcStepParser<'a> {
         if s == "*" {
             return StepAttr::Null;
         }
-        if s.starts_with('#') {
-            if let Ok(id) = s[1..].parse() {
+        if let Some(stripped) = s.strip_prefix('#') {
+            if let Ok(id) = stripped.parse() {
                 return StepAttr::Ref(id);
             }
         }
@@ -398,7 +413,9 @@ fn make_object(
     seen_tags: &mut HashSet<String>,
 ) -> tilegraph_core::Result<IndustrialObject> {
     // IFC GloballyUniqueId is attribute 0 (22-char compressed GUID)
-    let guid = entity.get_string(0).unwrap_or_else(|| format!("ifc-{}", entity.id));
+    let guid = entity
+        .get_string(0)
+        .unwrap_or_else(|| format!("ifc-{}", entity.id));
     let raw_name = entity.get_string(2);
     let name = raw_name
         .clone()
@@ -480,9 +497,15 @@ END-ISO-10303-21;
         let parser = IfcStepParser::new(MINIMAL_IFC);
         let entities = parser.parse().expect("should parse");
 
-        let pump = entities.iter().find(|e| e.entity_type == "IFCPUMP").unwrap();
+        let pump = entities
+            .iter()
+            .find(|e| e.entity_type == "IFCPUMP")
+            .unwrap();
         assert_eq!(pump.id, 3);
-        assert_eq!(pump.get_string(0).as_deref(), Some("2YvctVUKr4$ILNgs$7XYE0"));
+        assert_eq!(
+            pump.get_string(0).as_deref(),
+            Some("2YvctVUKr4$ILNgs$7XYE0")
+        );
         assert_eq!(pump.get_string(2).as_deref(), Some("Pump P-1001"));
 
         let rel = entities
@@ -490,7 +513,11 @@ END-ISO-10303-21;
             .find(|e| e.entity_type == "IFCRELCONTAINEDINSPATIALSTRUCTURE")
             .unwrap();
         assert_eq!(rel.get_ref(5), Some(2), "RelatingStructure should be #2");
-        assert_eq!(rel.get_refs(4), Some(vec![3]), "RelatedElements should be (#3)");
+        assert_eq!(
+            rel.get_refs(4),
+            Some(vec![3]),
+            "RelatedElements should be (#3)"
+        );
     }
 
     #[test]
@@ -504,7 +531,7 @@ END-ISO-10303-21;
 
         let scene = adapter.ingest(&path).expect("ingest must succeed");
         assert!(
-            scene.objects.len() >= 1,
+            !scene.objects.is_empty(),
             "must produce at least one object (the pump)"
         );
 
@@ -545,13 +572,21 @@ END-ISO-10303-21;
         let adapter = IfcAdapter::new();
         let scene = adapter.ingest(&path).expect("ingest must succeed");
 
-        let pump = scene.objects.iter().find(|o| o.class == ObjectClass::Pump).unwrap();
+        let pump = scene
+            .objects
+            .iter()
+            .find(|o| o.class == ObjectClass::Pump)
+            .unwrap();
         assert!(
             pump.parent_id.is_some(),
             "pump must have a parent_id from IFCRELCONTAINEDINSPATIALSTRUCTURE"
         );
 
-        let site = scene.objects.iter().find(|o| o.class == ObjectClass::Area).unwrap();
+        let site = scene
+            .objects
+            .iter()
+            .find(|o| o.class == ObjectClass::Area)
+            .unwrap();
         assert_eq!(
             pump.parent_id.as_ref().unwrap().to_string(),
             site.object_id.to_string(),
@@ -588,7 +623,11 @@ END-ISO-10303-21;
         );
 
         // Both pumps must have distinct tags
-        let tags: Vec<_> = scene.objects.iter().filter_map(|o| o.tag.as_ref()).collect();
+        let tags: Vec<_> = scene
+            .objects
+            .iter()
+            .filter_map(|o| o.tag.as_ref())
+            .collect();
         assert_eq!(tags.len(), 2, "both pumps must have tags");
         assert_ne!(tags[0], tags[1], "tags must be distinct");
 

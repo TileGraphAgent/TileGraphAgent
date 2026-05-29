@@ -1,7 +1,7 @@
 mod commands;
 
 use clap::{Parser, Subcommand};
-use tracing_subscriber::{fmt, EnvFilter};
+use tracing_subscriber::EnvFilter;
 
 #[derive(Parser)]
 #[command(
@@ -49,23 +49,11 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("TileGraphAgent CLI v{}", env!("CARGO_PKG_VERSION"));
 
     match cli.command {
-        Commands::GenerateSynth(args) => {
-            commands::generate_synth::run(args, &cli.output_dir).await
-        }
-        Commands::BuildTiles(args) => {
-            commands::build_tiles::run(args, &cli.output_dir).await
-        }
-        Commands::BuildGraph(args) => {
-            commands::build_graph::run(args, &cli.output_dir).await
-        }
-        Commands::Validate(args) => {
-            commands::validate::run(args, &cli.output_dir).await
-        }
-        Commands::InspectObject(args) => {
-            commands::inspect_object::run(args, &cli.output_dir).await
-        }
-        Commands::Benchmark(args) => {
-            commands::benchmark::run(args, &cli.output_dir).await
-        }
+        Commands::GenerateSynth(args) => commands::generate_synth::run(args, &cli.output_dir).await,
+        Commands::BuildTiles(args) => commands::build_tiles::run(args, &cli.output_dir).await,
+        Commands::BuildGraph(args) => commands::build_graph::run(args, &cli.output_dir).await,
+        Commands::Validate(args) => commands::validate::run(args, &cli.output_dir).await,
+        Commands::InspectObject(args) => commands::inspect_object::run(args, &cli.output_dir).await,
+        Commands::Benchmark(args) => commands::benchmark::run(args, &cli.output_dir).await,
     }
 }

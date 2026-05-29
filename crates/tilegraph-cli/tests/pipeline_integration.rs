@@ -8,8 +8,7 @@ use tilegraph_ingest::{SourceAdapter, SynthAdapter};
 use tilegraph_spatial::SpatialIndex;
 
 fn temp_dir() -> PathBuf {
-    let dir = std::env::temp_dir()
-        .join(format!("tilegraph_test_{}", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("tilegraph_test_{}", std::process::id()));
     std::fs::create_dir_all(&dir).unwrap();
     dir
 }
@@ -98,7 +97,10 @@ fn full_pipeline_produces_consistent_output() {
 
     // Step 5: Spatial index covers all AABB objects
     let spatial_idx = SpatialIndex::build_from_objects(&scene.objects);
-    assert!(spatial_idx.record_count() > 0, "spatial index must not be empty");
+    assert!(
+        spatial_idx.record_count() > 0,
+        "spatial index must not be empty"
+    );
     let aabb_count: usize = scene.objects.iter().filter(|o| o.aabb.is_some()).count();
     assert_eq!(
         spatial_idx.record_count(),
@@ -121,8 +123,7 @@ fn full_pipeline_produces_consistent_output() {
         graph_report.errors
     );
     assert_eq!(
-        graph_report.orphan_rel_count,
-        0,
+        graph_report.orphan_rel_count, 0,
         "graph must have zero orphan relationships; warnings: {:?}",
         graph_report.warnings
     );
