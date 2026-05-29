@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
+    "@cloudflare/workers-types": "^4.20260529.1",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "express": "^5.2.1",
+    "hono": "^4.12.23",
     "neo4j-driver": "^5.0.0",
     "ws": "^8.18.0",
     "zod": "^3.24.0",
