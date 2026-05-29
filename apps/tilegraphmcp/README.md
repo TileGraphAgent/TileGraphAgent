@@ -85,7 +85,6 @@ bucket_name = "tilegraph-data"
 | `NEO4J_PASSWORD`   | Neo4j password (Wrangler secret)                                  |
 | `NEO4J_DATABASE`   | Database name (default `neo4j`)                                   |
 | `TILEGRAPH_BUCKET` | R2 binding — serves `spatial_index.json` and audit logs           |
-| `VIEWER_HUB`       | Durable Object binding for WebSocket viewer bridge                |
 
 ## MCP tools exposed
 

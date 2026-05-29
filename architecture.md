@@ -239,14 +239,6 @@ compatibility_flags = ["nodejs_compat"]
 [[r2_buckets]]
 binding = "TILEGRAPH_BUCKET"
 bucket_name = "tilegraph-data"
-
-[[durable_objects.bindings]]
-name = "VIEWER_HUB"
-class_name = "ViewerHub"
-
-[[migrations]]
-tag = "v1"
-new_classes = ["ViewerHub"]
 ```
 
 **Secrets (set via `wrangler secret put`):**

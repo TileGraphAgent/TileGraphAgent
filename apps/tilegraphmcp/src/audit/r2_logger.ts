@@ -55,4 +55,8 @@ export class R2AuditLogger {
       total_duration_ms: this.totalDurationMs,
     };
   }
+
+  // R2 audit log is append-only; synchronous reads not supported in the Worker
+  getSessionEntries(_sessionId: string): AuditEntry[] { return []; }
+  getLastEntries(_n: number): AuditEntry[] { return []; }
 }

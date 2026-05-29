@@ -17,7 +17,7 @@ export const IndustrialObjectSchema = z.object({
   feature_id: z.number().nullable(),
   aabb_min: z.tuple([z.number(), z.number(), z.number()]).nullable(),
   aabb_max: z.tuple([z.number(), z.number(), z.number()]).nullable(),
-  properties: z.record(z.unknown()),
+  properties: z.record(z.string(), z.unknown()),
 });
 
 export type IndustrialObject = z.infer<typeof IndustrialObjectSchema>;

@@ -1,5 +1,8 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import type { AuditEntry } from "../audit/r2_logger.js";
+
+export type { AuditEntry } from "../audit/r2_logger.js";
 
 import { searchObjectByTag } from "./search_object_by_tag.js";
 import { getObjectProperties } from "./get_object_properties.js";
@@ -78,6 +81,9 @@ export interface IAuditLogger {
     error?: string;
   }): Promise<void>;
   getSessionId(): string;
+  getSessionSummary(): { session_id: string; tool_call_count: number; total_duration_ms: number };
+  getSessionEntries(sessionId: string): AuditEntry[];
+  getLastEntries(n: number): AuditEntry[];
 }
 
 export interface ToolContext {

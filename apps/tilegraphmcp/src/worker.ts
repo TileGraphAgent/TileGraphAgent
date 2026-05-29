@@ -2,17 +2,12 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { Neo4jHttpClient } from "./db/neo4j_http.js";
 import { R2SpatialIndexClient } from "./spatial/r2_client.js";
-import { DurableViewerBridge, ViewerHub } from "./viewer/viewer_hub.js";
 import { R2AuditLogger } from "./audit/r2_logger.js";
-import { TOOLS, type ToolContext } from "./tools/index.js";
+import { TOOLS, type ToolContext, type IViewerBridge, type ViewerCommand } from "./tools/index.js";
 import { runAgentLoop } from "./agent/claude_agent.js";
-
-// Re-export Durable Object class so wrangler can find it
-export { ViewerHub };
 
 interface Env {
   TILEGRAPH_BUCKET: R2Bucket;
-  VIEWER_HUB: DurableObjectNamespace;
   NEO4J_URI: string;
   NEO4J_USERNAME: string;
   NEO4J_PASSWORD: string;
@@ -21,16 +16,20 @@ interface Env {
   SYSTEM_PROMPT?: string;
 }
 
+// Viewer features not available in this deployment; tools respond gracefully
+class NoopViewerBridge implements IViewerBridge {
+  sendCommand(_command: ViewerCommand): void { /* no-op */ }
+  get connectedClients(): number { return 0; }
+}
+
 const SYSTEM_PROMPT_DEFAULT = `You are TileGraphAgent, an AI assistant specialized in industrial plant engineering data.
 Always use tools to retrieve engineering data. Never infer facts without tool evidence.
 Call search_object_by_tag first to resolve tags to object_ids before any graph or spatial query.`;
 
 const app = new Hono<{ Bindings: Env }>();
-
 app.use("*", cors());
 
-// Build per-request context from CF bindings
-function buildContext(env: Env): ToolContext {
+function buildContext(env: Env): { ctx: ToolContext; spatialIndex: R2SpatialIndexClient } {
   const neo4j = new Neo4jHttpClient({
     url: env.NEO4J_URI,
     username: env.NEO4J_USERNAME,
@@ -38,25 +37,24 @@ function buildContext(env: Env): ToolContext {
     database: env.NEO4J_DATABASE ?? "neo4j",
   });
   const spatialIndex = new R2SpatialIndexClient(env.TILEGRAPH_BUCKET);
-  const viewerBridge = new DurableViewerBridge(env.VIEWER_HUB);
+  const viewerBridge = new NoopViewerBridge();
   const auditLogger = new R2AuditLogger(env.TILEGRAPH_BUCKET);
-  return { neo4j, spatialIndex, viewerBridge, auditLogger };
+  return { ctx: { neo4j, spatialIndex, viewerBridge, auditLogger }, spatialIndex };
 }
 
 // Health check
 app.get("/health", async (c) => {
-  const ctx = buildContext(c.env);
+  const { ctx } = buildContext(c.env);
   const neo4jHealth = await ctx.neo4j.healthCheck();
   return c.json({
     status: neo4jHealth.connected ? "ok" : "degraded",
     neo4j: neo4jHealth,
-    spatial_index_records: ctx.spatialIndex.count,
   });
 });
 
 // Object properties
 app.get("/objects/:id", async (c) => {
-  const ctx = buildContext(c.env);
+  const { ctx } = buildContext(c.env);
   const results = await ctx.neo4j.getObjectProperties(c.req.param("id"));
   if (results.length === 0) {
     return c.json({ error: "NOT_FOUND", object_id: c.req.param("id") }, 404);
@@ -69,7 +67,7 @@ app.get("/objects/:id", async (c) => {
 
 // Area/system/line hierarchy
 app.get("/hierarchy", async (c) => {
-  const ctx = buildContext(c.env);
+  const { ctx } = buildContext(c.env);
   try {
     const rows = await ctx.neo4j.query<{
       area_tag: string; area_name: string; area_id: string;
@@ -111,20 +109,20 @@ app.get("/hierarchy", async (c) => {
   }
 });
 
-// MCP tool list (for direct HTTP inspection)
+// List available MCP tools
 app.get("/tools", (c) => {
   return c.json({ tools: TOOLS.map((t) => t.definition) });
 });
 
-// MCP tool call (single tool over HTTP)
+// Call a single MCP tool by name
 app.post("/tools/:name", async (c) => {
-  const ctx = buildContext(c.env);
   const name = c.req.param("name");
   const tool = TOOLS.find((t) => t.definition.name === name);
   if (!tool) return c.json({ error: "UNKNOWN_TOOL", tool: name }, 404);
 
+  const { ctx, spatialIndex } = buildContext(c.env);
   const args = await c.req.json().catch(() => ({}));
-  await ctx.spatialIndex.load();
+  await spatialIndex.load();
 
   const t0 = Date.now();
   try {
@@ -141,7 +139,7 @@ app.post("/tools/:name", async (c) => {
   }
 });
 
-// Streaming chat endpoint (SSE)
+// Streaming chat endpoint (SSE) — agent loop with tool calls
 app.post("/chat", async (c) => {
   const body = await c.req.json().catch(() => ({})) as { message?: string };
   const message = body?.message;
@@ -149,19 +147,17 @@ app.post("/chat", async (c) => {
     return c.json({ error: "VALIDATION_ERROR", message: "message is required" }, 400);
   }
 
-  const ctx = buildContext(c.env);
-  await ctx.spatialIndex.load();
+  const { ctx, spatialIndex } = buildContext(c.env);
+  await spatialIndex.load();
 
   const systemPrompt = c.env.SYSTEM_PROMPT ?? SYSTEM_PROMPT_DEFAULT;
 
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
   const encoder = new TextEncoder();
+  const sseEvent = (payload: unknown) =>
+    writer.write(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
 
-  const write = (data: string) => writer.write(encoder.encode(data));
-  const sseEvent = (payload: unknown) => write(`data: ${JSON.stringify(payload)}\n\n`);
-
-  // Run agent in background — CF Workers allow this via ctx.waitUntil but here we stream inline
   (async () => {
     try {
       const turns = await runAgentLoop(
@@ -191,16 +187,6 @@ app.post("/chat", async (c) => {
       "X-Accel-Buffering": "no",
     },
   });
-});
-
-// WebSocket viewer connection — proxied to the Durable Object
-app.get("/ws", async (c) => {
-  if (c.req.header("Upgrade") !== "websocket") {
-    return c.json({ error: "Expected WebSocket upgrade" }, 426);
-  }
-  const hubId = c.env.VIEWER_HUB.idFromName("viewer-hub");
-  const stub = c.env.VIEWER_HUB.get(hubId);
-  return stub.fetch(new Request("http://do/ws", c.req.raw));
 });
 
 export default app;
