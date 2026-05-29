@@ -12,12 +12,18 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "express": "^5.2.1",
     "neo4j-driver": "^5.0.0",
     "ws": "^8.18.0",
     "zod": "^3.24.0",
     "zod-to-json-schema": "^3.24.5"
+  },
+  "vitest": {
+    "include": ["src/tests/**/*.test.ts", "tests/**/*.test.ts"],
+    "environment": "node",
+    "testTimeout": 60000
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

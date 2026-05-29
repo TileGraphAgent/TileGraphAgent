@@ -7,6 +7,7 @@ import { SpatialIndexClient } from "./spatial/index.js";
 import { ViewerBridge } from "./viewer/bridge.js";
 import { AuditLogger } from "./audit/logger.js";
 import { REST_PORT, VIEWER_WS_PORT, SPATIAL_INDEX_PATH, AUDIT_LOG_PATH } from "./config.js";
+import { runAgentLoop } from "./agent/claude_agent.js";
 import express from "express";
 
 async function main() {
@@ -160,6 +161,52 @@ async function main() {
       res.json(Array.from(areaMap.values()).map(flatten));
     } catch (err) {
       res.status(503).json({ error: "GRAPH_UNAVAILABLE", message: String(err) });
+    }
+  });
+
+  app.post("/chat", async (req, res) => {
+    const { message } = req.body as { message?: string; session_id?: string };
+
+    if (!message || typeof message !== "string" || message.trim().length === 0) {
+      res.status(400).json({ error: "VALIDATION_ERROR", message: "message is required" });
+      return;
+    }
+
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    const sendChunk = (data: string) => {
+      res.write(`data: ${JSON.stringify({ type: "chunk", text: data })}\n\n`);
+    };
+
+    try {
+      const turns = await runAgentLoop(
+        message.trim(),
+        { neo4j, spatialIndex, viewerBridge, auditLogger },
+        sendChunk,
+      );
+
+      const toolCallNames = turns.flatMap((t) => t.tool_calls ?? []).map((tc) => tc.name);
+
+      res.write(
+        `data: ${JSON.stringify({
+          type: "done",
+          turns: turns.length,
+          tool_calls: toolCallNames,
+          session_id: auditLogger.getSessionId(),
+        })}\n\n`,
+      );
+    } catch (err: any) {
+      res.write(
+        `data: ${JSON.stringify({
+          type: "error",
+          message: err.message ?? String(err),
+        })}\n\n`,
+      );
+    } finally {
+      res.end();
     }
   });
 

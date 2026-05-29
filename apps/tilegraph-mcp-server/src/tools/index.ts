@@ -25,7 +25,7 @@ export interface ToolContext {
   auditLogger: AuditLogger;
 }
 
-const TOOLS = [
+export const TOOLS = [
   searchObjectByTag,
   getObjectProperties,
   queryConnectedComponents,
