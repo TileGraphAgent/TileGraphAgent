@@ -1,4 +1,5 @@
 name = "tilegraphmcp"
+compatibility_date = "2026-05-29"
 main = "src/worker.ts"
 
 [[r2_buckets]]
