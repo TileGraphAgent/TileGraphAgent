@@ -1,5 +1,5 @@
 name = "tilegraphmcp"
-main = "src/worker.ts"
+main = "src/index.ts"
 compatibility_date = "2026-06-29"
 compatibility_flags = ["nodejs_compat"]
 
