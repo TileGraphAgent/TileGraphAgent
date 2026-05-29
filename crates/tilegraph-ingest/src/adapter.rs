@@ -1,5 +1,6 @@
+use std::sync::mpsc::Sender;
 use crate::scene::NormalizedScene;
-use tilegraph_core::Result;
+use tilegraph_core::{IndustrialObject, Result};
 
 /// Core trait every source adapter must implement.
 /// V1: SynthAdapter
@@ -14,6 +15,24 @@ pub trait SourceAdapter: Send + Sync {
 
     /// Validate that the source file/directory is supported by this adapter.
     fn can_handle(&self, path: &std::path::Path) -> bool;
+
+    /// Stream objects one-by-one instead of collecting into a Vec.
+    /// Default implementation falls back to `ingest` and sends all at once.
+    fn stream_ingest(
+        &self,
+        path: &std::path::Path,
+        tx: Sender<IndustrialObject>,
+    ) -> Result<usize> {
+        let scene = self.ingest(path)?;
+        let count = scene.objects.len();
+        for obj in scene.objects {
+            tx.send(obj).map_err(|_| tilegraph_core::TileGraphError::SourceAdapterError {
+                adapter: self.adapter_name().to_string(),
+                reason: "streaming channel closed".to_string(),
+            })?;
+        }
+        Ok(count)
+    }
 }
 
 /// Registry of available adapters.

@@ -17,6 +17,10 @@ struct Cli {
     #[arg(short, long, default_value = "output")]
     output_dir: std::path::PathBuf,
 
+    /// Path to pipeline TOML config (uses built-in defaults if absent)
+    #[arg(long, default_value = "config/pipeline.toml")]
+    config: std::path::PathBuf,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -47,6 +51,12 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     tracing::info!("TileGraphAgent CLI v{}", env!("CARGO_PKG_VERSION"));
+
+    let _config = tilegraph_core::PipelineConfig::from_file(&cli.config)
+        .unwrap_or_else(|e| {
+            tracing::warn!("Config load failed ({}), using defaults", e);
+            tilegraph_core::PipelineConfig::default()
+        });
 
     match cli.command {
         Commands::GenerateSynth(args) => commands::generate_synth::run(args, &cli.output_dir).await,
