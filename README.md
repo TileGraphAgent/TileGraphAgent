@@ -4,6 +4,8 @@
 
 Industrial CAD → 3D Tiles 1.1 → Knowledge Graph → MCP Agent Bridge
 
+![DesignSystem](./DesignSystem.png)
+
 ---
 
 ## Architecture

@@ -80,7 +80,11 @@ impl PipelineConfig {
         }
         let raw = std::fs::read_to_string(path)?;
         let config: Self = toml::from_str(&raw).map_err(|e| {
-            crate::TileGraphError::Other(anyhow::anyhow!("Config parse error in {}: {}", path.display(), e))
+            crate::TileGraphError::Other(anyhow::anyhow!(
+                "Config parse error in {}: {}",
+                path.display(),
+                e
+            ))
         })?;
         tracing::info!("Config loaded from {}", path.display());
         Ok(config)

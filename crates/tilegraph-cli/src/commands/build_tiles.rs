@@ -1,11 +1,11 @@
 use clap::Args;
+use rayon::prelude::*;
 use std::collections::HashMap;
 use std::path::Path;
 use std::sync::{mpsc, Arc};
-use rayon::prelude::*;
 use tilegraph_core::{
-    Aabb, BuildManifest, FeatureId, FeatureMapping, FeatureTable, IndustrialObject,
-    ObjectClass, PipelineConfig, TileId,
+    Aabb, BuildManifest, FeatureId, FeatureMapping, FeatureTable, IndustrialObject, ObjectClass,
+    PipelineConfig, TileId,
 };
 use tilegraph_geometry::{GeometryBatch, GeometryGroup};
 use tilegraph_gltf::GlbWriter;
@@ -88,7 +88,11 @@ struct BatchResult {
     skipped: bool,
 }
 
-pub async fn run(args: BuildTilesArgs, output_dir: &Path, config: &PipelineConfig) -> anyhow::Result<()> {
+pub async fn run(
+    args: BuildTilesArgs,
+    output_dir: &Path,
+    config: &PipelineConfig,
+) -> anyhow::Result<()> {
     tracing::info!("build-tiles: ingesting from {}", args.spec.display());
 
     // First pass: load full scene to build parent-chain lookup maps.
@@ -158,7 +162,8 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path, config: &PipelineConfi
     let spec_path = args.spec.clone();
     let producer = std::thread::spawn(move || {
         let a2 = SynthAdapter::new();
-        a2.stream_ingest(&spec_path, tx).expect("stream_ingest failed");
+        a2.stream_ingest(&spec_path, tx)
+            .expect("stream_ingest failed");
     });
 
     // Consumer: accumulate geometry per area, flushing at the triangle budget.
@@ -296,7 +301,9 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path, config: &PipelineConfi
 
     // Compute plant AABB from all batch bounds.
     let plant_aabb = {
-        let raw = collected.iter().fold(Aabb::empty(), |acc, r| acc.union(&r.aabb));
+        let raw = collected
+            .iter()
+            .fold(Aabb::empty(), |acc, r| acc.union(&r.aabb));
         if raw.is_valid() {
             raw
         } else {
@@ -341,20 +348,32 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path, config: &PipelineConfi
         if r.skipped {
             if let Some(existing) = &existing_feature_table {
                 let glb_uri = format!("content/{}.glb", r.batch_id);
-                for m in existing.mappings.iter().filter(|m| m.glb_content_uri == glb_uri) {
+                for m in existing
+                    .mappings
+                    .iter()
+                    .filter(|m| m.glb_content_uri == glb_uri)
+                {
                     all_feature_mappings.mappings.push(m.clone());
                 }
             }
         } else {
-            all_feature_mappings.mappings.extend(r.mappings.iter().cloned());
+            all_feature_mappings
+                .mappings
+                .extend(r.mappings.iter().cloned());
         }
     }
     all_feature_mappings.version = "1.0.0".to_string();
     all_feature_mappings.generated_at = chrono_now();
 
     let ft_path = metadata_dir.join("tile_feature_map.json");
-    std::fs::write(&ft_path, serde_json::to_string_pretty(&all_feature_mappings)?)?;
-    tracing::info!("Feature table: {} entries", all_feature_mappings.mappings.len());
+    std::fs::write(
+        &ft_path,
+        serde_json::to_string_pretty(&all_feature_mappings)?,
+    )?;
+    tracing::info!(
+        "Feature table: {} entries",
+        all_feature_mappings.mappings.len()
+    );
 
     // Object properties table.
     let obj_props: Vec<serde_json::Value> = updated_objects

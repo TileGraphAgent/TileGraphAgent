@@ -71,10 +71,7 @@ fn snapshot_pump_p10101_tag() {
         .iter()
         .find(|o| o.tag.as_deref() == Some("P-10101"));
     assert!(pump.is_some(), "Pump P-10101 must exist in the scene");
-    assert_snapshot(
-        "p10101_tag.txt",
-        pump.unwrap().tag.as_deref().unwrap_or(""),
-    );
+    assert_snapshot("p10101_tag.txt", pump.unwrap().tag.as_deref().unwrap_or(""));
 }
 
 #[test]

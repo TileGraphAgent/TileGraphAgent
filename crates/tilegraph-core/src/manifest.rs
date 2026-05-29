@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::path::Path;
-use sha2::{Digest, Sha256};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct BuildManifest {

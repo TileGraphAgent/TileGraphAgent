@@ -132,9 +132,8 @@ impl Neo4jClient {
                     Some(chunk) => {
                         let http = self.http.clone();
                         let config = self.config.clone();
-                        join_set.spawn(async move {
-                            execute_chunk_http(&http, &config, &chunk).await
-                        });
+                        join_set
+                            .spawn(async move { execute_chunk_http(&http, &config, &chunk).await });
                         batch_taken += 1;
                     }
                     None => break,
@@ -184,12 +183,16 @@ async fn execute_chunk_http(
         .json(&body)
         .send()
         .await
-        .map_err(|e| tilegraph_core::TileGraphError::GraphExportError { reason: e.to_string() })?;
+        .map_err(|e| tilegraph_core::TileGraphError::GraphExportError {
+            reason: e.to_string(),
+        })?;
 
-    let parsed: serde_json::Value = resp
-        .json()
-        .await
-        .map_err(|e| tilegraph_core::TileGraphError::GraphExportError { reason: e.to_string() })?;
+    let parsed: serde_json::Value =
+        resp.json()
+            .await
+            .map_err(|e| tilegraph_core::TileGraphError::GraphExportError {
+                reason: e.to_string(),
+            })?;
 
     if let Some(errors) = parsed["errors"].as_array() {
         if !errors.is_empty() {

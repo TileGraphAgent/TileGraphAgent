@@ -1,7 +1,847 @@
 {
   "version": "1.0.0",
-  "generated_at": "unix:1780032497",
+  "generated_at": "unix:1780033153",
   "mappings": [
+    {
+      "feature_id": 0,
+      "object_id": "obj_c1d25c865cee0e3aa53678a43f727768",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 0,
+      "gltf_node_index": 0,
+      "world_aabb": {
+        "min": [
+          70.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          72.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 1,
+      "object_id": "obj_dceae650d2fbd38a9836f37bc1305f94",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 1,
+      "gltf_node_index": 1,
+      "world_aabb": {
+        "min": [
+          72.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          74.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 2,
+      "object_id": "obj_864b02e3400118245f6292f612d217cb",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 2,
+      "gltf_node_index": 2,
+      "world_aabb": {
+        "min": [
+          74.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          76.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 3,
+      "object_id": "obj_0e79408d512f0cf9d7a32b2b3575088e",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 3,
+      "gltf_node_index": 3,
+      "world_aabb": {
+        "min": [
+          76.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          78.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 4,
+      "object_id": "obj_ce3f72330a2cacfb736036f63a0d671f",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 4,
+      "gltf_node_index": 4,
+      "world_aabb": {
+        "min": [
+          78.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          80.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 5,
+      "object_id": "obj_9790fce8efb1ffeb33830ed48c13396f",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 5,
+      "gltf_node_index": 5,
+      "world_aabb": {
+        "min": [
+          80.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          82.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 6,
+      "object_id": "obj_9626c34524e7b8a3f492a7c5fc4b92b2",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 6,
+      "gltf_node_index": 6,
+      "world_aabb": {
+        "min": [
+          82.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          84.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 7,
+      "object_id": "obj_50142298760a3010871aeed56968d73b",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 7,
+      "gltf_node_index": 7,
+      "world_aabb": {
+        "min": [
+          84.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          86.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 8,
+      "object_id": "obj_d716e5b28f75dfd9df6e97f3a1b93755",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 8,
+      "gltf_node_index": 8,
+      "world_aabb": {
+        "min": [
+          86.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          88.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 9,
+      "object_id": "obj_97d78760f0fd104ce1dc73cbc96e9607",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 9,
+      "gltf_node_index": 9,
+      "world_aabb": {
+        "min": [
+          88.0,
+          -0.02800000086426735,
+          0.47200000286102295
+        ],
+        "max": [
+          90.0,
+          0.02800000086426735,
+          0.527999997138977
+        ]
+      }
+    },
+    {
+      "feature_id": 10,
+      "object_id": "obj_53f9f2cdc4c5d8aee03eb9414eb12615",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 10,
+      "gltf_node_index": 10,
+      "world_aabb": {
+        "min": [
+          72.41600036621094,
+          -0.08399999886751175,
+          0.4440000057220459
+        ],
+        "max": [
+          72.58399963378906,
+          0.08399999886751175,
+          0.5559999942779541
+        ]
+      }
+    },
+    {
+      "feature_id": 11,
+      "object_id": "obj_f17326a7daced0f3393d1a2ed823d07d",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 11,
+      "gltf_node_index": 11,
+      "world_aabb": {
+        "min": [
+          77.41600036621094,
+          -0.08399999886751175,
+          0.4440000057220459
+        ],
+        "max": [
+          77.58399963378906,
+          0.08399999886751175,
+          0.5559999942779541
+        ]
+      }
+    },
+    {
+      "feature_id": 12,
+      "object_id": "obj_ff36580ffa3898252569cc5dcf7ab41c",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 12,
+      "gltf_node_index": 12,
+      "world_aabb": {
+        "min": [
+          82.41600036621094,
+          -0.08399999886751175,
+          0.4440000057220459
+        ],
+        "max": [
+          82.58399963378906,
+          0.08399999886751175,
+          0.5559999942779541
+        ]
+      }
+    },
+    {
+      "feature_id": 13,
+      "object_id": "obj_dd2422f782a6d9ef54977d4658ef3143",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-piping.glb",
+      "gltf_mesh_index": 13,
+      "gltf_node_index": 13,
+      "world_aabb": {
+        "min": [
+          87.41600036621094,
+          -0.08399999886751175,
+          0.4440000057220459
+        ],
+        "max": [
+          87.58399963378906,
+          0.08399999886751175,
+          0.5559999942779541
+        ]
+      }
+    },
+    {
+      "feature_id": 14,
+      "object_id": "obj_248473b1701214ffc33c8c3c73749875",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-equipment.glb",
+      "gltf_mesh_index": 0,
+      "gltf_node_index": 0,
+      "world_aabb": {
+        "min": [
+          71.6500015258789,
+          19.649999618530273,
+          0.0
+        ],
+        "max": [
+          72.3499984741211,
+          20.350000381469727,
+          0.699999988079071
+        ]
+      }
+    },
+    {
+      "feature_id": 15,
+      "object_id": "obj_76d6989818ef6cc3de0136598bd1d29d",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-equipment.glb",
+      "gltf_mesh_index": 1,
+      "gltf_node_index": 1,
+      "world_aabb": {
+        "min": [
+          82.48460388183594,
+          21.484601974487305,
+          0.0
+        ],
+        "max": [
+          87.51539611816406,
+          26.515398025512695,
+          10.06159210205078
+        ]
+      }
+    },
+    {
+      "feature_id": 16,
+      "object_id": "obj_88713524490c8ce82e2cd501a9f030f9",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-equipment.glb",
+      "gltf_mesh_index": 2,
+      "gltf_node_index": 2,
+      "world_aabb": {
+        "min": [
+          69.9000015258789,
+          -0.10000000149011612,
+          1.350000023841858
+        ],
+        "max": [
+          70.0999984741211,
+          0.10000000149011612,
+          1.649999976158142
+        ]
+      }
+    },
+    {
+      "feature_id": 17,
+      "object_id": "obj_4a7c77187e0a450f0d49eaf5875a9d38",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-equipment.glb",
+      "gltf_mesh_index": 3,
+      "gltf_node_index": 3,
+      "world_aabb": {
+        "min": [
+          71.9000015258789,
+          -0.10000000149011612,
+          1.350000023841858
+        ],
+        "max": [
+          72.0999984741211,
+          0.10000000149011612,
+          1.649999976158142
+        ]
+      }
+    },
+    {
+      "feature_id": 18,
+      "object_id": "obj_82c289e3c60737d674cf03f48acb2179",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-equipment.glb",
+      "gltf_mesh_index": 4,
+      "gltf_node_index": 4,
+      "world_aabb": {
+        "min": [
+          73.9000015258789,
+          -0.10000000149011612,
+          1.350000023841858
+        ],
+        "max": [
+          74.0999984741211,
+          0.10000000149011612,
+          1.649999976158142
+        ]
+      }
+    },
+    {
+      "feature_id": 19,
+      "object_id": "obj_4f5d16986e7e41bb347656be95e3874f",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-equipment.glb",
+      "gltf_mesh_index": 5,
+      "gltf_node_index": 5,
+      "world_aabb": {
+        "min": [
+          75.9000015258789,
+          -0.10000000149011612,
+          1.350000023841858
+        ],
+        "max": [
+          76.0999984741211,
+          0.10000000149011612,
+          1.649999976158142
+        ]
+      }
+    },
+    {
+      "feature_id": 20,
+      "object_id": "obj_9c2a193af2fd80fde4cc57135e18b15d",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 0,
+      "gltf_node_index": 0,
+      "world_aabb": {
+        "min": [
+          69.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          70.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 21,
+      "object_id": "obj_9160606ebac7da3020c5b848cf3eae78",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 1,
+      "gltf_node_index": 1,
+      "world_aabb": {
+        "min": [
+          71.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          71.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 22,
+      "object_id": "obj_46f105637d02a143ba18ed1805502640",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 2,
+      "gltf_node_index": 2,
+      "world_aabb": {
+        "min": [
+          72.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          73.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 23,
+      "object_id": "obj_c101894a4c26d29137b61fd334c4eca9",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 3,
+      "gltf_node_index": 3,
+      "world_aabb": {
+        "min": [
+          74.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          74.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 24,
+      "object_id": "obj_53fe1446e5e2b0d7ac6f73104c0e2c64",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 4,
+      "gltf_node_index": 4,
+      "world_aabb": {
+        "min": [
+          75.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          76.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 25,
+      "object_id": "obj_70b0844d72cf037c1a8dddfc2d9313aa",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 5,
+      "gltf_node_index": 5,
+      "world_aabb": {
+        "min": [
+          77.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          77.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 26,
+      "object_id": "obj_dc72617427c9eb645b9ed98d9e525658",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 6,
+      "gltf_node_index": 6,
+      "world_aabb": {
+        "min": [
+          78.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          79.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 27,
+      "object_id": "obj_2a89cea83d7e002ba658e9f13a12d00b",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 7,
+      "gltf_node_index": 7,
+      "world_aabb": {
+        "min": [
+          80.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          80.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 28,
+      "object_id": "obj_ec4b9d20be3cb772f76e41703cf057a8",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 8,
+      "gltf_node_index": 8,
+      "world_aabb": {
+        "min": [
+          81.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          82.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 29,
+      "object_id": "obj_d7e639006fe2b8e4e997b209030db212",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 9,
+      "gltf_node_index": 9,
+      "world_aabb": {
+        "min": [
+          83.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          83.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 30,
+      "object_id": "obj_4352843cd86096dc6c34d3e1ac3f6d24",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 10,
+      "gltf_node_index": 10,
+      "world_aabb": {
+        "min": [
+          84.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          85.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 31,
+      "object_id": "obj_d3075f3e16019ca95cebe0934fc10f00",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 11,
+      "gltf_node_index": 11,
+      "world_aabb": {
+        "min": [
+          86.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          86.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 32,
+      "object_id": "obj_ab16a4640d9b10cda2761ef768241bf4",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 12,
+      "gltf_node_index": 12,
+      "world_aabb": {
+        "min": [
+          87.94999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          88.05000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 33,
+      "object_id": "obj_35b1051d2878baf381e5164f5d3d6039",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 13,
+      "gltf_node_index": 13,
+      "world_aabb": {
+        "min": [
+          89.44999694824219,
+          0.0,
+          0.0
+        ],
+        "max": [
+          89.55000305175781,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 34,
+      "object_id": "obj_13fe6314f214fb847d86e854d8abf9be",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 14,
+      "gltf_node_index": 14,
+      "world_aabb": {
+        "min": [
+          90.9499969482422,
+          0.0,
+          0.0
+        ],
+        "max": [
+          91.0500030517578,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 35,
+      "object_id": "obj_46e2323d0abdf46a3b958d893afc4d1c",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 15,
+      "gltf_node_index": 15,
+      "world_aabb": {
+        "min": [
+          92.4499969482422,
+          0.0,
+          0.0
+        ],
+        "max": [
+          92.5500030517578,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 36,
+      "object_id": "obj_f8fe0e584302ab0d2869c5fd38c5932c",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 16,
+      "gltf_node_index": 16,
+      "world_aabb": {
+        "min": [
+          93.9499969482422,
+          0.0,
+          0.0
+        ],
+        "max": [
+          94.0500030517578,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 37,
+      "object_id": "obj_68b65aa8e8d2df61fe46c32c9ac92813",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 17,
+      "gltf_node_index": 17,
+      "world_aabb": {
+        "min": [
+          95.4499969482422,
+          0.0,
+          0.0
+        ],
+        "max": [
+          95.5500030517578,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 38,
+      "object_id": "obj_1febca3ebdec3624124e97f6136ded92",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 18,
+      "gltf_node_index": 18,
+      "world_aabb": {
+        "min": [
+          96.9499969482422,
+          0.0,
+          0.0
+        ],
+        "max": [
+          97.0500030517578,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 39,
+      "object_id": "obj_b64e46063de49e7655059eb2ae143103",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-support.glb",
+      "gltf_mesh_index": 19,
+      "gltf_node_index": 19,
+      "world_aabb": {
+        "min": [
+          98.4499969482422,
+          0.0,
+          0.0
+        ],
+        "max": [
+          98.5500030517578,
+          0.10000000149011612,
+          2.0
+        ]
+      }
+    },
+    {
+      "feature_id": 40,
+      "object_id": "obj_fd916d14c2cfdfffe0b0bd8f237200d1",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-cable.glb",
+      "gltf_mesh_index": 0,
+      "gltf_node_index": 0,
+      "world_aabb": {
+        "min": [
+          70.0,
+          -1.149999976158142,
+          2.9000000953674316
+        ],
+        "max": [
+          110.0,
+          -0.8500000238418579,
+          3.0999999046325684
+        ]
+      }
+    },
+    {
+      "feature_id": 41,
+      "object_id": "obj_20a032ec6b469a1afeb68da660a7445a",
+      "tile_id": "area-b/content",
+      "glb_content_uri": "content/area-b-cable.glb",
+      "gltf_mesh_index": 1,
+      "gltf_node_index": 1,
+      "world_aabb": {
+        "min": [
+          70.0,
+          -1.149999976158142,
+          2.9000000953674316
+        ],
+        "max": [
+          110.0,
+          -0.8500000238418579,
+          3.0999999046325684
+        ]
+      }
+    },
     {
       "feature_id": 0,
       "object_id": "obj_11b2d63ea176a2b87191c1e903fccf70",
@@ -1438,7 +2278,7 @@
         "max": [
           17.515398025512695,
           26.515398025512695,
-          10.061592102050781
+          10.06159210205078
         ]
       }
     },
@@ -1491,7 +2331,7 @@
       "gltf_node_index": 4,
       "world_aabb": {
         "min": [
-          3.9000000953674316,
+          3.900000095367432,
           -0.10000000149011612,
           1.350000023841858
         ],
@@ -1558,7 +2398,7 @@
         "max": [
           17.515398025512695,
           26.515398025512695,
-          10.061592102050781
+          10.06159210205078
         ]
       }
     },
@@ -1611,7 +2451,7 @@
       "gltf_node_index": 10,
       "world_aabb": {
         "min": [
-          3.9000000953674316,
+          3.900000095367432,
           -0.10000000149011612,
           1.350000023841858
         ],
@@ -2077,846 +2917,6 @@
         ],
         "max": [
           60.0,
-          -0.8500000238418579,
-          3.0999999046325684
-        ]
-      }
-    },
-    {
-      "feature_id": 0,
-      "object_id": "obj_c1d25c865cee0e3aa53678a43f727768",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 0,
-      "gltf_node_index": 0,
-      "world_aabb": {
-        "min": [
-          70.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          72.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 1,
-      "object_id": "obj_dceae650d2fbd38a9836f37bc1305f94",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 1,
-      "gltf_node_index": 1,
-      "world_aabb": {
-        "min": [
-          72.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          74.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 2,
-      "object_id": "obj_864b02e3400118245f6292f612d217cb",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 2,
-      "gltf_node_index": 2,
-      "world_aabb": {
-        "min": [
-          74.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          76.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 3,
-      "object_id": "obj_0e79408d512f0cf9d7a32b2b3575088e",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 3,
-      "gltf_node_index": 3,
-      "world_aabb": {
-        "min": [
-          76.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          78.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 4,
-      "object_id": "obj_ce3f72330a2cacfb736036f63a0d671f",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 4,
-      "gltf_node_index": 4,
-      "world_aabb": {
-        "min": [
-          78.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          80.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 5,
-      "object_id": "obj_9790fce8efb1ffeb33830ed48c13396f",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 5,
-      "gltf_node_index": 5,
-      "world_aabb": {
-        "min": [
-          80.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          82.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 6,
-      "object_id": "obj_9626c34524e7b8a3f492a7c5fc4b92b2",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 6,
-      "gltf_node_index": 6,
-      "world_aabb": {
-        "min": [
-          82.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          84.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 7,
-      "object_id": "obj_50142298760a3010871aeed56968d73b",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 7,
-      "gltf_node_index": 7,
-      "world_aabb": {
-        "min": [
-          84.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          86.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 8,
-      "object_id": "obj_d716e5b28f75dfd9df6e97f3a1b93755",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 8,
-      "gltf_node_index": 8,
-      "world_aabb": {
-        "min": [
-          86.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          88.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 9,
-      "object_id": "obj_97d78760f0fd104ce1dc73cbc96e9607",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 9,
-      "gltf_node_index": 9,
-      "world_aabb": {
-        "min": [
-          88.0,
-          -0.02800000086426735,
-          0.47200000286102295
-        ],
-        "max": [
-          90.0,
-          0.02800000086426735,
-          0.527999997138977
-        ]
-      }
-    },
-    {
-      "feature_id": 10,
-      "object_id": "obj_53f9f2cdc4c5d8aee03eb9414eb12615",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 10,
-      "gltf_node_index": 10,
-      "world_aabb": {
-        "min": [
-          72.41600036621094,
-          -0.08399999886751175,
-          0.4440000057220459
-        ],
-        "max": [
-          72.58399963378906,
-          0.08399999886751175,
-          0.5559999942779541
-        ]
-      }
-    },
-    {
-      "feature_id": 11,
-      "object_id": "obj_f17326a7daced0f3393d1a2ed823d07d",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 11,
-      "gltf_node_index": 11,
-      "world_aabb": {
-        "min": [
-          77.41600036621094,
-          -0.08399999886751175,
-          0.4440000057220459
-        ],
-        "max": [
-          77.58399963378906,
-          0.08399999886751175,
-          0.5559999942779541
-        ]
-      }
-    },
-    {
-      "feature_id": 12,
-      "object_id": "obj_ff36580ffa3898252569cc5dcf7ab41c",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 12,
-      "gltf_node_index": 12,
-      "world_aabb": {
-        "min": [
-          82.41600036621094,
-          -0.08399999886751175,
-          0.4440000057220459
-        ],
-        "max": [
-          82.58399963378906,
-          0.08399999886751175,
-          0.5559999942779541
-        ]
-      }
-    },
-    {
-      "feature_id": 13,
-      "object_id": "obj_dd2422f782a6d9ef54977d4658ef3143",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-piping.glb",
-      "gltf_mesh_index": 13,
-      "gltf_node_index": 13,
-      "world_aabb": {
-        "min": [
-          87.41600036621094,
-          -0.08399999886751175,
-          0.4440000057220459
-        ],
-        "max": [
-          87.58399963378906,
-          0.08399999886751175,
-          0.5559999942779541
-        ]
-      }
-    },
-    {
-      "feature_id": 14,
-      "object_id": "obj_248473b1701214ffc33c8c3c73749875",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-equipment.glb",
-      "gltf_mesh_index": 0,
-      "gltf_node_index": 0,
-      "world_aabb": {
-        "min": [
-          71.6500015258789,
-          19.649999618530273,
-          0.0
-        ],
-        "max": [
-          72.3499984741211,
-          20.350000381469727,
-          0.699999988079071
-        ]
-      }
-    },
-    {
-      "feature_id": 15,
-      "object_id": "obj_76d6989818ef6cc3de0136598bd1d29d",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-equipment.glb",
-      "gltf_mesh_index": 1,
-      "gltf_node_index": 1,
-      "world_aabb": {
-        "min": [
-          82.48460388183594,
-          21.484601974487305,
-          0.0
-        ],
-        "max": [
-          87.51539611816406,
-          26.515398025512695,
-          10.061592102050781
-        ]
-      }
-    },
-    {
-      "feature_id": 16,
-      "object_id": "obj_88713524490c8ce82e2cd501a9f030f9",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-equipment.glb",
-      "gltf_mesh_index": 2,
-      "gltf_node_index": 2,
-      "world_aabb": {
-        "min": [
-          69.9000015258789,
-          -0.10000000149011612,
-          1.350000023841858
-        ],
-        "max": [
-          70.0999984741211,
-          0.10000000149011612,
-          1.649999976158142
-        ]
-      }
-    },
-    {
-      "feature_id": 17,
-      "object_id": "obj_4a7c77187e0a450f0d49eaf5875a9d38",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-equipment.glb",
-      "gltf_mesh_index": 3,
-      "gltf_node_index": 3,
-      "world_aabb": {
-        "min": [
-          71.9000015258789,
-          -0.10000000149011612,
-          1.350000023841858
-        ],
-        "max": [
-          72.0999984741211,
-          0.10000000149011612,
-          1.649999976158142
-        ]
-      }
-    },
-    {
-      "feature_id": 18,
-      "object_id": "obj_82c289e3c60737d674cf03f48acb2179",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-equipment.glb",
-      "gltf_mesh_index": 4,
-      "gltf_node_index": 4,
-      "world_aabb": {
-        "min": [
-          73.9000015258789,
-          -0.10000000149011612,
-          1.350000023841858
-        ],
-        "max": [
-          74.0999984741211,
-          0.10000000149011612,
-          1.649999976158142
-        ]
-      }
-    },
-    {
-      "feature_id": 19,
-      "object_id": "obj_4f5d16986e7e41bb347656be95e3874f",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-equipment.glb",
-      "gltf_mesh_index": 5,
-      "gltf_node_index": 5,
-      "world_aabb": {
-        "min": [
-          75.9000015258789,
-          -0.10000000149011612,
-          1.350000023841858
-        ],
-        "max": [
-          76.0999984741211,
-          0.10000000149011612,
-          1.649999976158142
-        ]
-      }
-    },
-    {
-      "feature_id": 20,
-      "object_id": "obj_9c2a193af2fd80fde4cc57135e18b15d",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 0,
-      "gltf_node_index": 0,
-      "world_aabb": {
-        "min": [
-          69.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          70.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 21,
-      "object_id": "obj_9160606ebac7da3020c5b848cf3eae78",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 1,
-      "gltf_node_index": 1,
-      "world_aabb": {
-        "min": [
-          71.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          71.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 22,
-      "object_id": "obj_46f105637d02a143ba18ed1805502640",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 2,
-      "gltf_node_index": 2,
-      "world_aabb": {
-        "min": [
-          72.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          73.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 23,
-      "object_id": "obj_c101894a4c26d29137b61fd334c4eca9",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 3,
-      "gltf_node_index": 3,
-      "world_aabb": {
-        "min": [
-          74.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          74.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 24,
-      "object_id": "obj_53fe1446e5e2b0d7ac6f73104c0e2c64",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 4,
-      "gltf_node_index": 4,
-      "world_aabb": {
-        "min": [
-          75.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          76.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 25,
-      "object_id": "obj_70b0844d72cf037c1a8dddfc2d9313aa",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 5,
-      "gltf_node_index": 5,
-      "world_aabb": {
-        "min": [
-          77.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          77.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 26,
-      "object_id": "obj_dc72617427c9eb645b9ed98d9e525658",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 6,
-      "gltf_node_index": 6,
-      "world_aabb": {
-        "min": [
-          78.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          79.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 27,
-      "object_id": "obj_2a89cea83d7e002ba658e9f13a12d00b",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 7,
-      "gltf_node_index": 7,
-      "world_aabb": {
-        "min": [
-          80.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          80.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 28,
-      "object_id": "obj_ec4b9d20be3cb772f76e41703cf057a8",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 8,
-      "gltf_node_index": 8,
-      "world_aabb": {
-        "min": [
-          81.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          82.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 29,
-      "object_id": "obj_d7e639006fe2b8e4e997b209030db212",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 9,
-      "gltf_node_index": 9,
-      "world_aabb": {
-        "min": [
-          83.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          83.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 30,
-      "object_id": "obj_4352843cd86096dc6c34d3e1ac3f6d24",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 10,
-      "gltf_node_index": 10,
-      "world_aabb": {
-        "min": [
-          84.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          85.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 31,
-      "object_id": "obj_d3075f3e16019ca95cebe0934fc10f00",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 11,
-      "gltf_node_index": 11,
-      "world_aabb": {
-        "min": [
-          86.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          86.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 32,
-      "object_id": "obj_ab16a4640d9b10cda2761ef768241bf4",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 12,
-      "gltf_node_index": 12,
-      "world_aabb": {
-        "min": [
-          87.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          88.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 33,
-      "object_id": "obj_35b1051d2878baf381e5164f5d3d6039",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 13,
-      "gltf_node_index": 13,
-      "world_aabb": {
-        "min": [
-          89.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          89.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 34,
-      "object_id": "obj_13fe6314f214fb847d86e854d8abf9be",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 14,
-      "gltf_node_index": 14,
-      "world_aabb": {
-        "min": [
-          90.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          91.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 35,
-      "object_id": "obj_46e2323d0abdf46a3b958d893afc4d1c",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 15,
-      "gltf_node_index": 15,
-      "world_aabb": {
-        "min": [
-          92.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          92.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 36,
-      "object_id": "obj_f8fe0e584302ab0d2869c5fd38c5932c",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 16,
-      "gltf_node_index": 16,
-      "world_aabb": {
-        "min": [
-          93.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          94.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 37,
-      "object_id": "obj_68b65aa8e8d2df61fe46c32c9ac92813",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 17,
-      "gltf_node_index": 17,
-      "world_aabb": {
-        "min": [
-          95.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          95.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 38,
-      "object_id": "obj_1febca3ebdec3624124e97f6136ded92",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 18,
-      "gltf_node_index": 18,
-      "world_aabb": {
-        "min": [
-          96.94999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          97.05000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 39,
-      "object_id": "obj_b64e46063de49e7655059eb2ae143103",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-support.glb",
-      "gltf_mesh_index": 19,
-      "gltf_node_index": 19,
-      "world_aabb": {
-        "min": [
-          98.44999694824219,
-          0.0,
-          0.0
-        ],
-        "max": [
-          98.55000305175781,
-          0.10000000149011612,
-          2.0
-        ]
-      }
-    },
-    {
-      "feature_id": 40,
-      "object_id": "obj_fd916d14c2cfdfffe0b0bd8f237200d1",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-cable.glb",
-      "gltf_mesh_index": 0,
-      "gltf_node_index": 0,
-      "world_aabb": {
-        "min": [
-          70.0,
-          -1.149999976158142,
-          2.9000000953674316
-        ],
-        "max": [
-          110.0,
-          -0.8500000238418579,
-          3.0999999046325684
-        ]
-      }
-    },
-    {
-      "feature_id": 41,
-      "object_id": "obj_20a032ec6b469a1afeb68da660a7445a",
-      "tile_id": "area-b/content",
-      "glb_content_uri": "content/area-b-cable.glb",
-      "gltf_mesh_index": 1,
-      "gltf_node_index": 1,
-      "world_aabb": {
-        "min": [
-          70.0,
-          -1.149999976158142,
-          2.9000000953674316
-        ],
-        "max": [
-          110.0,
           -0.8500000238418579,
           3.0999999046325684
         ]
