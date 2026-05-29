@@ -1,6 +1,5 @@
 /// Engineering tag naming conventions for synthetic plant data.
 /// Mirrors EPC/AVEVA/SP3D tag format conventions.
-
 pub struct TagFactory {
     area_prefix: String,
     plant_code: String,

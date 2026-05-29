@@ -18,9 +18,11 @@ pub fn validate_graph(
     nodes: &[GraphNodeExport],
     rels: &[GraphRelationshipExport],
 ) -> GraphValidationReport {
-    let mut report = GraphValidationReport::default();
-    report.node_count = nodes.len();
-    report.rel_count = rels.len();
+    let mut report = GraphValidationReport {
+        node_count: nodes.len(),
+        rel_count: rels.len(),
+        ..Default::default()
+    };
 
     let node_ids: HashSet<&str> = nodes.iter().map(|n| n.object_id.as_str()).collect();
     let mut dup_ids: HashSet<&str> = HashSet::new();

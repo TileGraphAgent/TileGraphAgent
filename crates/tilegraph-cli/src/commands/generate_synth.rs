@@ -1,11 +1,10 @@
 use clap::Args;
 use std::path::Path;
-use tilegraph_ingest::{SynthAdapter, adapter::SourceAdapter};
-use tilegraph_synth::PlantSpec;
+use tilegraph_ingest::adapter::AdapterRegistry;
 
 #[derive(Args)]
 pub struct GenerateSynthArgs {
-    /// Path to plant_spec.json (default: data/synth/plant_spec.json)
+    /// Path to plant_spec.json or .ifc file (default: data/synth/plant_spec.json)
     #[arg(short, long, default_value = "data/synth/plant_spec.json")]
     pub spec: std::path::PathBuf,
 
@@ -17,7 +16,15 @@ pub struct GenerateSynthArgs {
 pub async fn run(args: GenerateSynthArgs, output_dir: &Path) -> anyhow::Result<()> {
     tracing::info!("generate-synth: reading spec from {}", args.spec.display());
 
-    let adapter = SynthAdapter::new();
+    let registry = AdapterRegistry::default();
+    let adapter = registry.find_for(&args.spec).ok_or_else(|| {
+        anyhow::anyhow!(
+            "No adapter found for '{}'. Supported: plant_spec.json (synth), .ifc",
+            args.spec.display()
+        )
+    })?;
+
+    tracing::info!("Using adapter: {}", adapter.adapter_name());
     let scene = adapter.ingest(&args.spec)?;
 
     tracing::info!(

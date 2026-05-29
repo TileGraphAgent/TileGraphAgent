@@ -1,6 +1,5 @@
 /// Neo4j graph schema — constraints, indexes, and labels.
 /// Apply via: `tilegraph build-graph --init-schema`
-
 pub const NEO4J_SCHEMA_CYPHER: &str = r#"
 // ============================================================
 // TileGraphAgent — Neo4j Schema Initialization

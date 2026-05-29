@@ -1,6 +1,5 @@
 /// HTTP client for Neo4j Bolt HTTP API (V1 uses Cypher HTTP endpoint).
 /// Production would use bolt:// driver. V1 uses HTTP for portability.
-
 use serde::{Deserialize, Serialize};
 use tilegraph_core::Result;
 

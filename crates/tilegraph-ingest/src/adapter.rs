@@ -39,6 +39,7 @@ impl Default for AdapterRegistry {
     fn default() -> Self {
         let mut reg = Self::new();
         reg.register(Box::new(crate::SynthAdapter::new()));
+        reg.register(Box::new(crate::IfcAdapter::new()));
         reg
     }
 }

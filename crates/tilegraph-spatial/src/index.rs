@@ -1,5 +1,5 @@
 use rstar::{RTree, AABB};
-use tilegraph_core::{Aabb, IndustrialObject};
+use tilegraph_core::IndustrialObject;
 use crate::{
     query::{BboxQuery, NearbyQuery, QueryResult},
     record::SpatialIndexRecord,

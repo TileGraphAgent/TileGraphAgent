@@ -3,6 +3,7 @@ use tilegraph_core::{Aabb, ObjectId};
 use crate::mesh::{MeshPrimitive, Triangle, Vertex};
 
 /// Tessellated cylinder (used for pipes, pump bodies, tank shells).
+#[allow(clippy::too_many_arguments)]
 pub fn tessellate_cylinder(
     object_id: ObjectId,
     center: [f64; 3],

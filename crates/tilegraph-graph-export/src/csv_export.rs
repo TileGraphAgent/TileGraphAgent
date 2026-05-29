@@ -1,4 +1,3 @@
-use std::path::Path;
 use tilegraph_core::{GraphNodeExport, GraphRelationshipExport, Result};
 
 /// Exports nodes and relationships as Neo4j-import-compatible CSV files.

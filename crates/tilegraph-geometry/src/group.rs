@@ -1,4 +1,4 @@
-use tilegraph_core::{Aabb, IndustrialObject, ObjectClass, ObjectId};
+use tilegraph_core::{Aabb, IndustrialObject, ObjectClass};
 use crate::{
     material::MaterialLibrary,
     mesh::MeshPrimitive,

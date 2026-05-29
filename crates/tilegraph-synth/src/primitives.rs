@@ -1,4 +1,4 @@
-use tilegraph_core::{Aabb, Transform3D};
+use tilegraph_core::Aabb;
 
 /// Procedural geometry descriptors — not triangulated here, just sized bounding volumes.
 /// Actual mesh generation happens in tilegraph-geometry.

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::{Aabb, FeatureId, ObjectClass, ObjectId, ObjectStatus, TileId};
+use crate::{FeatureId, ObjectClass, ObjectStatus, TileId};
 
 /// A serialized node ready for Neo4j import (CSV or Cypher).
 /// All graph-foreign-key references are ObjectId strings.

@@ -1,5 +1,4 @@
-use tilegraph_core::Result;
-use crate::{query::{BboxQuery, NearbyQuery, QueryResult}, record::SpatialIndexRecord};
+use crate::query::{BboxQuery, NearbyQuery, QueryResult};
 
 pub trait SpatialIndexTrait: Send + Sync {
     fn query_bbox(&self, query: &BboxQuery) -> Vec<QueryResult>;

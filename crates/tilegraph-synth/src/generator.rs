@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use tilegraph_core::{
     Aabb, GraphRelationshipExport, IndustrialObject, ObjectClass, ObjectId,
-    RelationshipType, Transform3D,
+    Transform3D,
 };
 use crate::{
     config::PlantSpec,
     connections::{ConnectionGraph, PumpSide},
-    primitives::{Axis, BoxPrimitive, CylinderPrimitive, EquipmentSizer},
+    primitives::{Axis, CylinderPrimitive, EquipmentSizer},
     tag::TagFactory,
     validate::{validate_objects, SynthValidationReport},
 };
@@ -51,6 +51,8 @@ pub struct WorkPackage {
 }
 
 /// Deterministic pseudo-random number generator (xorshift64) to avoid rand dep.
+/// Reserved for future procedural variation (layout jitter, property noise).
+#[allow(dead_code)]
 struct Rng(u64);
 
 impl Rng {

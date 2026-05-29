@@ -1,4 +1,4 @@
-use tilegraph_core::{IndustrialObject, ObjectClass};
+use tilegraph_core::IndustrialObject;
 use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Default)]
@@ -17,8 +17,10 @@ impl SynthValidationReport {
 }
 
 pub fn validate_objects(objects: &[IndustrialObject]) -> SynthValidationReport {
-    let mut report = SynthValidationReport::default();
-    report.object_count = objects.len();
+    let mut report = SynthValidationReport {
+        object_count: objects.len(),
+        ..Default::default()
+    };
 
     let mut seen_ids: HashSet<String> = HashSet::new();
     let mut seen_tags: HashMap<String, usize> = HashMap::new();

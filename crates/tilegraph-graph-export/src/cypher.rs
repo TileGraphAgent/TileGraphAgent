@@ -1,4 +1,4 @@
-use tilegraph_core::{GraphNodeExport, GraphRelationshipExport, RelationshipType};
+use tilegraph_core::{GraphNodeExport, GraphRelationshipExport};
 use std::fmt::Write as FmtWrite;
 
 /// Generates Cypher import scripts for bulk Neo4j import.

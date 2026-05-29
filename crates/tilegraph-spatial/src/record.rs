@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use tilegraph_core::{Aabb, ObjectClass, ObjectId, TileId};
+use tilegraph_core::{Aabb, ObjectClass};
 use rstar::{RTreeObject, AABB};
 
 /// One entry in the spatial index — links world-space AABB to industrial object.
