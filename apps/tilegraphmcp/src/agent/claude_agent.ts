@@ -53,7 +53,7 @@ interface OAIResponse {
 const DEEPSEEK_URL = "https://api.deepseek.com/chat/completions";
 
 // DeepSeek V3 on DeepSeek — cheapest option with solid tool-calling support
-export const DEFAULT_MODEL = "deepseek-v4-flash";
+export const DEFAULT_MODEL = "deepseek-chat";
 
 async function chatCompletion(
   apiKey: string,

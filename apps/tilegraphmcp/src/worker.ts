@@ -43,6 +43,10 @@ function buildContext(env: Env): { ctx: ToolContext; spatialIndex: R2SpatialInde
   return { ctx: { neo4j, spatialIndex, viewerBridge, auditLogger }, spatialIndex };
 }
 
+app.get('/', (c) => {
+  return c.json({ message: 'TileGraphAgent Worker Running', model: c.env.DEEPSEEK_MODEL ?? DEFAULT_MODEL })
+})
+
 // Health check
 app.get("/health", async (c) => {
   const { ctx } = buildContext(c.env);
