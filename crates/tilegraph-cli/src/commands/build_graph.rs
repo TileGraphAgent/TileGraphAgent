@@ -1,6 +1,6 @@
 use clap::Args;
 use std::path::Path;
-use tilegraph_core::GraphNodeExport;
+use tilegraph_core::{GraphNodeExport, PipelineConfig};
 use tilegraph_graph_export::{
     csv_export::CsvExporter,
     cypher::CypherGenerator,
@@ -24,20 +24,18 @@ pub struct BuildGraphArgs {
     pub push_to_neo4j: bool,
 }
 
-pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> {
+pub async fn run(args: BuildGraphArgs, output_dir: &Path, config: &PipelineConfig) -> anyhow::Result<()> {
     tracing::info!("build-graph: ingesting from {}", args.spec.display());
 
     let adapter = SynthAdapter::new();
     let scene = adapter.ingest(&args.spec)?;
 
-    // Convert objects to graph node exports
     let nodes: Vec<GraphNodeExport> = scene
         .objects
         .iter()
         .map(|obj| GraphNodeExport::from_object(obj, obj.tile_id.as_ref(), obj.feature_id))
         .collect();
 
-    // Validate
     let report = validate_graph(&nodes, &scene.relationships);
     tracing::info!(
         "Graph: {} nodes, {} relationships, {} orphan rels",
@@ -55,27 +53,19 @@ pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> 
     let graph_dir = output_dir.join("graph");
     std::fs::create_dir_all(&graph_dir)?;
 
-    // Write CSV
     let exporter = CsvExporter::new(&graph_dir);
     let nodes_csv = exporter.write_nodes(&nodes)?;
     let rels_csv = exporter.write_relationships(&scene.relationships)?;
-    tracing::info!(
-        "Wrote CSV: {} and {}",
-        nodes_csv.display(),
-        rels_csv.display()
-    );
+    tracing::info!("Wrote CSV: {} and {}", nodes_csv.display(), rels_csv.display());
 
-    // Write Cypher import script
     let cypher_script = CypherGenerator::full_import_script(&nodes, &scene.relationships);
     let cypher_path = graph_dir.join("import.cypher");
     std::fs::write(&cypher_path, &cypher_script)?;
     tracing::info!("Wrote Cypher: {}", cypher_path.display());
 
-    // Write schema init script
     let schema_path = graph_dir.join("schema.cypher");
     std::fs::write(&schema_path, GraphSchema::init_cypher())?;
 
-    // Write useful query examples
     let queries = serde_json::json!({
         "pumps_connected_to_LINE_1001": CypherGenerator::query_pumps_connected_to_line("LINE-1001"),
         "isolation_valves_for_LINE_1001": CypherGenerator::query_isolation_valves_for_line("LINE-1001"),
@@ -87,32 +77,39 @@ pub async fn run(args: BuildGraphArgs, output_dir: &Path) -> anyhow::Result<()> 
     )?;
 
     if args.push_to_neo4j {
-        let config = Neo4jConfig::from_env();
-        let client = Neo4jClient::new(config);
+        let neo4j_config = Neo4jConfig::from_env();
+        let client = Neo4jClient::new(neo4j_config);
 
         if args.init_schema {
             tracing::info!("Initializing Neo4j schema...");
-            for stmt in GraphSchema::init_cypher()
+            let schema_stmts: Vec<String> = GraphSchema::init_cypher()
                 .split(';')
                 .filter(|s| !s.trim().is_empty())
-            {
-                client.execute(&format!("{};", stmt.trim())).await?;
-            }
+                .map(|s| format!("{};", s.trim()))
+                .collect();
+            client.execute_parallel_batch(&schema_stmts, 1, 1).await?;
         }
 
-        let stmts: Vec<String> = nodes
+        let node_stmts: Vec<String> = nodes.iter().map(|n| CypherGenerator::node_merge(n)).collect();
+        let rel_stmts: Vec<String> = scene
+            .relationships
             .iter()
-            .map(CypherGenerator::node_merge)
-            .chain(
-                scene
-                    .relationships
-                    .iter()
-                    .map(CypherGenerator::relationship_merge),
-            )
+            .map(|r| CypherGenerator::relationship_merge(r))
             .collect();
+        let all_stmts: Vec<String> = node_stmts.into_iter().chain(rel_stmts).collect();
 
-        tracing::info!("Pushing {} statements to Neo4j...", stmts.len());
-        client.execute_batch(&stmts).await?;
+        tracing::info!(
+            "Pushing {} statements to Neo4j (batch={}, parallel={})...",
+            all_stmts.len(),
+            config.graph.import_batch_size,
+            config.graph.import_parallelism
+        );
+
+        client.execute_parallel_batch(
+            &all_stmts,
+            config.graph.import_batch_size,
+            config.graph.import_parallelism,
+        ).await?;
         tracing::info!("Neo4j import complete.");
     }
 

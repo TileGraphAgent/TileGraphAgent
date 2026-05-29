@@ -149,4 +149,27 @@ impl GeometryGroup {
             &self.cable_batch,
         ]
     }
+
+    pub fn total_triangles(&self) -> usize {
+        self.piping_batch.total_triangles()
+            + self.equipment_batch.total_triangles()
+            + self.support_batch.total_triangles()
+            + self.cable_batch.total_triangles()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.piping_batch.meshes.is_empty()
+            && self.equipment_batch.meshes.is_empty()
+            && self.support_batch.meshes.is_empty()
+            && self.cable_batch.meshes.is_empty()
+    }
+
+    pub fn into_batches(self) -> [GeometryBatch; 4] {
+        [
+            self.piping_batch,
+            self.equipment_batch,
+            self.support_batch,
+            self.cable_batch,
+        ]
+    }
 }

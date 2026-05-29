@@ -258,7 +258,7 @@ pub async fn run(args: BuildTilesArgs, output_dir: &Path, config: &PipelineConfi
                     .unwrap_or(false);
 
             if skip {
-                tracing::debug!("Skipping unchanged batch: {}", pb.batch.batch_id);
+                tracing::info!("Skipping unchanged batch: {}", pb.batch.batch_id);
                 return Ok(BatchResult {
                     area_id: pb.area_id.clone(),
                     batch_id: pb.batch.batch_id.clone(),

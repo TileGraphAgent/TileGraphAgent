@@ -52,7 +52,7 @@ async fn main() -> anyhow::Result<()> {
 
     tracing::info!("TileGraphAgent CLI v{}", env!("CARGO_PKG_VERSION"));
 
-    let _config = tilegraph_core::PipelineConfig::from_file(&cli.config)
+    let config = tilegraph_core::PipelineConfig::from_file(&cli.config)
         .unwrap_or_else(|e| {
             tracing::warn!("Config load failed ({}), using defaults", e);
             tilegraph_core::PipelineConfig::default()
@@ -60,8 +60,8 @@ async fn main() -> anyhow::Result<()> {
 
     match cli.command {
         Commands::GenerateSynth(args) => commands::generate_synth::run(args, &cli.output_dir).await,
-        Commands::BuildTiles(args) => commands::build_tiles::run(args, &cli.output_dir).await,
-        Commands::BuildGraph(args) => commands::build_graph::run(args, &cli.output_dir).await,
+        Commands::BuildTiles(args) => commands::build_tiles::run(args, &cli.output_dir, &config).await,
+        Commands::BuildGraph(args) => commands::build_graph::run(args, &cli.output_dir, &config).await,
         Commands::Validate(args) => commands::validate::run(args, &cli.output_dir).await,
         Commands::InspectObject(args) => commands::inspect_object::run(args, &cli.output_dir).await,
         Commands::Benchmark(args) => commands::benchmark::run(args, &cli.output_dir).await,
