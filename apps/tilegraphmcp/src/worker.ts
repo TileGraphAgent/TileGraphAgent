@@ -4,7 +4,7 @@ import { Neo4jHttpClient } from "./db/neo4j_http.js";
 import { R2SpatialIndexClient } from "./spatial/r2_client.js";
 import { R2AuditLogger } from "./audit/r2_logger.js";
 import { TOOLS, type ToolContext, type IViewerBridge, type ViewerCommand } from "./tools/index.js";
-import { runAgentLoop } from "./agent/claude_agent.js";
+import { runAgentLoop, DEFAULT_MODEL } from "./agent/claude_agent.js";
 
 interface Env {
   TILEGRAPH_BUCKET: R2Bucket;
@@ -12,7 +12,8 @@ interface Env {
   NEO4J_USERNAME: string;
   NEO4J_PASSWORD: string;
   NEO4J_DATABASE?: string;
-  ANTHROPIC_API_KEY: string;
+  DEEPSEEK_API_KEY: string;
+  DEEPSEEK_MODEL?: string;  // override model at runtime, e.g. "deepseek/deepseek-r1"
   SYSTEM_PROMPT?: string;
 }
 
@@ -49,6 +50,7 @@ app.get("/health", async (c) => {
   return c.json({
     status: neo4jHealth.connected ? "ok" : "degraded",
     neo4j: neo4jHealth,
+    model: c.env.DEEPSEEK_MODEL ?? DEFAULT_MODEL,
   });
 });
 
@@ -141,7 +143,7 @@ app.post("/tools/:name", async (c) => {
 
 // Streaming chat endpoint (SSE) — agent loop with tool calls
 app.post("/chat", async (c) => {
-  const body = await c.req.json().catch(() => ({})) as { message?: string };
+  const body = await c.req.json().catch(() => ({})) as { message?: string; model?: string };
   const message = body?.message;
   if (!message || typeof message !== "string" || !message.trim()) {
     return c.json({ error: "VALIDATION_ERROR", message: "message is required" }, 400);
@@ -151,6 +153,7 @@ app.post("/chat", async (c) => {
   await spatialIndex.load();
 
   const systemPrompt = c.env.SYSTEM_PROMPT ?? SYSTEM_PROMPT_DEFAULT;
+  const model = body.model ?? c.env.DEEPSEEK_MODEL ?? DEFAULT_MODEL;
 
   const { readable, writable } = new TransformStream();
   const writer = writable.getWriter();
@@ -165,12 +168,15 @@ app.post("/chat", async (c) => {
         ctx,
         (chunk) => sseEvent({ type: "chunk", text: chunk }),
         systemPrompt,
+        c.env.DEEPSEEK_API_KEY,
+        model,
       );
       const toolCallNames = turns.flatMap((t) => t.tool_calls ?? []).map((tc) => tc.name);
       await sseEvent({
         type: "done",
         turns: turns.length,
         tool_calls: toolCallNames,
+        model,
         session_id: ctx.auditLogger.getSessionId(),
       });
     } catch (err: any) {
