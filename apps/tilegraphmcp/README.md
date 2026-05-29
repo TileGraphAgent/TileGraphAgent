@@ -1,4 +1,4 @@
-# tilegraphmcp
+# TileGraphMCP
 
 MCP (Model Context Protocol) server for the TileGraphAgent system, deployed as a **Cloudflare Worker** using [Hono.js](https://hono.dev). It connects to **Neo4j Aura** (cloud) for graph queries and reads spatial index data from **Cloudflare R2**.
 

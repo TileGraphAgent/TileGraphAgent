@@ -6,7 +6,7 @@ import type { ToolContext } from "../tools/index.js";
 import { TOOLS } from "../tools/index.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const SYSTEM_PROMPT_PATH = join(__dirname, "../../../docs/mcp/agent_system_prompt.md");
+const SYSTEM_PROMPT_PATH = join(__dirname, "./docs/mcp/agent_system_prompt.md");
 
 function loadSystemPrompt(): string {
   try {

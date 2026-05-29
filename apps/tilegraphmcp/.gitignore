@@ -1,0 +1,10 @@
+output/
+
+.env
+.dev.vars
+node_modules/
+dist/
+coverage/
+logs/
+*.log
+*.env
