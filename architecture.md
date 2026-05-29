@@ -7,43 +7,43 @@ TileGraphAgent is an AI-driven industrial plant viewer that combines a **Rust da
 ### Deployment topology
 
 ```
-┌─────────────────────── Local Machine ──────────────────────────┐
-│                                                                  │
-│  Rust Pipeline (cargo run --bin tilegraph)                       │
-│   ├── generate-synth / IFC ingest                                │
-│   ├── build-tiles  → output/tiles/  ─────────────┐              │
+┌─────────────────────── Local Machine ───────────────────────────┐
+│                                                                 │
+│  Rust Pipeline (cargo run --bin tilegraph)                      │
+│   ├── generate-synth / IFC ingest                               │
+│   ├── build-tiles  → output/tiles/  ──────────────┐             │
 │   ├── build-graph  → output/graph/  ──────────────┼──▶ upload   │
-│   └── validate                                    │              │
-│                                                   ▼              │
-│                                          wrangler r2 object put  │
+│   └── validate                                    │             │
+│                                                   ▼             │
+│                                          wrangler r2 object put │
 └───────────────────────────────────────────────────┼─────────────┘
                                                     │
                         ┌───────────────────────────▼──────────────────────────┐
-                        │                  Cloudflare                           │
-                        │                                                        │
-                        │  R2 Bucket: tilegraph-data (public read)               │
-                        │   ├── tiles/tileset.json                               │
-                        │   ├── tiles/content/*.glb                              │
-                        │   ├── tiles/index/spatial_index.json                  │
-                        │   └── reports/audit.jsonl                             │
-                        │                           │                           │
-                        │  Worker: tilegraph-mcp-server (Hono.js)               │
-                        │   ├── MCP over HTTP-SSE  ◀────── Claude / AI agent    │
-                        │   ├── REST /chat, /hierarchy, /objects/:id             │
-                        │   ├── R2 binding → spatial_index.json                 │
-                        │   └── Durable Object: ViewerHub (WebSocket)           │
-                        │                           │                           │
-                        │  Pages: tilegraph-viewer (CesiumJS + Vite)            │
-                        │   ├── loads tiles from R2 (public URL)                │
-                        │   ├── REST ──▶ Worker /chat, /hierarchy               │
-                        │   └── WS   ──▶ Worker /ws/viewer (ViewerHub DO)       │
+                        │                  Cloudflare                          │
+                        │                                                      │
+                        │  R2 Bucket: tilegraph-data (public read)             │
+                        │   ├── tiles/tileset.json                             │
+                        │   ├── tiles/content/*.glb                            │
+                        │   ├── tiles/index/spatial_index.json                 │
+                        │   └── reports/audit.jsonl                            │
+                        │                           │                          │
+                        │  Worker: tilegraph-mcp-server (Hono.js)              │
+                        │   ├── MCP over HTTP-SSE  ◀────── Claude / AI agent   │
+                        │   ├── REST /chat, /hierarchy, /objects/:id           │
+                        │   ├── R2 binding → spatial_index.json                │
+                        │   └── Durable Object: ViewerHub (WebSocket)          │
+                        │                           │                          │
+                        │  Pages: tilegraph-viewer (CesiumJS + Vite)           │
+                        │   ├── loads tiles from R2 (public URL)               │
+                        │   ├── REST ──▶ Worker /chat, /hierarchy              │
+                        │   └── WS   ──▶ Worker /ws/viewer (ViewerHub DO)      │
                         └───────────────────────────┼──────────────────────────┘
                                                     │
                         ┌───────────────────────────▼──────────────────────────┐
-                        │  Neo4j Aura (managed cloud)                           │
+                        │  Neo4j Aura (managed cloud)                          │
                         │  neo4j+s://1c3578a5.databases.neo4j.io               │
-                        │   Graph: EngObject nodes + relationships              │
-                        └───────────────────────────────────────────────────────┘
+                        │   Graph: EngObject nodes + relationships             │
+                        └──────────────────────────────────────────────────────┘
 ```
 
 ---
