@@ -5,26 +5,42 @@ export interface Neo4jConfig {
   database: string;
 }
 
-interface CypherStatement {
-  statement: string;
-  parameters?: Record<string, unknown>;
-}
-
-interface Neo4jResponse {
-  results: Array<{
-    columns: string[];
-    data: Array<{ row: unknown[]; meta: unknown[] }>;
-  }>;
-  errors: Array<{ code: string; message: string }>;
+interface QueryV2Response {
+  data: {
+    fields: string[];
+    values: unknown[][];
+  };
+  bookmarks?: string[];
+  errors?: Array<{ code: string; message: string }>;
 }
 
 function toHttpUrl(neo4jUrl: string): string {
-  // Convert neo4j+s://host or bolt+s://host to https://host
   return neo4jUrl
     .replace(/^neo4j\+s:\/\//, "https://")
     .replace(/^neo4j:\/\//, "http://")
     .replace(/^bolt\+s:\/\//, "https://")
     .replace(/^bolt:\/\//, "http://");
+}
+
+function unwrapValue(val: unknown): unknown {
+  if (val !== null && typeof val === "object") {
+    const v = val as Record<string, unknown>;
+    // Node returned by v2 API: has elementId + labels + properties
+    if (v.elementId !== undefined && v.properties !== undefined) {
+      return { ...(v.properties as object), _labels: v.labels ?? [] };
+    }
+  }
+  return val;
+}
+
+function rowsFromV2<T>(data: QueryV2Response["data"]): T[] {
+  return data.values.map((row) => {
+    const obj: Record<string, unknown> = {};
+    data.fields.forEach((field, i) => {
+      obj[field] = unwrapValue(row[i]);
+    });
+    return obj as T;
+  });
 }
 
 export class Neo4jHttpClient {
@@ -33,8 +49,7 @@ export class Neo4jHttpClient {
   private database: string;
 
   constructor(config: Neo4jConfig) {
-    const httpUrl = toHttpUrl(config.url);
-    this.baseUrl = `${httpUrl}:7473`;
+    this.baseUrl = toHttpUrl(config.url);
     this.authHeader = "Basic " + btoa(`${config.username}:${config.password}`);
     this.database = config.database;
   }
@@ -44,10 +59,7 @@ export class Neo4jHttpClient {
     params: Record<string, unknown> = {},
     timeoutMs = 5000,
   ): Promise<T[]> {
-    const url = `${this.baseUrl}/db/${this.database}/tx/commit`;
-    const body: { statements: CypherStatement[] } = {
-      statements: [{ statement: cypher, parameters: params }],
-    };
+    const url = `${this.baseUrl}/db/${this.database}/query/v2`;
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -61,7 +73,7 @@ export class Neo4jHttpClient {
           Accept: "application/json",
           Authorization: this.authHeader,
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ statement: cypher, parameters: params }),
         signal: controller.signal,
       });
     } catch (err: any) {
@@ -74,29 +86,21 @@ export class Neo4jHttpClient {
     }
 
     if (!resp.ok) {
-      throw Object.assign(new Error(`Neo4j HTTP ${resp.status}`), {
+      const text = await resp.text().catch(() => "");
+      throw Object.assign(new Error(`Neo4j ${resp.status}: ${text}`), {
         error_code: "GRAPH_UNAVAILABLE",
       });
     }
 
-    const json: Neo4jResponse = await resp.json();
+    const json: QueryV2Response = await resp.json();
 
     if (json.errors?.length) {
       const e = json.errors[0];
       throw Object.assign(new Error(e.message), { error_code: e.code });
     }
 
-    const result = json.results[0];
-    if (!result) return [];
-
-    return result.data.map((row) => {
-      const obj: Record<string, unknown> = {};
-      result.columns.forEach((col, i) => {
-        const val = row.row[i];
-        obj[col] = val;
-      });
-      return obj as T;
-    });
+    if (!json.data) return [];
+    return rowsFromV2<T>(json.data);
   }
 
   // ---------- Canonical queries ----------
