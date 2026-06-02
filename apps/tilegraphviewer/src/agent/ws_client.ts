@@ -26,19 +26,19 @@ export class ViewerCommandClient {
     try {
       this.ws = new WebSocket(this.url);
       this.ws.onopen = () => {
-        console.log("[WS] Connected to MCP server bridge");
+        console.log("[WS] Command channel connected");
         store.update({ auditLog: [...store.get().auditLog] }); // trigger re-render
       };
       this.ws.onmessage = (event) => this.handleMessage(event.data as string);
       this.ws.onclose = () => {
-        console.log("[WS] Disconnected — reconnecting in 3s");
+        console.warn("[WS] Command channel disconnected; retrying in 3s");
         this.scheduleReconnect();
       };
       this.ws.onerror = (err) => {
-        console.error("[WS] Error", err);
+        console.warn("[WS] Command channel error; Cesium tile loading is unaffected.", err);
       };
     } catch (err) {
-      console.error("[WS] Failed to connect:", err);
+      console.warn("[WS] Failed to start command channel; retrying in 3s.", err);
       this.scheduleReconnect();
     }
   }
@@ -61,12 +61,13 @@ export class ViewerCommandClient {
     }
 
     if (cmd.type === "ping") {
-      this.ws!.send(JSON.stringify({ type: "pong" }));
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({ type: "pong" }));
+      }
       return;
     }
 
     console.log("[WS] Received:", cmd.type);
-    const state = store.get();
 
     switch (cmd.type) {
       case "highlight_objects":

@@ -27,8 +27,8 @@ Browser (Cloudflare Pages)
 
 ```bash
 cd apps/tilegraphviewer
-npm install
-npm run dev      # Vite dev server on http://localhost:5173
+bun install
+bun run dev      # Vite dev server on http://localhost:5173
 ```
 
 The tileset path is fixed to `/data/tiles/tileset.json`, which maps to `public/data/tiles/tileset.json` in Vite and Cloudflare Pages.
@@ -50,7 +50,7 @@ rsync -a ../../output/tiles/ public/data/tiles/
 
 ```bash
 # Production build
-npm run build     # outputs to dist/
+bun run build     # outputs to dist/
 
 # Deploy via Wrangler
 npx wrangler pages deploy dist --project-name tilegraphviewer
@@ -63,7 +63,7 @@ npx wrangler pages deploy dist --project-name tilegraphviewer
 | Setting                | Value                  |
 | ---------------------- | ---------------------- |
 | Framework preset       | None (Vite)            |
-| Build command          | `npm run build`        |
+| Build command          | `bun run build`        |
 | Build output directory | `dist`                 |
 | Root directory         | `apps/tilegraphviewer` |
 
@@ -100,9 +100,11 @@ public/data/tiles/
 - **Agent chat** — natural language queries routed to the Cloudflare Worker AI agent loop
 - **Audit log panel** — last 5 tool calls from the agent session
 
+The WebSocket command channel is optional for rendering. If the MCP Worker or ViewerHub is unavailable, Cesium still loads `/data/tiles/tileset.json` and its referenced GLBs; only agent-issued viewer commands are unavailable until the socket reconnects.
+
 ## Build
 
 ```bash
-npm run build    # TypeScript compile + Vite bundle → dist/
-npm run preview  # Serve dist/ locally for final check before deploy
+bun run build    # TypeScript compile + Vite bundle → dist/
+bun run preview  # Serve dist/ locally for final check before deploy
 ```

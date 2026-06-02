@@ -672,7 +672,7 @@ sequenceDiagram
 
 ### Connection Lifecycle
 
-`ViewerCommandClient` is instantiated once in `main.ts` and calls `connect()` immediately. On `onclose`, it schedules a reconnect after 3 seconds. On `onerror`, it logs but does not interrupt reconnect logic. This means the viewer is resilient to transient Worker restarts or Durable Object eviction.
+`main.ts` initializes Cesium first, then starts the command channel through `startOptionalCommandChannel()`. WebSocket connection errors are non-fatal: the viewer keeps rendering the static 3D Tiles hierarchy from `/data/tiles`, and only agent-issued viewer commands are unavailable while the socket is disconnected. On `onclose`, `ViewerCommandClient` schedules a reconnect after 3 seconds. On `onerror`, it logs but does not interrupt tile loading.
 
 ### ViewerHub Durable Object
 
