@@ -33,7 +33,7 @@ The goal is only to validate that the Worker can reach AuraDB.
 │   └── index.ts      # Hono application — the Worker entry point
 ├── package.json      # Dependencies and bun scripts
 ├── tsconfig.json     # TypeScript compiler configuration
-├── wrangler.jsonc    # Wrangler (Cloudflare Workers CLI) configuration
+├── wrangler.toml     # Wrangler (Cloudflare Workers CLI) configuration
 └── README.md         # This file
 ```
 
@@ -73,7 +73,7 @@ Project metadata, bun scripts, and dependency declarations.
 | ------------ | ----------------- | ----------------------------------------------------- |
 | `dev`        | `wrangler dev`    | Start a local development server with hot reload      |
 | `deploy`     | `wrangler deploy` | Bundle and deploy the Worker to Cloudflare            |
-| `cf-typegen` | `wrangler types`  | Generate TS types from your `wrangler.jsonc` bindings |
+| `cf-typegen` | `wrangler types`  | Generate TS types from your `wrangler.toml` bindings |
 
 ### `tsconfig.json`
 
@@ -88,15 +88,14 @@ TypeScript configuration tuned for the Workers V8 isolate environment:
 - `"skipLibCheck": true` — prevents type errors inside `node_modules`.
 - `"noEmit": true` — TypeScript only type-checks; Wrangler/esbuild emits JS.
 
-### `wrangler.jsonc`
+### `wrangler.toml`
 
-Wrangler's configuration file in JSON-with-comments format (supported since
-Wrangler v3). Key fields:
+Wrangler's configuration file in TOML format. Key fields:
 
-- `"main"` — entry point that Wrangler bundles with esbuild before uploading.
-- `"compatibility_date"` — pins the Workers runtime API version. Changing it
+- `main` — entry point that Wrangler bundles with esbuild before uploading.
+- `compatibility_date` — pins the Workers runtime API version. Changing it
   can affect built-in behaviour; always test after bumping.
-- `"compatibility_flags": ["nodejs_compat"]` — **required**: polyfills
+- `compatibility_flags = ["nodejs_compat"]` — **required**: polyfills
   Node.js built-ins (`node:net`, `node:crypto`, `node:stream`, `node:events`,
   `node:buffer`) inside the V8 isolate. The Neo4j driver depends on several of
   these at runtime. Without this flag the Worker throws at startup.
@@ -107,7 +106,7 @@ Wrangler v3). Key fields:
 
 | Requirement           | Minimum version | Notes                                                                    |
 | --------------------- | --------------- | ------------------------------------------------------------------------ |
-| Node.js               | 23              | Wrangler requires Node 23.7.0+                                           |
+| Node.js               | 23.7.0          | Wrangler requires Node 23.7.0+                                           |
 | bun                   | 1.3.14          | Bundled with Node 23.7.0                                                 |
 | Cloudflare account    | —               | Free tier is sufficient — [sign up](https://dash.cloudflare.com/sign-up) |
 | Neo4j AuraDB instance | —               | Free tier at [console.neo4j.io](https://console.neo4j.io)                |
@@ -307,7 +306,7 @@ that is needed.
 
 V8 isolates do not ship with Node.js built-in modules. The Neo4j driver
 internally uses `node:net` (TCP), `node:crypto` (TLS/certificate validation),
-`node:stream`, and `node:events`. Enabling `nodejs_compat` in `wrangler.jsonc`
+`node:stream`, and `node:events`. Enabling `nodejs_compat` in `wrangler.toml`
 tells Cloudflare to polyfill these modules using the platform's native socket
 and crypto APIs, bridging the gap between an bun package written for Node.js
 and the Workers runtime.
@@ -326,7 +325,7 @@ For this demo the pool is drained immediately after each request by calling
 Hono's `app = new Hono<{ Bindings: T }>()` generic parameter threads `T`
 through the framework so `c.env` is fully typed in every route. Without it,
 `c.env` would be typed as `unknown` and every property access would require a
-cast. Declaring `Bindings` once at the top of `index.ts` gives IDE
+cast. Declaring `Bindings` once at the top of `src/index.ts` gives IDE
 autocompletion and compile-time checks for every environment variable.
 
 ---
@@ -338,5 +337,5 @@ autocompletion and compile-time checks for every environment variable.
 | `"ServiceUnavailable: Neo4j service unavailable"`                   | AuraDB instance is paused (free instances pause after 3 days of inactivity) | Resume the instance in the Neo4j console                                                  |
 | `"AuthenticationRateLimit"` or `"Unauthorized"`                     | Wrong password                                                              | Reset the password in the Neo4j console, then re-run `wrangler secret put NEO4J_PASSWORD` |
 | `"Failed to establish connection in 30000ms"`                       | Wrong URI or AuraDB not reachable                                           | Verify `NEO4J_URI` in `.dev.vars` matches the console exactly                             |
-| Worker throws at startup (`node:net not found`)                     | `nodejs_compat` flag missing                                                | Confirm `"compatibility_flags": ["nodejs_compat"]` is in `wrangler.jsonc`                 |
+| Worker throws at startup (`node:net not found`)                     | `nodejs_compat` flag missing                                                | Confirm `compatibility_flags = ["nodejs_compat"]` is in `wrangler.toml`                 |
 | TypeScript error `Property 'NEO4J_URI' does not exist on type '{}'` | Wrong or missing tsconfig `types`                                           | Confirm `"types": ["@cloudflare/workers-types"]` is in `tsconfig.json`                    |

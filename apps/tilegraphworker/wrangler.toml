@@ -1,6 +1,7 @@
 name = "tilegraphworker"
-compatibility_date = "2026-05-29"
+compatibility_date = "2026-06-02"
 main = "src/index.ts"
+compatibility_flags = ["nodejs_compat"]
 
 [[r2_buckets]]
 binding = "TILEGRAPH_BUCKET"

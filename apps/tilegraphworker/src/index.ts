@@ -21,7 +21,7 @@ import neo4j, { type Session } from 'neo4j-driver';
 // ---------------------------------------------------------------------------
 // In Cloudflare Workers, secrets and vars are NOT accessible via `process.env`.
 // They are injected into every request handler through the `env` object that
-// the Workers runtime provides — see `wrangler.jsonc` and `.dev.vars`.
+// the Workers runtime provides — see `wrangler.toml` and `.dev.vars`.
 //
 // Declaring a `Bindings` type here and passing it to `Hono<{ Bindings }>` gives
 // us full TypeScript safety on `c.env.*` in every route handler.
