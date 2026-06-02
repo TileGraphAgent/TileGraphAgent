@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    // Target the ES2022 specification — the Workers runtime supports it natively.
+    "target": "ES2022",
+
+    // Use ESNext modules. Wrangler's bundler (esbuild) handles tree-shaking
+    // and the final output format; TypeScript only needs to preserve imports.
+    "module": "ESNext",
+
+    // "bundler" resolution tells TypeScript to follow the same import-resolution
+    // rules that esbuild uses, including package.json `exports` fields. This
+    // avoids false "module not found" errors for modern ESM-only packages.
+    "moduleResolution": "bundler",
+
+    // Include only the ES2022 standard library. Workers run in a V8 isolate,
+    // not a browser, so DOM types (window, document, HTMLElement, …) would
+    // introduce incorrect global type pollution.
+    "lib": ["ES2022"],
+
+    // Inject Cloudflare Workers global type declarations:
+    // Request, Response, ExecutionContext, caches, crypto, fetch, …
+    // This replaces the need for a `/// <reference types="…" />` directive
+    // in every source file.
+    "types": ["@cloudflare/workers-types"],
+
+    // Enable all strict type-checking rules — catches the broadest range of
+    // bugs at compile time (strictNullChecks, noImplicitAny, etc.).
+    "strict": true,
+
+    // Skip type-checking inside node_modules. Large packages such as
+    // neo4j-driver may ship types that clash with strict Workers types;
+    // skipLibCheck keeps the build fast and noise-free.
+    "skipLibCheck": true,
+
+    // TypeScript is used for type-checking only. Wrangler delegates code
+    // emission to esbuild, so tsc never needs to write output files.
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts"]
+}

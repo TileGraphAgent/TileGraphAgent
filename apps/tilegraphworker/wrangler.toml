@@ -1,0 +1,7 @@
+name = "tilegraphworker"
+compatibility_date = "2026-05-29"
+main = "src/index.ts"
+
+[[r2_buckets]]
+binding = "TILEGRAPH_BUCKET"
+bucket_name = "tilegraph-data"
