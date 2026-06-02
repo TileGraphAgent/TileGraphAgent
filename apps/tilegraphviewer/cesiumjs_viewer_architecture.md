@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-`tilegraphviewer` is a single-page CesiumJS application that serves as the **industrial visualization surface** for the TileGraphAgent platform. It is not a generic 3D renderer. It is purpose-built to stream geometry from a 3D Tiles pipeline, map visual features back to engineering objects with stable identities, receive AI-issued commands over WebSocket, and surface engineering metadata to operators and LLM agents.
+`tilegraphviewer` is a single-page CesiumJS application that serves as the **industrial visualization surface** for the TileGraphAgent platform. It is not a generic 3D renderer. It is purpose-built to stream geometry from a 3D Tiles pipeline, map visual features back to engineering objects with stable identities, receive AI-issued commands from the Worker HTTP API, and surface engineering metadata to operators and LLM agents.
 
 ### Core Thesis
 
@@ -21,9 +21,9 @@ The central architectural concern is **object identity preservation**. Every tri
 | Rust pipeline | Produces the geometry and identity mappings the viewer consumes |
 | Cloudflare Pages static assets | Serves `public/data/tiles/tileset.json` and `*.glb` directly to CesiumJS as `/data/tiles/...` |
 | Cloudflare R2 | Stores Worker-side platform artifacts such as audit logs and spatial indexes |
-| Cloudflare Worker (`tilegraphmcp`) | Serves REST API and WebSocket bridge |
+| Cloudflare Worker (`tilegraphmcp`) | Serves REST API, chat stream, and viewer command queue |
 | Neo4j Aura | Source of engineering property data, queried through the Worker |
-| LLM Agent (Claude) | Issues commands to the viewer via the Worker's ViewerHub Durable Object |
+| LLM Agent (Claude) | Issues commands to the viewer through Worker HTTP command state |
 
 ---
 
@@ -35,7 +35,7 @@ The central architectural concern is **object identity preservation**. Every tri
 - Render industrial plant geometry in a CesiumJS scene
 - Perform feature picking on LEFT_CLICK, resolving `feature_id` → `object_id`
 - Display engineering properties for picked objects (tag, class, status, fluid, design parameters)
-- Receive and execute viewer commands from the MCP agent via WebSocket
+- Receive and execute viewer commands from the MCP agent via HTTP command polling
 - Highlight sets of engineering objects by `object_id`
 - Isolate (show-only) sets of engineering objects by `object_id`
 - Display the engineering model tree hierarchy (Area → System → Line → Equipment)
@@ -71,12 +71,11 @@ flowchart LR
     Pipeline -->|"HTTPS /db/neo4j/tx/commit\nMERGE nodes + relationships"| Neo4j
 
     Viewer -->|"GET /data/tiles/tileset.json + *.glb"| StaticData
-    Viewer -->|"POST /chat (SSE)\nGET /hierarchy\nGET /objects/:id"| Worker
-    Viewer -->|"WSS /ws/viewer\nViewerCommand JSON"| Worker
+    Viewer -->|"POST /chat (SSE)\nGET /hierarchy\nGET /objects/:id\nGET /viewer/commands"| Worker
 
     Worker -->|"HTTPS transactional API\nCypher queries"| Neo4j
     Worker -->|"R2 binding\nGET spatial_index.json"| R2
-    Worker -->|"fan-out\nViewerCommand"| Viewer
+    Worker -->|"HTTP command queue\nViewerCommand JSON"| Viewer
 
     User -->|"click, type query"| Viewer
     Agent -->|"MCP tool calls\nhighlight_objects\nisolate_objects\nfocus_camera"| Worker
@@ -90,7 +89,7 @@ flowchart LR
 
 **Geometry flow:** `Pipeline → public/data/tiles → Viewer (CesiumJS stream)`  
 **Metadata flow:** `User click → Viewer → Worker → Neo4j → Worker → Viewer`  
-**Command flow:** `User query → Viewer → Worker → Agent → Worker → ViewerHub DO → Viewer`  
+**Command flow:** `User query → Viewer → Worker → Agent → Worker command queue → Viewer poll`  
 **Viewer event flow:** `Viewer pick → store update → properties panel render`
 
 ---
@@ -104,7 +103,7 @@ flowchart TB
     subgraph Browser["Browser Runtime"]
         CesiumJS["CesiumJS Engine"]
         UI["Sidebar UI\n(DOM, no framework)"]
-        WSClient["WebSocket Client\nViewerCommandClient"]
+        CommandClient["HTTP Command Client\nHttpViewerCommandClient"]
         AgentClient["SSE Client\nsendAgentMessage"]
         StateStore["StateStore\ncustom reactive"]
     end
@@ -112,8 +111,7 @@ flowchart TB
     subgraph CF["Cloudflare Edge"]
         Pages["Cloudflare Pages\ntilegraphviewer\nVite bundle + public/data"]
         R2["R2: tilegraph-data\nspatial_index.json\naudit.jsonl"]
-        Worker["Worker: tilegraphmcp\nHono.js\nMCP + REST + WS"]
-        DO["Durable Object\nViewerHub\nWebSocket fan-out"]
+        Worker["Worker: tilegraphmcp\nHono.js\nMCP + REST"]
     end
 
     subgraph Cloud["External Cloud"]
@@ -123,18 +121,16 @@ flowchart TB
 
     Pages -->|"bundle served"| Browser
     CesiumJS -->|"GET /data/tiles/..."| Pages
-    WSClient -->|"WSS"| DO
+    CommandClient -->|"GET /viewer/commands"| Worker
     AgentClient -->|"POST /chat SSE"| Worker
     UI -->|"GET /hierarchy\nGET /objects/:id"| Worker
     Worker -->|"R2 binding"| R2
     Worker -->|"HTTPS"| Neo4jAura
     Worker -->|"HTTPS"| AnthropicAPI
-    DO -->|"WS fan-out"| WSClient
 
     style Pages fill:#e65100,color:#fff
     style R2 fill:#1b5e20,color:#fff
     style Worker fill:#1a237e,color:#fff
-    style DO fill:#311b92,color:#fff
 ```
 
 ### Cloudflare Pages
@@ -154,7 +150,6 @@ Environment variables injected at build time by Vite (`import.meta.env`):
 | Variable | Production value |
 |----------|-----------------|
 | `VITE_MCP_REST_URL` | `https://tilegraphmcp.quatricmorph.workers.dev` |
-| `VITE_WS_URL` | `wss://tilegraphmcp.quatricmorph.workers.dev/ws/viewer` |
 
 ### Static Tile Data
 
@@ -189,8 +184,9 @@ src/
   viewer/
     cesium_init.ts     (CesiumJS lifecycle + picking)
   agent/
-    ws_client.ts       (WebSocket command receiver)
+    http_command_client.ts (HTTP command polling receiver)
     claude_client.ts   (SSE agent stream client)
+  api.ts               (Worker REST base URL helper)
   state/
     store.ts           (custom reactive store)
   ui/
@@ -241,7 +237,7 @@ flowchart TB
     end
 
     subgraph IntegrationLayer["Integration Layer"]
-        WSClient["ViewerCommandClient\nWebSocket → ViewerHub DO"]
+        CommandClient["HttpViewerCommandClient\nGET /viewer/commands"]
         AgentClient["sendAgentMessage()\nPOST /chat SSE"]
         HierarchyAPI["GET /hierarchy\nWorker REST"]
         ObjectAPI["GET /objects/:id\nWorker REST"]
@@ -258,8 +254,8 @@ flowchart TB
     SelectCB --> Store
     SelectCB --> PropPanel
     Store --> AuditPanel
-    WSClient --> Store
-    WSClient --> StyleEngine
+    CommandClient --> Store
+    CommandClient --> StyleEngine
     ModelTree --> HierarchyAPI
     PropPanel --> ObjectAPI
     AgentChat --> AgentClient
@@ -295,14 +291,14 @@ stateDiagram-v2
     Idle --> ObjectSelected: user LEFT_CLICK
     ObjectSelected --> Idle: click empty space
 
-    Idle --> Highlighted: WS highlight_objects\nor model tree select
-    Highlighted --> Idle: WS clear_highlights
+    Idle --> Highlighted: HTTP highlight_objects\nor model tree select
+    Highlighted --> Idle: HTTP clear_highlights
 
-    Idle --> Isolated: WS isolate_objects\nor model tree isolate button
-    Isolated --> Idle: WS clear_highlights
+    Idle --> Isolated: HTTP isolate_objects\nor model tree isolate button
+    Isolated --> Idle: HTTP clear_highlights
 
-    Highlighted --> Isolated: WS isolate_objects
-    Isolated --> Highlighted: WS highlight_objects
+    Highlighted --> Isolated: HTTP isolate_objects
+    Isolated --> Highlighted: HTTP highlight_objects
 
     Idle --> AgentProcessing: submit chat message
     AgentProcessing --> Idle: SSE done / error
@@ -314,8 +310,8 @@ stateDiagram-v2
 |------------|--------|---------|
 | `selectedObjectId` | CesiumJS pick callback | `fetchAndRenderProperties` |
 | `selectedTag` | CesiumJS pick callback | (currently unused in UI) |
-| `highlightedObjectIds` | `ws_client.ts` / `model_tree.ts` | StyleEngine (indirectly) |
-| `isolatedObjectIds` | `ws_client.ts` / `model_tree.ts` | StyleEngine (indirectly) |
+| `highlightedObjectIds` | `http_command_client.ts` / `model_tree.ts` | StyleEngine (indirectly) |
+| `isolatedObjectIds` | `http_command_client.ts` / `model_tree.ts` | StyleEngine (indirectly) |
 | `auditLog` | Nothing (gap — see §16) | `renderAuditPanel` |
 | `isAgentProcessing` | `main.ts` chat handler | submit button `disabled` |
 | `agentChatMessages` | Nothing (gap — DOM used directly) | Nothing |
@@ -509,24 +505,25 @@ Properties are rendered in this order (with a fallback to all remaining fields):
 
 ## 10. Viewer Command Architecture
 
-The viewer receives commands from the MCP agent via the ViewerHub Durable Object over a persistent WebSocket connection. Commands are JSON messages dispatched by `ViewerCommandClient.handleMessage()`.
+The viewer receives commands from the MCP agent by polling the Worker HTTP API. Commands are JSON objects returned by `GET /viewer/commands` and dispatched by `HttpViewerCommandClient.applyCommand()`.
 
 ```mermaid
 sequenceDiagram
     participant Agent
     participant Worker
-    participant ViewerHub as ViewerHub DO
-    participant WSClient as ViewerCommandClient
+    participant CommandAPI as GET /viewer/commands
+    participant Client as HttpViewerCommandClient
     participant CesiumJS
     participant Store
 
     Agent->>Worker: call highlight_objects_in_viewer MCP tool
-    Worker->>ViewerHub: broadcast ViewerCommand JSON
-    ViewerHub->>WSClient: WebSocket message
-    WSClient->>WSClient: JSON.parse(raw)
-    WSClient->>CesiumJS: highlightObjects(object_ids)
+    Worker->>Worker: enqueue ViewerCommand JSON
+    Client->>CommandAPI: GET /viewer/commands?after=<cursor>
+    CommandAPI->>Client: { cursor, commands }
+    Client->>Client: validate + dedupe command
+    Client->>CesiumJS: highlightObjects(object_ids)
     CesiumJS->>CesiumJS: tileset.style = buildHighlightStyle(ids, null)
-    WSClient->>Store: update({ highlightedObjectIds: new Set(ids) })
+    Client->>Store: update({ highlightedObjectIds: new Set(ids) })
 ```
 
 ### Command Payloads
@@ -539,7 +536,6 @@ sequenceDiagram
 | `show_bounding_boxes` | `{ object_ids: string[] }` | `tileset.debugShowBoundingVolume = true` | none |
 | `clear_highlights` | `{}` | Default style restored | `highlightedObjectIds = {}`, `isolatedObjectIds = null` |
 | `create_issue_marker` | `{ object_id, title, severity }` | `console.log` only (**stub — see §16**) | none |
-| `ping` | `{}` | sends `pong` | none |
 
 ### Highlight Implementation
 
@@ -639,46 +635,84 @@ The client supports `AbortController` for mid-stream cancellation.
 }
 ```
 
+### GET /viewer/commands
+
+**Purpose:** Fetch queued viewer commands generated by MCP tools. The viewer calls this endpoint repeatedly and passes the last seen cursor as `after`.
+
+**Caller:** `HttpViewerCommandClient` in `http_command_client.ts`
+
+**Request:**
+```
+GET /viewer/commands?after=41
+```
+
+**Response:**
+```json
+{
+  "cursor": "42",
+  "commands": [
+    {
+      "id": "42",
+      "timestamp": "2026-06-02T10:00:00Z",
+      "command": {
+        "type": "highlight_objects",
+        "object_ids": ["obj_abc123"],
+        "color": "agent_highlight"
+      }
+    }
+  ]
+}
+```
+
+The endpoint is read-only from the browser perspective. Command creation remains inside the Worker/MCP tool handlers.
+
 ### GET /health
 
 **Purpose:** Worker health check — not called by the viewer but useful during development.
 
 ---
 
-## 12. WebSocket Architecture
+## 12. HTTP Command Polling Architecture
 
 ```mermaid
 sequenceDiagram
     participant Viewer as tilegraphviewer\n(browser)
-    participant DO as ViewerHub\n(Durable Object)
-    participant Worker as Worker handler\n(MCP tool)
+    participant Worker as Cloudflare Worker\nHTTP API
+    participant Tool as MCP tool handler
 
-    Viewer->>DO: WebSocket connect (wss://.../ws/viewer)
-    DO-->>Viewer: connection accepted
-
-    loop keepalive
-        DO->>Viewer: { type: "ping" }
-        Viewer-->>DO: { type: "pong" }
+    loop every 3s
+        Viewer->>Worker: GET /viewer/commands?after=<cursor>
+        Worker-->>Viewer: { cursor, commands: [] }
     end
 
-    Worker->>DO: broadcast ViewerCommand
-    DO->>Viewer: ViewerCommand JSON
-    Viewer->>Viewer: handleMessage(raw)
-
-    Viewer->>DO: close
-    Viewer->>Viewer: scheduleReconnect (3s timer)
-    Viewer->>DO: WebSocket connect (retry)
+    Tool->>Worker: enqueue ViewerCommand
+    Viewer->>Worker: GET /viewer/commands?after=<cursor>
+    Worker-->>Viewer: { cursor, commands: [{ id, timestamp, command }] }
+    Viewer->>Viewer: applyCommand(command)
 ```
 
 ### Connection Lifecycle
 
-`main.ts` initializes Cesium first, then starts the command channel through `startOptionalCommandChannel()`. WebSocket connection errors are non-fatal: the viewer keeps rendering the static 3D Tiles hierarchy from `/data/tiles`, and only agent-issued viewer commands are unavailable while the socket is disconnected. On `onclose`, `ViewerCommandClient` schedules a reconnect after 3 seconds. On `onerror`, it logs but does not interrupt tile loading.
+`main.ts` initializes Cesium first, then starts command polling through `startOptionalCommandPolling()`. HTTP polling errors are non-fatal: the viewer keeps rendering the static 3D Tiles hierarchy from `/data/tiles`, and only agent-issued viewer commands are unavailable while the API is unreachable. `HttpViewerCommandClient` polls every 3 seconds, sends the last cursor as `after`, and deduplicates command IDs to avoid replaying repeated responses.
 
-### ViewerHub Durable Object
+### Command Queue Endpoint
 
-The `ViewerHub` DO maintains a set of all connected WebSocket clients. When the MCP tool handler calls `broadcast()`, the DO sends the `ViewerCommand` JSON to all registered clients. A fixed stub ID ensures all browser tabs share the same hub instance.
+The Worker command endpoint is expected to return queued command envelopes:
 
-The WebSocket upgrade route in the Worker: `GET /ws/viewer` → `ViewerHub.fetch()` → WebSocket upgrade.
+```json
+{
+  "cursor": "42",
+  "commands": [
+    {
+      "id": "42",
+      "timestamp": "2026-06-02T10:00:00Z",
+      "command": { "type": "highlight_objects", "object_ids": ["obj_abc123"] }
+    }
+  ]
+}
+```
+
+The client also tolerates direct command arrays for local prototypes, but the production shape should include stable `id` or `sequence` values and a response cursor.
 
 ---
 

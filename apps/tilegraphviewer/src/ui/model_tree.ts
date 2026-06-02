@@ -1,4 +1,4 @@
-const MCP_REST_BASE = (import.meta as any).env?.VITE_MCP_REST_URL ?? "http://localhost:9000";
+import { apiUrl } from "../api.js";
 
 interface TreeNode {
   id: string;
@@ -16,7 +16,7 @@ export async function initModelTree(
 ): Promise<void> {
   panelEl.innerHTML = `<h3>Model Tree</h3><p class="loading">Loading hierarchy...</p>`;
   try {
-    const res = await fetch(`${MCP_REST_BASE}/hierarchy`);
+    const res = await fetch(apiUrl("/hierarchy"));
     if (!res.ok) {
       panelEl.innerHTML = `<h3>Model Tree</h3><p class="error">Hierarchy unavailable</p>`;
       return;

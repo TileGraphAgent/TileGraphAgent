@@ -1,4 +1,4 @@
-const AGENT_API_BASE = import.meta.env.VITE_MCP_REST_URL ?? "http://localhost:9000";
+import { apiUrl } from "../api.js";
 
 export interface AgentChunk {
   type: "chunk" | "done" | "error";
@@ -14,7 +14,7 @@ export async function sendAgentMessage(
   onChunk: (chunk: AgentChunk) => void,
   signal?: AbortSignal,
 ): Promise<void> {
-  const res = await fetch(`${AGENT_API_BASE}/chat`, {
+  const res = await fetch(apiUrl("/chat"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message }),

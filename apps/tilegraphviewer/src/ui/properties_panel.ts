@@ -1,4 +1,4 @@
-const MCP_REST_BASE = (import.meta as any).env?.VITE_MCP_REST_URL ?? "http://localhost:9000";
+import { apiUrl } from "../api.js";
 
 interface ObjectProperties {
   object_id: string;
@@ -18,7 +18,7 @@ export async function fetchAndRenderProperties(
   panelEl.innerHTML = `<h3>Properties</h3><p class="loading">Loading ${objectId.slice(0, 16)}...</p>`;
 
   try {
-    const res = await fetch(`${MCP_REST_BASE}/objects/${encodeURIComponent(objectId)}`);
+    const res = await fetch(apiUrl(`/objects/${encodeURIComponent(objectId)}`));
     if (!res.ok) {
       panelEl.innerHTML = `<h3>Properties</h3><p class="error">Not found (${res.status})</p>`;
       return;

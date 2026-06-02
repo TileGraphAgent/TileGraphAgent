@@ -2,14 +2,14 @@ import "./styles.css";
 
 import { initCesiumViewer } from "./viewer/cesium_init.js";
 import type { TileGraphViewer } from "./viewer/cesium_init.js";
-import { ViewerCommandClient } from "./agent/ws_client.js";
+import { HttpViewerCommandClient } from "./agent/http_command_client.js";
 import { sendAgentMessage } from "./agent/claude_client.js";
 import { store } from "./state/store.js";
 import { fetchAndRenderProperties } from "./ui/properties_panel.js";
 import { initModelTree } from "./ui/model_tree.js";
+import { MCP_REST_BASE } from "./api.js";
 
 const TILESET_PATH = "/data/tiles/tileset.json";
-const WS_URL = import.meta.env.VITE_WS_URL?.trim() || "ws://localhost:9001";
 
 async function main(): Promise<void> {
   const container = document.getElementById("cesium-container");
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
     }
   );
 
-  startOptionalCommandChannel(tileGraph);
+  startOptionalCommandPolling(tileGraph);
 
   store.subscribe(renderAuditPanel);
 
@@ -123,13 +123,13 @@ function renderAuditPanel(state: ReturnType<typeof store.get>): void {
 
 main().catch(console.error);
 
-function startOptionalCommandChannel(tileGraph: TileGraphViewer): void {
+function startOptionalCommandPolling(tileGraph: TileGraphViewer): void {
   window.setTimeout(() => {
     try {
-      const wsClient = new ViewerCommandClient(WS_URL, tileGraph);
-      wsClient.connect();
+      const commandClient = new HttpViewerCommandClient(MCP_REST_BASE, tileGraph);
+      commandClient.start();
     } catch (err) {
-      console.warn("[WS] Command channel unavailable; Cesium tile loading is unaffected.", err);
+      console.warn("[HTTP Commands] Command polling unavailable; Cesium tile loading is unaffected.", err);
     }
   }, 0);
 }

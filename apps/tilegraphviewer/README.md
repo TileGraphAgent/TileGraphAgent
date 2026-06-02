@@ -1,6 +1,6 @@
 # tilegraphviewer
 
-CesiumJS-based industrial 3D viewer for TileGraphAgent, deployed to **Cloudflare Pages**. It streams 3D Tiles from `public/data/tiles` by default and communicates with the MCP server via the **Cloudflare Worker** REST/WebSocket API.
+CesiumJS-based industrial 3D viewer for TileGraphAgent, deployed to **Cloudflare Pages**. It streams 3D Tiles from `public/data/tiles` by default and communicates with the MCP server via the **Cloudflare Worker** HTTP API.
 
 ## Architecture
 
@@ -9,7 +9,7 @@ Browser (Cloudflare Pages)
   ├── CesiumJS  ←─ 3D Tiles (/data/tiles/tileset.json + GLBs)
   ├── Agent chat panel  ──── POST /chat (SSE) ──▶  Cloudflare Worker
   ├── Model tree panel  ──── GET /hierarchy    ──▶  Cloudflare Worker
-  └── WebSocket client  ──── wss://...         ──▶  Durable Object (ViewerHub)
+  └── Command polling   ──── GET /viewer/commands ─▶  Cloudflare Worker
 ```
 
 ## Tech stack
@@ -21,7 +21,7 @@ Browser (Cloudflare Pages)
 | Build tool      | Vite + vite-plugin-cesium            |
 | Tile storage    | Pages static assets (`public/data`)  |
 | Agent backend   | Cloudflare Worker (tilegraphmcp)     |
-| Viewer commands | WebSocket → Durable Object ViewerHub |
+| Viewer commands | HTTP polling (`GET /viewer/commands`) |
 
 ## Local development
 
@@ -37,7 +37,6 @@ Create a `.env.local` only for backend overrides:
 
 ```env
 VITE_MCP_REST_URL=http://localhost:9000
-VITE_WS_URL=ws://localhost:9000/ws/viewer
 ```
 
 For local end-to-end testing with newly generated tile files, replace the contents of `public/data/tiles` while preserving the `tileset.json`, `content`, `metadata`, and `index` layout.
@@ -72,7 +71,6 @@ npx wrangler pages deploy dist --project-name tilegraphviewer
 | Variable            | Production value                                                         | Description                         |
 | ------------------- | ------------------------------------------------------------------------ | ----------------------------------- |
 | `VITE_MCP_REST_URL` | `https://tilegraphmcp.quatricmorph.workers.dev`                          | Cloudflare Worker base URL          |
-| `VITE_WS_URL`       | `wss://tilegraphmcp.quatricmorph.workers.dev/ws/viewer`                  | WebSocket endpoint (Durable Object) |
 
 ## Tile data in public/data
 
@@ -95,12 +93,12 @@ public/data/tiles/
 
 - **3D Tiles streaming** — hierarchical LOD rendering of industrial plant geometry
 - **Feature picking** — click any object to see its engineering properties (tag, class, status, AABB)
-- **Highlight / isolate** — objects highlighted or isolated by the AI agent via WebSocket commands
+- **Highlight / isolate** — objects highlighted or isolated by AI agent commands from the HTTP API
 - **Model tree** — area → system → line hierarchy panel (populated from `/hierarchy` REST endpoint)
 - **Agent chat** — natural language queries routed to the Cloudflare Worker AI agent loop
 - **Audit log panel** — last 5 tool calls from the agent session
 
-The WebSocket command channel is optional for rendering. If the MCP Worker or ViewerHub is unavailable, Cesium still loads `/data/tiles/tileset.json` and its referenced GLBs; only agent-issued viewer commands are unavailable until the socket reconnects.
+The HTTP command polling channel is optional for rendering. If the MCP Worker is unavailable, Cesium still loads `/data/tiles/tileset.json` and its referenced GLBs; only agent-issued viewer commands are unavailable until the API responds again.
 
 ## Build
 
