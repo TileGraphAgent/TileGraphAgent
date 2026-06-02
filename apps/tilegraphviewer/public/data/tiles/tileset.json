@@ -1,0 +1,62 @@
+{
+  "asset": {
+    "version": "1.1",
+    "tilesetVersion": "0.1.0",
+    "generator": "TileGraphAgent/tilegraph-tiles v0.1.0"
+  },
+  "geometricError": 254.75478405713994,
+  "root": {
+    "boundingVolume": {
+      "box": [
+        60.0,
+        20.0,
+        7.5,
+        60.0,
+        0.0,
+        0.0,
+        0.0,
+        20.0,
+        0.0,
+        0.0,
+        0.0,
+        7.5
+      ]
+    },
+    "geometricError": 254.75478405713994,
+    "refine": "ADD",
+    "extras": {
+      "generator": "TileGraphAgent",
+      "version": "0.1.0"
+    }
+  },
+  "schema": {
+    "classes": {
+      "IndustrialObject": {
+        "name": "Industrial Object",
+        "properties": {
+          "class": {
+            "type": "STRING"
+          },
+          "feature_id": {
+            "componentType": "UINT32",
+            "type": "SCALAR"
+          },
+          "object_id": {
+            "type": "STRING"
+          },
+          "system": {
+            "type": "STRING"
+          },
+          "tag": {
+            "type": "STRING"
+          }
+        }
+      }
+    },
+    "id": "tilegraph_plant_schema"
+  },
+  "extensionsUsed": [
+    "EXT_mesh_features",
+    "EXT_structural_metadata"
+  ]
+}
