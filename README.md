@@ -8,60 +8,6 @@ Industrial CAD → 3D Tiles 1.1 → Knowledge Graph → MCP Agent Bridge
 
 ---
 
-## Architecture
-
-```
-Synthetic Plant Spec (plant_spec.json)
-    ↓ [tilegraph-synth]
-Normalized Industrial Scene Graph
-    ↓ [tilegraph-ingest / tilegraph-geometry]
-Mesh + Metadata Split → Tessellated Mesh Groups
-    ↓ [tilegraph-gltf]
-GLB Content Files (area-a-piping.glb, area-a-equipment.glb, ...)
-    ↓ [tilegraph-tiles]
-3D Tiles 1.1 Tileset (tileset.json + metadata/)
-    ↓
-Spatial Index (R-tree / spatial_index.json)
-    ↓ [tilegraph-graph-export]
-Neo4j Knowledge Graph (EngObject nodes + relationships)
-    ↓ [tilegraphmcp]
-MCP Server (12 tools + resources + audit log)
-    ↓
-LLM Agent → CesiumJS Viewer (WebSocket bridge)
-```
-
----
-
-## Quick Start
-
-```bash
-# 1. Start Neo4j
-docker-compose up -d neo4j
-
-# 2. Generate synthetic plant data
-cargo run --bin tilegraph -- generate-synth
-
-# 3. Build 3D Tiles + GLB content
-cargo run --bin tilegraph -- build-tiles
-
-# 4. Export Knowledge Graph
-cargo run --bin tilegraph -- build-graph
-
-# 5. Import to Neo4j
-cat output/graph/schema.cypher output/graph/import.cypher | \
-  docker exec -i tilegraph-agent-neo4j-1 cypher-shell -u neo4j -p password
-
-# 6. Start MCP server
-cd apps/tilegraphmcp && npm install && npm run dev
-
-# 7. Start viewer
-cd apps/tilegraphviewer && npm install && npm run dev
-
-# 8. Validate pipeline
-cargo run --bin tilegraph -- validate
-```
-
----
 
 ```mermaid
 flowchart LR
@@ -319,6 +265,61 @@ A5 --> W1
 A6 --> W1
 A7 --> W1
 ```
+
+## Architecture
+
+```
+Synthetic Plant Spec (plant_spec.json)
+    ↓ [tilegraph-synth]
+Normalized Industrial Scene Graph
+    ↓ [tilegraph-ingest / tilegraph-geometry]
+Mesh + Metadata Split → Tessellated Mesh Groups
+    ↓ [tilegraph-gltf]
+GLB Content Files (area-a-piping.glb, area-a-equipment.glb, ...)
+    ↓ [tilegraph-tiles]
+3D Tiles 1.1 Tileset (tileset.json + metadata/)
+    ↓
+Spatial Index (R-tree / spatial_index.json)
+    ↓ [tilegraph-graph-export]
+Neo4j Knowledge Graph (EngObject nodes + relationships)
+    ↓ [tilegraphmcp]
+MCP Server (12 tools + resources + audit log)
+    ↓
+LLM Agent → CesiumJS Viewer (WebSocket bridge)
+```
+
+---
+
+## Quick Start
+
+```bash
+# 1. Start Neo4j
+docker-compose up -d neo4j
+
+# 2. Generate synthetic plant data
+cargo run --bin tilegraph -- generate-synth
+
+# 3. Build 3D Tiles + GLB content
+cargo run --bin tilegraph -- build-tiles
+
+# 4. Export Knowledge Graph
+cargo run --bin tilegraph -- build-graph
+
+# 5. Import to Neo4j
+cat output/graph/schema.cypher output/graph/import.cypher | \
+  docker exec -i tilegraph-agent-neo4j-1 cypher-shell -u neo4j -p password
+
+# 6. Start MCP server
+cd apps/tilegraphmcp && npm install && npm run dev
+
+# 7. Start viewer
+cd apps/tilegraphviewer && npm install && npm run dev
+
+# 8. Validate pipeline
+cargo run --bin tilegraph -- validate
+```
+
+---
 
 ## Rust Workspace Crates
 
