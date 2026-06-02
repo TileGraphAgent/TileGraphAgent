@@ -820,8 +820,8 @@ The `audit.jsonl` file in R2 contains the full audit records written by the Work
 | Feature picking | `cesium_init.ts:123` | Dual-path (EXT + extras fallback) |
 | Style-based highlighting | `cesium_init.ts:23` | buildHighlightStyle() with conditions |
 | Style-based isolation | `cesium_init.ts:158` | show condition hides non-matching |
-| WebSocket client | `ws_client.ts` | Reconnects on close (3s) |
-| All command handlers | `ws_client.ts:71` | 6 commands + ping/pong |
+| HTTP command client | `http_command_client.ts` | Polls `/viewer/commands` every 3s |
+| All command handlers | `http_command_client.ts` | 6 viewer commands |
 | Agent SSE client | `claude_client.ts` | AbortController, streaming |
 | Model tree | `model_tree.ts` | Fetch, render, expand, isolate |
 | Properties panel | `properties_panel.ts` | Priority field order, hides aabb_ |
@@ -968,9 +968,9 @@ The `buildHighlightStyle()` generates a condition list with one entry per highli
 
 CesiumJS's 3D Tiles streaming is LOD-aware: far tiles load at lower resolution, near tiles refine. The geometric error settings from the Rust pipeline (`diagonal * 0.05` for leaves, `diagonal * 1.0` for areas) control this. For dense industrial models, tuning `maximumScreenSpaceError` on the tileset is important: lower values force earlier refinement (sharper) at the cost of more simultaneous requests.
 
-### WebSocket Scalability
+### Command Polling Scalability
 
-The ViewerHub Durable Object broadcasts to all connected tabs. At the scale of this portfolio project (single user, one or a few tabs), this is fine. For multi-user scenarios, the Durable Object must partition by session ID and route commands only to the requesting session's tabs.
+The HTTP command endpoint is simple and predictable for the current single-user portfolio context. For multi-user scenarios, commands must be partitioned by session ID and the polling interval should use cursor-aware long polling or per-session command queues to avoid unrelated users seeing each other's viewer commands.
 
 ### Memory Management
 
@@ -978,7 +978,7 @@ The `featureIdToObjectId` and `objectIdToFeatureId` Maps grow as tiles stream in
 
 ### Cloudflare Edge
 
-Cloudflare Pages serves the viewer bundle and `public/data` tile assets from edge nodes globally with no configuration. The Worker (MCP, REST, WebSocket) runs in a region closest to the user — Neo4j Aura is a fixed endpoint and adds latency for graph queries.
+Cloudflare Pages serves the viewer bundle and `public/data` tile assets from edge nodes globally with no configuration. The Worker (MCP, REST, command polling) runs in a region closest to the user — Neo4j Aura is a fixed endpoint and adds latency for graph queries.
 
 ---
 
@@ -986,7 +986,7 @@ Cloudflare Pages serves the viewer bundle and `public/data` tile assets from edg
 
 ### Read-only Viewer
 
-The viewer has no write path to any data store. It sends user messages to `POST /chat` (which executes in the Worker, not the browser) and receives commands over WebSocket. It cannot modify the graph, modify tiles, or access the Anthropic API key.
+The viewer has no write path to any data store. It sends user messages to `POST /chat` (which executes in the Worker, not the browser) and receives commands from `GET /viewer/commands`. It cannot modify the graph, modify tiles, or access the Anthropic API key.
 
 ### MCP Authorization
 
@@ -996,7 +996,7 @@ Optional: add Cloudflare Access in front of `/chat` and MCP endpoints to restric
 
 ### Viewer Command Validation
 
-Commands received over WebSocket are parsed from JSON. The `ViewerCommandClient.handleMessage()` function uses TypeScript discriminated unions for command types. No command can cause the viewer to write data — all effects are local style changes (`tileset.style`) or console logs.
+Commands received from `GET /viewer/commands` are parsed from JSON. The `HttpViewerCommandClient` uses TypeScript discriminated unions for command types and ignores unknown commands. No command can cause the viewer to write data — all effects are local style changes (`tileset.style`) or console logs.
 
 ### Static Tile Data
 
@@ -1008,7 +1008,7 @@ Every MCP tool call is audit-logged by the Worker's `AuditLogger` to `audit.json
 
 ### Session Isolation
 
-Each `/chat` session is independent. The Worker does not share state between simultaneous chat sessions. The ViewerHub DO broadcasts to all connected tabs regardless of session, which means that if two users are connected, both see the same viewer commands. This is acceptable for the single-user portfolio context but must be addressed for multi-user deployment.
+Each `/chat` session is independent. The command queue must preserve that boundary by carrying a session cursor or viewer session ID. Without session partitioning, multiple users polling the same command queue could see the same viewer commands. This is acceptable for the single-user portfolio context but must be addressed for multi-user deployment.
 
 ---
 
@@ -1033,7 +1033,7 @@ The viewer is a display surface; the MCP server is the reasoning and data access
 1. The viewer cannot accidentally access the Anthropic API key or Neo4j credentials.
 2. The MCP tools can be tested independently of the viewer.
 3. The viewer can be replaced (e.g., with a native desktop viewer) without touching the MCP layer.
-4. Multiple viewers (browser, mobile, AR) can connect to the same ViewerHub DO and receive the same commands.
+4. Multiple viewers (browser, mobile, AR) can consume the same Worker HTTP command contract without requiring a persistent connection.
 
 ### Why Object Identity is the Central Architectural Concern
 

@@ -100,7 +100,10 @@ export class HttpViewerCommandClient {
         if (key) this.rememberCommandKey(key);
       }
 
-      this.cursor = result.nextCursor ?? this.cursorFromEntry(result.commands.at(-1)) ?? this.cursor;
+      const lastCommand = result.commands.length > 0
+        ? result.commands[result.commands.length - 1]
+        : undefined;
+      this.cursor = result.nextCursor ?? this.cursorFromEntry(lastCommand) ?? this.cursor;
       this.hasLoggedUnavailable = false;
     } catch (err) {
       this.logUnavailable("Command polling failed; Cesium tile loading is unaffected.", err);

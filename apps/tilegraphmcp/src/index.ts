@@ -4,9 +4,9 @@ import { registerTools } from "./tools/index.js";
 import { registerResources } from "./resources/index.js";
 import { Neo4jClient } from "./db/neo4j.js";
 import { SpatialIndexClient } from "./spatial/index.js";
-import { ViewerBridge } from "./viewer/bridge.js";
+import { HttpViewerBridge } from "./viewer/bridge.js";
 import { AuditLogger } from "./audit/logger.js";
-import { REST_PORT, VIEWER_WS_PORT, SPATIAL_INDEX_PATH, AUDIT_LOG_PATH } from "./config.js";
+import { REST_PORT, SPATIAL_INDEX_PATH, AUDIT_LOG_PATH } from "./config.js";
 import { runAgentLoop } from "./agent/claude_agent.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -35,12 +35,11 @@ async function main() {
 
   const spatialIndex = new SpatialIndexClient(SPATIAL_INDEX_PATH);
 
-  const viewerBridge = new ViewerBridge(VIEWER_WS_PORT);
+  const viewerBridge = new HttpViewerBridge();
 
   const auditLogger = new AuditLogger(AUDIT_LOG_PATH);
 
   await spatialIndex.load();
-  await viewerBridge.start();
 
   const health = await neo4j.healthCheck();
   if (!health.connected) {
@@ -157,6 +156,22 @@ async function main() {
     } catch (err) {
       return c.json({ error: "GRAPH_UNAVAILABLE", message: String(err) }, 503);
     }
+  });
+
+  app.get("/viewer/commands", (c) => {
+    const afterParam = c.req.query("after");
+    const cursor = afterParam !== undefined ? parseInt(afterParam, 10) : null;
+    const result = viewerBridge.getCommandsAfter(isNaN(cursor as number) ? null : cursor);
+    return c.json(result);
+  });
+
+  app.post("/viewer/commands", async (c) => {
+    const command = await c.req.json().catch(() => null);
+    if (!command || typeof command.type !== "string") {
+      return c.json({ error: "INVALID_COMMAND" }, 400);
+    }
+    viewerBridge.sendCommand(command);
+    return c.json({ ok: true });
   });
 
   app.post("/chat", async (c) => {
