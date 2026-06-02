@@ -5,7 +5,7 @@ import { store } from "./state/store.js";
 import { fetchAndRenderProperties } from "./ui/properties_panel.js";
 import { initModelTree } from "./ui/model_tree.js";
 
-const TILESET_PATH = import.meta.env.VITE_TILESET_PATH ?? "../../output/tiles/tileset.json";
+const TILESET_PATH = "/data/tiles/tileset.json"; // import.meta.env.VITE_TILESET_PATH ?? "/data/tiles/tileset.json";
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:9001";
 
 async function main(): Promise<void> {

@@ -8,7 +8,9 @@ import { ViewerBridge } from "./viewer/bridge.js";
 import { AuditLogger } from "./audit/logger.js";
 import { REST_PORT, VIEWER_WS_PORT, SPATIAL_INDEX_PATH, AUDIT_LOG_PATH } from "./config.js";
 import { runAgentLoop } from "./agent/claude_agent.js";
-import express from "express";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { serve } from "@hono/node-server";
 
 async function main() {
   const server = new Server(
@@ -58,41 +60,34 @@ async function main() {
   console.error("[TileGraphAgent MCP Server] started");
 
   // REST API for viewer (runs alongside stdio MCP server)
-  const app = express();
-  app.use(express.json());
+  const app = new Hono();
+  app.use("*", cors());
 
-  app.use((_req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    next();
-  });
-
-  app.get("/objects/:id", async (req, res) => {
+  app.get("/objects/:id", async (c) => {
     try {
-      const results = await neo4j.getObjectProperties(req.params.id);
+      const results = await neo4j.getObjectProperties(c.req.param("id"));
       if (results.length === 0) {
-        res.status(404).json({ error: "NOT_FOUND", object_id: req.params.id });
-        return;
+        return c.json({ error: "NOT_FOUND", object_id: c.req.param("id") }, 404);
       }
       const row = results[0] as Record<string, unknown>;
       const obj = (row.o ?? row) as Record<string, unknown>;
       const props = (obj as any).properties ?? obj;
-      res.json({ found: true, object_id: req.params.id, properties: props });
+      return c.json({ found: true, object_id: c.req.param("id"), properties: props });
     } catch (err) {
-      res.status(503).json({ error: "GRAPH_UNAVAILABLE", message: String(err) });
+      return c.json({ error: "GRAPH_UNAVAILABLE", message: String(err) }, 503);
     }
   });
 
-  app.get("/health", async (_req, res) => {
+  app.get("/health", async (c) => {
     const check = await neo4j.healthCheck();
-    res.json({
+    return c.json({
       status: check.connected ? "ok" : "degraded",
       neo4j: check,
       spatial_index_records: spatialIndex.count,
     });
   });
 
-  app.get("/hierarchy", async (_req, res) => {
+  app.get("/hierarchy", async (c) => {
     try {
       const rows = await neo4j.query<{
         area_tag: string;
@@ -158,59 +153,57 @@ async function main() {
         };
       }
 
-      res.json(Array.from(areaMap.values()).map(flatten));
+      return c.json(Array.from(areaMap.values()).map(flatten));
     } catch (err) {
-      res.status(503).json({ error: "GRAPH_UNAVAILABLE", message: String(err) });
+      return c.json({ error: "GRAPH_UNAVAILABLE", message: String(err) }, 503);
     }
   });
 
-  app.post("/chat", async (req, res) => {
-    const { message } = req.body as { message?: string; session_id?: string };
+  app.post("/chat", async (c) => {
+    const body = (await c.req.json().catch(() => ({}))) as { message?: string };
+    const message = body?.message;
 
-    if (!message || typeof message !== "string" || message.trim().length === 0) {
-      res.status(400).json({ error: "VALIDATION_ERROR", message: "message is required" });
-      return;
+    if (!message || typeof message !== "string" || !message.trim()) {
+      return c.json({ error: "VALIDATION_ERROR", message: "message is required" }, 400);
     }
 
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const encoder = new TextEncoder();
+    const sseEvent = (payload: unknown) =>
+      writer.write(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
 
-    const sendChunk = (data: string) => {
-      res.write(`data: ${JSON.stringify({ type: "chunk", text: data })}\n\n`);
-    };
-
-    try {
-      const turns = await runAgentLoop(
-        message.trim(),
-        { neo4j, spatialIndex, viewerBridge, auditLogger },
-        sendChunk,
-      );
-
-      const toolCallNames = turns.flatMap((t) => t.tool_calls ?? []).map((tc) => tc.name);
-
-      res.write(
-        `data: ${JSON.stringify({
+    (async () => {
+      try {
+        const turns = await runAgentLoop(
+          message.trim(),
+          { neo4j, spatialIndex, viewerBridge, auditLogger },
+          (chunk) => sseEvent({ type: "chunk", text: chunk }),
+        );
+        const toolCallNames = turns.flatMap((t) => t.tool_calls ?? []).map((tc) => tc.name);
+        await sseEvent({
           type: "done",
           turns: turns.length,
           tool_calls: toolCallNames,
           session_id: auditLogger.getSessionId(),
-        })}\n\n`,
-      );
-    } catch (err: any) {
-      res.write(
-        `data: ${JSON.stringify({
-          type: "error",
-          message: err.message ?? String(err),
-        })}\n\n`,
-      );
-    } finally {
-      res.end();
-    }
+        });
+      } catch (err: any) {
+        await sseEvent({ type: "error", message: err.message ?? String(err) });
+      } finally {
+        await writer.close();
+      }
+    })();
+
+    return new Response(readable, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+      },
+    });
   });
 
-  app.listen(REST_PORT, () => {
+  serve({ fetch: app.fetch, port: REST_PORT }, () => {
     console.error(`[REST API] listening on http://localhost:${REST_PORT}`);
   });
 }

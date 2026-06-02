@@ -19,7 +19,8 @@ The central architectural concern is **object identity preservation**. Every tri
 | System | Role relative to viewer |
 |--------|------------------------|
 | Rust pipeline | Produces the geometry and identity mappings the viewer consumes |
-| Cloudflare R2 | Serves `tileset.json` and `*.glb` directly to CesiumJS |
+| Cloudflare Pages static assets | Serves `public/data/tiles/tileset.json` and `*.glb` directly to CesiumJS as `/data/tiles/...` |
+| Cloudflare R2 | Stores Worker-side platform artifacts such as audit logs and spatial indexes |
 | Cloudflare Worker (`tilegraphmcp`) | Serves REST API and WebSocket bridge |
 | Neo4j Aura | Source of engineering property data, queried through the Worker |
 | LLM Agent (Claude) | Issues commands to the viewer via the Worker's ViewerHub Durable Object |
@@ -30,7 +31,7 @@ The central architectural concern is **object identity preservation**. Every tri
 
 ### What the Viewer SHOULD Do
 
-- Stream 3D Tiles (hierarchical GLBs) from Cloudflare R2
+- Stream 3D Tiles (hierarchical GLBs) from `/data/tiles`, served from `public/data/tiles`
 - Render industrial plant geometry in a CesiumJS scene
 - Perform feature picking on LEFT_CLICK, resolving `feature_id` → `object_id`
 - Display engineering properties for picked objects (tag, class, status, fluid, design parameters)
@@ -58,16 +59,18 @@ The central architectural concern is **object identity preservation**. Every tri
 flowchart LR
     User["👤 Operator / Engineer"]
     Viewer["tilegraphviewer\n(Cloudflare Pages)\nCesiumJS SPA"]
+    StaticData["Pages static assets\npublic/data/tiles"]
     Worker["tilegraphmcp\n(Cloudflare Worker)\nHono.js + MCP"]
-    R2["Cloudflare R2\ntilegraph-data bucket"]
+    R2["Cloudflare R2\ntilegraph-data bucket\nspatial index + audit logs"]
     Neo4j["Neo4j Aura\nKnowledge Graph"]
     Agent["LLM Agent\n(Claude via Worker)"]
     Pipeline["Rust Pipeline\n(local CLI)"]
 
-    Pipeline -->|"wrangler r2 object put\ntileset.json, *.glb,\nspatial_index.json"| R2
+    Pipeline -->|"copy output/tiles\ninto public/data/tiles"| StaticData
+    Pipeline -->|"optional upload\nspatial_index.json, audit data"| R2
     Pipeline -->|"HTTPS /db/neo4j/tx/commit\nMERGE nodes + relationships"| Neo4j
 
-    Viewer -->|"HTTPS GET\ntileset.json + *.glb"| R2
+    Viewer -->|"GET /data/tiles/tileset.json + *.glb"| StaticData
     Viewer -->|"POST /chat (SSE)\nGET /hierarchy\nGET /objects/:id"| Worker
     Viewer -->|"WSS /ws/viewer\nViewerCommand JSON"| Worker
 
@@ -79,12 +82,13 @@ flowchart LR
     Agent -->|"MCP tool calls\nhighlight_objects\nisolate_objects\nfocus_camera"| Worker
 
     style Viewer fill:#0f3460,color:#e0e0e0
+    style StaticData fill:#e65100,color:#fff
     style Worker fill:#1a237e,color:#e0e0e0
     style R2 fill:#1b5e20,color:#e0e0e0
     style Neo4j fill:#4a148c,color:#e0e0e0
 ```
 
-**Geometry flow:** `Pipeline → R2 → Viewer (CesiumJS stream)`  
+**Geometry flow:** `Pipeline → public/data/tiles → Viewer (CesiumJS stream)`  
 **Metadata flow:** `User click → Viewer → Worker → Neo4j → Worker → Viewer`  
 **Command flow:** `User query → Viewer → Worker → Agent → Worker → ViewerHub DO → Viewer`  
 **Viewer event flow:** `Viewer pick → store update → properties panel render`
@@ -106,8 +110,8 @@ flowchart TB
     end
 
     subgraph CF["Cloudflare Edge"]
-        Pages["Cloudflare Pages\ntilegraphviewer\nVite bundle (dist/)"]
-        R2["R2: tilegraph-data\npublic bucket\ntileset.json + *.glb\nspatial_index.json\ntile_feature_map.json"]
+        Pages["Cloudflare Pages\ntilegraphviewer\nVite bundle + public/data"]
+        R2["R2: tilegraph-data\nspatial_index.json\naudit.jsonl"]
         Worker["Worker: tilegraphmcp\nHono.js\nMCP + REST + WS"]
         DO["Durable Object\nViewerHub\nWebSocket fan-out"]
     end
@@ -118,7 +122,7 @@ flowchart TB
     end
 
     Pages -->|"bundle served"| Browser
-    CesiumJS -->|"HTTPS GET (CORS)"| R2
+    CesiumJS -->|"GET /data/tiles/..."| Pages
     WSClient -->|"WSS"| DO
     AgentClient -->|"POST /chat SSE"| Worker
     UI -->|"GET /hierarchy\nGET /objects/:id"| Worker
@@ -143,20 +147,21 @@ flowchart TB
 | Root directory | `apps/tilegraphviewer` |
 | Node.js version | 20 |
 
+The default tileset path is not an environment variable. The viewer always requests `/data/tiles/tileset.json`, which Vite and Cloudflare Pages serve from `public/data/tiles/tileset.json`.
+
 Environment variables injected at build time by Vite (`import.meta.env`):
 
 | Variable | Production value |
 |----------|-----------------|
-| `VITE_TILESET_PATH` | `https://pub-65db26f12b0942ce8e8a9d5cb5f36314.r2.dev/tiles/tileset.json` |
 | `VITE_MCP_REST_URL` | `https://tilegraphmcp.quatricmorph.workers.dev` |
 | `VITE_WS_URL` | `wss://tilegraphmcp.quatricmorph.workers.dev/ws/viewer` |
 
-### Cloudflare R2
+### Static Tile Data
 
-The R2 bucket `tilegraph-data` serves all pipeline outputs with public HTTPS. CesiumJS fetches directly from R2 — the Worker is not in the tile streaming path.
+The viewer serves tile geometry as Cloudflare Pages static assets. CesiumJS fetches directly from the same origin, so no tile-specific CORS configuration is required.
 
 ```
-tilegraph-data/ (public read)
+public/data/
   tiles/
     tileset.json              ← 3D Tiles 1.1 root manifest
     content/
@@ -169,12 +174,12 @@ tilegraph-data/ (public read)
     metadata/
       tile_feature_map.json   ← feature_id → object_id mapping
     index/
-      spatial_index.json      ← R-tree records (Worker reads at cold start)
+      spatial_index.json      ← R-tree records
   reports/
-    audit.jsonl               ← MCP tool audit log (append-only)
+    audit.jsonl               ← MCP tool audit log copy, if exported to Pages
 ```
 
-CORS on the bucket must allow `https://tilegraphviewer.pages.dev` and `http://localhost:5173` for `GET` / `HEAD`.
+The Worker may still use R2 bindings for server-side platform artifacts such as `spatial_index.json` and append-only audit logs. That path is separate from the viewer's default CesiumJS tile stream.
 
 ### Build Pipeline
 
@@ -197,6 +202,7 @@ src/
 dist/
   index.html
   assets/             (JS chunks, Cesium assets)
+  data/               (copied from public/data)
 ```
 
 `vite-plugin-cesium` handles the non-trivial Cesium build requirements: it copies the Cesium static assets (Workers, image, terrain) into the output and configures `CESIUM_BASE_URL`.
@@ -215,7 +221,7 @@ flowchart TB
     end
 
     subgraph TileLayer["Tile Streaming Layer"]
-        TilesetURL["tileset.json URL\n(R2 public)"]
+        TilesetURL["/data/tiles/tileset.json\n(Pages static public/data)"]
         tileVisible["tileVisible event\nfeature map population"]
         StyleEngine["Cesium3DTileStyle\nbuildHighlightStyle()"]
         FeatureMaps["featureIdToObjectId Map\nobjectIdToFeatureId Map"]
@@ -357,15 +363,15 @@ initCesiumViewer(containerId, tilesetPath, onObjectSelected)
 sequenceDiagram
     participant Browser
     participant CesiumJS
-    participant R2
+    participant PagesStatic as Pages static data
 
     Browser->>CesiumJS: initCesiumViewer(tilesetPath)
-    CesiumJS->>R2: GET tileset.json
-    R2-->>CesiumJS: JSON (tile hierarchy, bounding volumes, geometric error)
+    CesiumJS->>PagesStatic: GET /data/tiles/tileset.json
+    PagesStatic-->>CesiumJS: JSON (tile hierarchy, bounding volumes, geometric error)
     CesiumJS->>CesiumJS: parse tile tree, compute screen-space error
     loop LOD streaming (per frame)
-        CesiumJS->>R2: GET content/{area}-{type}.glb
-        R2-->>CesiumJS: GLB binary
+        CesiumJS->>PagesStatic: GET /data/tiles/content/{area}-{type}.glb
+        PagesStatic-->>CesiumJS: GLB binary
         CesiumJS->>CesiumJS: parse glTF, upload GPU buffers
         CesiumJS->>CesiumJS: tileVisible event fired
         CesiumJS->>CesiumJS: iterate features, populate identity maps
@@ -380,7 +386,7 @@ sequenceDiagram
 
 ### Tileset Structure
 
-`tileset.json` is a two-level hierarchy: root → area nodes → leaf content tiles. Each content URI points to a GLB in R2.
+`tileset.json` is a two-level hierarchy: root → area nodes → leaf content tiles. The viewer loads it from `/data/tiles/tileset.json`; each content URI points to a GLB under `public/data/tiles/content`.
 
 ```json
 {
@@ -775,7 +781,7 @@ The `audit.jsonl` file in R2 contains the full audit records written by the Work
 | Feature | Location | Notes |
 |---------|----------|-------|
 | Cesium viewer init | `cesium_init.ts:64` | All stock UI disabled, dark background |
-| 3D Tiles streaming | `cesium_init.ts:92` | Loads from VITE_TILESET_PATH |
+| 3D Tiles streaming | `cesium_init.ts:92` | Loads from `/data/tiles/tileset.json` |
 | Feature map population | `cesium_init.ts:100` | tileVisible event, both maps populated |
 | Feature picking | `cesium_init.ts:123` | Dual-path (EXT + extras fallback) |
 | Style-based highlighting | `cesium_init.ts:23` | buildHighlightStyle() with conditions |
@@ -918,7 +924,7 @@ flowchart TB
 
 ### Large Model Loading
 
-The current synthetic plant (~200 objects) loads comfortably in a single request cycle. At production scale (10,000–100,000 objects across dozens of GLBs), the `tileVisible` feature map population loop becomes a bottleneck. At that scale, prefer fetching `tile_feature_map.json` directly from R2 on startup rather than iterating features as they stream in.
+The current synthetic plant (~200 objects) loads comfortably in a single request cycle. At production scale (10,000–100,000 objects across dozens of GLBs), the `tileVisible` feature map population loop becomes a bottleneck. At that scale, prefer fetching precomputed `tile_feature_map.json` from `/data/tiles/metadata` on startup rather than iterating features as they stream in.
 
 ### Style Condition Scalability
 
@@ -938,7 +944,7 @@ The `featureIdToObjectId` and `objectIdToFeatureId` Maps grow as tiles stream in
 
 ### Cloudflare Edge
 
-Cloudflare Pages serves the viewer bundle from edge nodes globally with no configuration. R2 public bucket tiles benefit from Cloudflare's global CDN for `*.glb` objects after first fetch. The Worker (MCP, REST, WebSocket) runs in a region closest to the user — Neo4j Aura is a fixed endpoint and adds latency for graph queries.
+Cloudflare Pages serves the viewer bundle and `public/data` tile assets from edge nodes globally with no configuration. The Worker (MCP, REST, WebSocket) runs in a region closest to the user — Neo4j Aura is a fixed endpoint and adds latency for graph queries.
 
 ---
 
@@ -958,9 +964,9 @@ Optional: add Cloudflare Access in front of `/chat` and MCP endpoints to restric
 
 Commands received over WebSocket are parsed from JSON. The `ViewerCommandClient.handleMessage()` function uses TypeScript discriminated unions for command types. No command can cause the viewer to write data — all effects are local style changes (`tileset.style`) or console logs.
 
-### R2 Tile Data
+### Static Tile Data
 
-The R2 bucket is public-read by design. CesiumJS must fetch tiles directly from R2 (the browser cannot proxy large binary streams through a Worker without cost). The tile data contains no PII — only engineering object geometry and synthetic metadata.
+The Pages static tile data is public-read by design. CesiumJS fetches tiles directly from `/data/tiles/...` on the same origin. The tile data contains no PII — only engineering object geometry and synthetic metadata.
 
 ### Audit Logging
 
@@ -980,11 +986,11 @@ CesiumJS is the only production-grade open-source 3D Tiles renderer with a compl
 
 ### Why Cloudflare Pages
 
-The viewer is a static SPA. Cloudflare Pages provides global CDN delivery, automatic HTTPS, Git-connected deploys, and zero-config preview deployments per branch. It integrates naturally with the Worker and R2 that serve the dynamic API and tile data, keeping the entire platform on one vendor edge network with minimal latency between components.
+The viewer is a static SPA. Cloudflare Pages provides global CDN delivery, automatic HTTPS, Git-connected deploys, zero-config preview deployments per branch, and same-origin serving for the default `public/data` tile assets. It integrates naturally with the Worker and R2-backed platform artifacts while keeping the browser runtime simple.
 
-### Why Cloudflare R2
+### Why Static Tile Hosting
 
-3D Tiles streaming requires direct HTTPS access from the browser. Proxying large GLB files through a Worker would exhaust CPU and memory limits. R2 provides S3-compatible public-read URLs with no egress fees, making it the correct substrate for serving tile content at any scale. The Worker reads only the small `spatial_index.json` via R2 binding, not the GLB files.
+3D Tiles streaming requires direct HTTPS access from the browser. Serving the default dataset from `public/data` keeps development, Pages previews, and production deployments on the same URL shape: `/data/tiles/tileset.json`. R2 remains useful for larger externally managed datasets or Worker-side artifacts, but the viewer's default tile stream is now owned by the app's static data directory.
 
 ### Why the Viewer is Separated from MCP
 

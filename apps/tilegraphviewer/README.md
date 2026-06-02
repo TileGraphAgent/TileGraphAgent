@@ -1,12 +1,12 @@
 # tilegraphviewer
 
-CesiumJS-based industrial 3D viewer for TileGraphAgent, deployed to **Cloudflare Pages**. It streams 3D Tiles from **Cloudflare R2** and communicates with the MCP server via the **Cloudflare Worker** REST/WebSocket API.
+CesiumJS-based industrial 3D viewer for TileGraphAgent, deployed to **Cloudflare Pages**. It streams 3D Tiles from `public/data/tiles` by default and communicates with the MCP server via the **Cloudflare Worker** REST/WebSocket API.
 
 ## Architecture
 
 ```
 Browser (Cloudflare Pages)
-  ├── CesiumJS  ←─ 3D Tiles (tileset.json + GLBs) ─← Cloudflare R2
+  ├── CesiumJS  ←─ 3D Tiles (/data/tiles/tileset.json + GLBs)
   ├── Agent chat panel  ──── POST /chat (SSE) ──▶  Cloudflare Worker
   ├── Model tree panel  ──── GET /hierarchy    ──▶  Cloudflare Worker
   └── WebSocket client  ──── wss://...         ──▶  Durable Object (ViewerHub)
@@ -19,7 +19,7 @@ Browser (Cloudflare Pages)
 | Hosting         | Cloudflare Pages                     |
 | 3D rendering    | CesiumJS                             |
 | Build tool      | Vite + vite-plugin-cesium            |
-| Tile storage    | Cloudflare R2 (public bucket)        |
+| Tile storage    | Pages static assets (`public/data`)  |
 | Agent backend   | Cloudflare Worker (tilegraphmcp)     |
 | Viewer commands | WebSocket → Durable Object ViewerHub |
 
@@ -31,20 +31,19 @@ npm install
 npm run dev      # Vite dev server on http://localhost:5173
 ```
 
-Create a `.env.local` for local overrides:
+The tileset path is fixed to `/data/tiles/tileset.json`, which maps to `public/data/tiles/tileset.json` in Vite and Cloudflare Pages.
+
+Create a `.env.local` only for backend overrides:
 
 ```env
-VITE_TILESET_PATH=https://<account-id>.r2.dev/tilegraph-data/tiles/tileset.json
 VITE_MCP_REST_URL=http://localhost:9000
 VITE_WS_URL=ws://localhost:9000/ws/viewer
 ```
 
-For local end-to-end testing with local tile files:
+For local end-to-end testing with newly generated tile files, replace the contents of `public/data/tiles` while preserving the `tileset.json`, `content`, `metadata`, and `index` layout.
 
-```env
-VITE_TILESET_PATH=../../output/tiles/tileset.json
-VITE_MCP_REST_URL=http://localhost:9000
-VITE_WS_URL=ws://localhost:9001
+```bash
+rsync -a ../../output/tiles/ public/data/tiles/
 ```
 
 ## Deployment to Cloudflare Pages
@@ -72,58 +71,24 @@ npx wrangler pages deploy dist --project-name tilegraphviewer
 
 | Variable            | Production value                                                         | Description                         |
 | ------------------- | ------------------------------------------------------------------------ | ----------------------------------- |
-| `VITE_TILESET_PATH` | `https://pub-65db26f12b0942ce8e8a9d5cb5f36314.r2.dev/tiles/tileset.json` | R2 public URL for the root tileset  |
 | `VITE_MCP_REST_URL` | `https://tilegraphmcp.quatricmorph.workers.dev`                          | Cloudflare Worker base URL          |
 | `VITE_WS_URL`       | `wss://tilegraphmcp.quatricmorph.workers.dev/ws/viewer`                  | WebSocket endpoint (Durable Object) |
 
-## Tile data on Cloudflare R2
+## Tile data in public/data
 
-The Rust pipeline (`cargo run --bin tilegraph -- build-tiles`) produces output files that are uploaded to R2 after each pipeline run:
+The viewer loads the root tileset from `/data/tiles/tileset.json`. In the repository and Cloudflare Pages build output, that maps to `public/data/tiles/tileset.json`.
 
 ```
-R2 bucket: tilegraph-data (public read)
-  └── tiles/
-       ├── tileset.json
-       ├── content/
-       │    ├── area-a-piping.glb
-       │    ├── area-a-equipment.glb
-       │    └── ...
-       ├── metadata/
-       │    └── tile_feature_map.json
-       └── index/
-            └── spatial_index.json
-```
-
-Upload script (run after `cargo run --bin tilegraph -- build-tiles`):
-
-```bash
-# Upload all tile outputs to R2
-npx wrangler r2 object put tilegraph-data/tiles/tileset.json --file output/tiles/tileset.json
-npx wrangler r2 object put tilegraph-data/tiles/index/spatial_index.json \
-  --file output/tiles/index/spatial_index.json
-
-# Bulk upload GLB content files
-for f in output/tiles/content/*.glb; do
-  key="tiles/content/$(basename $f)"
-  npx wrangler r2 object put "tilegraph-data/$key" --file "$f"
-done
-```
-
-Or use `rclone` / the Cloudflare dashboard S3-compatible endpoint for bulk uploads.
-
-## CORS for R2
-
-The R2 bucket must allow cross-origin reads from the Pages domain. Set via `wrangler.toml` or the dashboard:
-
-```json
-[
-  {
-    "AllowedOrigins": ["https://tilegraphviewer.pages.dev", "http://localhost:5173"],
-    "AllowedMethods": ["GET", "HEAD"],
-    "AllowedHeaders": ["*"],
-    "MaxAgeSeconds": 3600
-  }
-]
+public/data/tiles/
+  ├── tileset.json
+  ├── content/
+  │    ├── area-a-piping.glb
+  │    ├── area-a-equipment.glb
+  │    └── ...
+  ├── metadata/
+  │    └── tile_feature_map.json
+  └── index/
+       └── spatial_index.json
 ```
 
 ## Viewer features
