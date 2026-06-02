@@ -8,12 +8,12 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "hono": "^4.6.0",
-    "neo4j-driver": "^5.26.0"
+    "hono": "^4.12.23",
+    "neo4j-driver": "^6.0.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241022.0",
-    "typescript": "^5.5.2",
-    "wrangler": "^3.80.0"
+    "@cloudflare/workers-types": "^4.20260531.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.96.0"
   }
 }
