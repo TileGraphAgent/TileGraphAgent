@@ -2,7 +2,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerTools } from "./tools/index.js";
 import { registerResources } from "./resources/index.js";
-import { Neo4jClient } from "./db/neo4j.js";
+import { Neo4jHttpClient } from "./db/neo4j_http.js";
 import { SpatialIndexClient } from "./spatial/index.js";
 import { HttpViewerBridge } from "./viewer/bridge.js";
 import { AuditLogger } from "./audit/logger.js";
@@ -26,9 +26,9 @@ async function main() {
     }
   );
 
-  const neo4j = new Neo4jClient({
-    url: process.env.NEO4J_URL ?? "bolt://localhost:7687",
-    username: process.env.NEO4J_USER ?? "neo4j",
+  const neo4j = new Neo4jHttpClient({
+    url: process.env.NEO4J_URL ?? "http://localhost:7474",
+    username: process.env.NEO4J_USERNAME ?? "neo4j",
     password: process.env.NEO4J_PASSWORD ?? "password",
     database: process.env.NEO4J_DATABASE ?? "neo4j",
   });
