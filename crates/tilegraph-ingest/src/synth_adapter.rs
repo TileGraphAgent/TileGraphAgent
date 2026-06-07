@@ -52,8 +52,8 @@ impl SourceAdapter for SynthAdapter {
             serde_json::from_str(&raw)?
         };
 
-        let mut gen = PlantGenerator::new(spec);
-        let generated = gen.generate();
+        let mut generator = PlantGenerator::new(spec);
+        let generated = generator.generate();
 
         let geometry_count = generated
             .objects

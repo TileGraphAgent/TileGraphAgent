@@ -1733,7 +1733,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -1758,7 +1758,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "glam",
@@ -1775,7 +1775,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-geometry"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "glam",
@@ -1788,7 +1788,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-gltf"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "serde",
@@ -1801,7 +1801,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-graph-export"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "reqwest",
@@ -1815,7 +1815,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-ifc-bridge"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "thiserror 2.0.18",
  "tilegraph-core",
@@ -1824,7 +1824,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-ingest"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "serde",
@@ -1838,7 +1838,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-spatial"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "rstar",
@@ -1851,7 +1851,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-synth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "glam",
@@ -1866,7 +1866,7 @@ dependencies = [
 
 [[package]]
 name = "tilegraph-tiles"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "serde",
