@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "hono": "^4.12.23",
-    "neo4j-driver": "^6.0.1"
+    "neo4j-driver": "^6.1.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260531.1",
+    "@cloudflare/workers-types": "^4.20260607.1",
     "typescript": "^6.0.3",
-    "wrangler": "^4.96.0"
+    "wrangler": "^4.98.0"
   }
 }
